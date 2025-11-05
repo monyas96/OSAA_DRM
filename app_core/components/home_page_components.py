@@ -229,9 +229,47 @@ def render_step2_section(quadrants: list):
     }
     
     /* Ensure border-top color from inline style is applied */
+    /* Use CSS variable for all cards with data-pillar-color attribute */
     .step2-card[data-pillar-color] {
         border-top-width: 5px !important;
         border-top-style: solid !important;
+        border-top-color: var(--accent-color, inherit) !important;
+    }
+    .step2-card[data-pillar-color] .pillar-icon {
+        background-color: var(--accent-color, inherit) !important;
+        background: var(--accent-color, inherit) !important;
+    }
+    
+    /* Force border-top color using attribute selector as secondary fallback */
+    .step2-card[data-pillar-color="#1B75BB"] {
+        border-top-color: #1B75BB !important;
+    }
+    .step2-card[data-pillar-color="#0072BC"] {
+        border-top-color: #0072BC !important;
+    }
+    .step2-card[data-pillar-color="#3B9C9C"] {
+        border-top-color: #3B9C9C !important;
+    }
+    .step2-card[data-pillar-color="#264653"] {
+        border-top-color: #264653 !important;
+    }
+    
+    /* Force icon background colors using attribute selector as secondary fallback */
+    .step2-card[data-pillar-color="#1B75BB"] .pillar-icon {
+        background-color: #1B75BB !important;
+        background: #1B75BB !important;
+    }
+    .step2-card[data-pillar-color="#0072BC"] .pillar-icon {
+        background-color: #0072BC !important;
+        background: #0072BC !important;
+    }
+    .step2-card[data-pillar-color="#3B9C9C"] .pillar-icon {
+        background-color: #3B9C9C !important;
+        background: #3B9C9C !important;
+    }
+    .step2-card[data-pillar-color="#264653"] .pillar-icon {
+        background-color: #264653 !important;
+        background: #264653 !important;
     }
     
     .step2-card:hover {
@@ -527,9 +565,10 @@ def render_step2_section(quadrants: list):
         
         with cols[idx]:
             # Build card HTML with explicit color styles - using direct inline styles
+            # Note: !important is not valid in inline styles, so we rely on CSS with !important
             card_html = f"""
-            <div class="{card_class}" style="border-top: 5px solid {color} !important; --accent-color: {color};" data-pillar-id="{pillar_id}" data-pillar-color="{color}">
-              <div class="pillar-icon" style="background-color: {color} !important; background: {color} !important;">{pillar_num}</div>
+            <div class="{card_class}" style="border-top: 5px solid {color}; --accent-color: {color};" data-pillar-id="{pillar_id}" data-pillar-color="{color}">
+              <div class="pillar-icon" style="background-color: {color}; background: {color};">{pillar_num}</div>
               <h4>Pillar {pillar_num}</h4>
               <p>{short_title}</p>
             </div>
@@ -564,16 +603,20 @@ def render_step2_section(quadrants: list):
             cards.forEach(function(card) {
                 const color = card.getAttribute('data-pillar-color');
                 if (color) {
-                    // Ensure border color is applied
-                    card.style.borderTop = '5px solid ' + color + ' !important';
-                    card.style.setProperty('border-top', '5px solid ' + color, 'important');
+                    // Set CSS variable for accent color
+                    card.style.setProperty('--accent-color', color, 'important');
                     
-                    // Ensure icon color is applied
+                    // Ensure border color is applied with highest priority
+                    card.style.setProperty('border-top', '5px solid ' + color, 'important');
+                    card.style.borderTop = '5px solid ' + color;
+                    
+                    // Ensure icon color is applied with highest priority
                     const icon = card.querySelector('.pillar-icon');
                     if (icon) {
+                        icon.style.setProperty('background-color', color, 'important');
+                        icon.style.setProperty('background', color, 'important');
                         icon.style.backgroundColor = color;
                         icon.style.background = color;
-                        icon.style.setProperty('background-color', color, 'important');
                     }
                 }
             });
