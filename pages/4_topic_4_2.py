@@ -70,7 +70,7 @@ with st.container():
 # SECTION: Global Filter Row
 # ========================================
 with st.container():
-st.markdown("""
+    st.markdown("""
     <div class="filter-bar">
         <h3>Filter Data View</h3>
     </div>
@@ -108,9 +108,9 @@ st.markdown("""
             options=["World Bank", "IMF", "OECD"],
             default=["World Bank"],
             key="global_source_filter"
-    )
+        )
 
-    st.divider()
+st.divider()
 
 # Apply global filters to the data
 df_display = df_filtered.copy()
@@ -152,18 +152,18 @@ with col1:
         
         # Render chart
         indicator_1 = "Tax Revenue - % of GDP - value"
-    uv.render_indicator_section(
+        uv.render_indicator_section(
             df=df_display,
             indicator_label=indicator_1,
-        title="",
+            title="",
             description="",
-        chart_type="line",
+            chart_type="line",
             selected_countries=display_filters.get('selected_countries'),
             year_range=display_filters.get('year_range'),
-        chart_options={'x': 'year', 'y': 'value', 'color': 'country_or_area'},
-        show_data_table=True,
+            chart_options={'x': 'year', 'y': 'value', 'color': 'country_or_area'},
+            show_data_table=True,
             container_key="topic4_2_ind1_chart"
-    )
+        )
         
         # Learn More Expander
         with st.expander("Learn more about this indicator"):
@@ -190,18 +190,18 @@ with col2:
         
         # Render chart
         indicator_2 = "Tax effort (ratio) [tax_eff]"
-    uv.render_indicator_section(
+        uv.render_indicator_section(
             df=df_display,
             indicator_label=indicator_2,
-        title="",
+            title="",
             description="",
-        chart_type="line",
+            chart_type="line",
             selected_countries=display_filters.get('selected_countries'),
             year_range=display_filters.get('year_range'),
-        chart_options={'x': 'year', 'y': 'value', 'color': 'country_or_area'},
-        show_data_table=True,
+            chart_options={'x': 'year', 'y': 'value', 'color': 'country_or_area'},
+            show_data_table=True,
             container_key="topic4_2_ind2_chart"
-    )
+        )
         
         # Learn More Expander
         with st.expander("Learn more about this indicator"):
