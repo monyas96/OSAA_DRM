@@ -147,11 +147,40 @@ with col1:
         <div class='indicator-card'>
             <h4>Indicator 4.1.1: Aggregate Expenditure Outturn</h4>
             <p style="color: #555; line-height: 1.6; margin-bottom: 1rem;">
+                <strong>Analytical Focus Question:</strong> How consistent are governments in executing their approved budgets over time? 
+                Does actual spending align with planned expenditure?
+            </p>
+            <p style="color: #555; line-height: 1.6; margin-bottom: 1rem;">
                 Measures how closely actual aggregate expenditures align with the original budget. 
                 This is a proxy for Public Expenditure Efficiency Index and indicates budget credibility.
             </p>
         </div>
         """, unsafe_allow_html=True)
+        
+        # How to Apply Analytical Lens - Right after the card
+        with st.expander("How to Apply Analytical Lens", expanded=False):
+            st.markdown("""
+            **Efficiency:** Higher (blue) scores show efficient use of funds and credible budget execution. 
+            Countries with consistent A/B scores demonstrate strong fiscal frameworks and better planning capacity.
+            
+            **Effectiveness:** Stable or improving scores suggest predictable implementation, supporting trust and 
+            sustained development outcomes. Predictable spending enables stable service delivery and long-term planning.
+            """)
+        
+        # Intermediate Region Filter for Heatmap (Africa only)
+        # Filter to only African countries
+        africa_ref_data = ref_data[ref_data['Region Name'] == 'Africa'].copy() if not ref_data.empty else pd.DataFrame()
+        # Get unique Intermediate Region Names from African countries only (excluding empty values)
+        available_intermediate_regions = sorted(
+            africa_ref_data['Intermediate Region Name'].dropna().unique()
+        ) if not africa_ref_data.empty else []
+        selected_intermediate_regions = st.multiselect(
+            "Filter by Intermediate Region",
+            options=available_intermediate_regions,
+            default=[],
+            key="indicator_4_1_1_intermediate_region_filter",
+            help="Select African intermediate regions to display in the heatmap. Leave empty to show all African intermediate regions."
+        )
         
         # Render chart
         indicator_tab1 = "PEFA: PI-1 Aggregate expenditure out-turn"
@@ -160,23 +189,96 @@ with col1:
             indicator_label=indicator_tab1,
             title="",
             description="",
-            chart_type="bar",
+            chart_type="heatmap",
             selected_countries=display_filters.get('selected_countries'),
             year_range=display_filters.get('year_range'),
-            chart_options={'x': 'country_or_area', 'y': 'value', 'color': 'year', 'sort_x': '-y'},
-            show_data_table=True,
+            chart_options={
+                'x': 'year', 
+                'y': 'country_or_area', 
+                'reference_data': ref_data,
+                'intermediate_region_filter': selected_intermediate_regions if selected_intermediate_regions else None
+            },
+            show_data_table=False,  # We'll add it manually at the end
             container_key="topic4_1_ind1_chart"
         )
         
+        # PEFA Score Legend - Directly under the graph
+        st.markdown("""
+        <div style="background-color: #f8f9fa; padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+            <h5 style="color: #002B7F; margin-bottom: 0.5rem;">PEFA Score Legend</h5>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem;">
+                <div style="text-align: center;">
+                    <div style="width: 30px; height: 30px; background-color: #003366; margin: 0 auto; border-radius: 4px;"></div>
+                    <strong>A (4)</strong><br><small>95–105%</small>
+                </div>
+                <div style="text-align: center;">
+                    <div style="width: 30px; height: 30px; background-color: #3366CC; margin: 0 auto; border-radius: 4px;"></div>
+                    <strong>B (3)</strong><br><small>90–110%</small>
+                </div>
+                <div style="text-align: center;">
+                    <div style="width: 30px; height: 30px; background-color: #99CCFF; margin: 0 auto; border-radius: 4px;"></div>
+                    <strong>C (2)</strong><br><small>85–115%</small>
+                </div>
+                <div style="text-align: center;">
+                    <div style="width: 30px; height: 30px; background-color: #F26C2B; margin: 0 auto; border-radius: 4px;"></div>
+                    <strong>D (1)</strong><br><small>&lt;85% or &gt;115%</small>
+                </div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # How to Read This Graph
+        with st.expander("How to Read This Graph", expanded=False):
+            st.markdown("""
+            **Each cell represents a country's PEFA score for a specific year.**
+            
+            - **Dark blue (A)** = Strong fiscal discipline (spending within 95–105% of budget)
+            - **Medium blue (B)** = Moderate variation (spending within 90–110% of budget)
+            - **Light blue (C)** = Moderate deviation (spending within 85–115% of budget)
+            - **Orange (D)** = Significant deviation from planned budgets (spending <85% or >115% of budget)
+            
+            **Read horizontally** to see how fiscal discipline changes over time for each country.
+            **Read vertically** to compare countries' performance in a given year.
+            """)
+        
         # Learn More Expander
         with st.expander("Learn more about this indicator"):
-            tab_def, tab_rel, tab_proxy = st.tabs(["Definition", "Relevance", "Proxy Justification"])
+            tab_def, tab_rel, tab_proxy, tab_pillar = st.tabs(["Definition", "Relevance", "Proxy Justification", "Pillar Connection"])
             with tab_def:
-                st.markdown("Aggregate deviation of actual expenditure from the original budget, measured as a percentage.")
+                st.markdown("""
+                This indicator measures the extent to which aggregate budget expenditure outturn reflects the amount 
+                originally approved, as defined in government budget documentation and fiscal reports.
+                
+                **Source:** [PEFA Framework - PI-1](https://www.pefa.org/node/4762)
+                """)
             with tab_rel:
-                st.markdown("- **Efficiency**: Budget credibility.  \n- **Effectiveness**: Predictable resource flow.")
+                st.markdown("""
+                - **Efficiency**: Reflects fiscal discipline — how well governments adhere to planned spending and minimize waste.
+                - **Effectiveness**: Indicates reliability of budget execution — predictable spending supports stable service delivery.
+                """)
             with tab_proxy:
-                st.markdown("PEFA standard indicator, globally recognized.")
+                st.markdown("""
+                PEFA standard indicator, globally recognized as a measure of budget credibility and public financial management quality.
+                """)
+            with tab_pillar:
+                st.markdown("""
+                Sustainable development requires not only mobilizing funds but also managing them effectively. This indicator links 
+                directly to Theme 1: Budget Credibility and Efficiency — a government that consistently spends as planned builds 
+                investor confidence, supports fiscal stability, and enables long-term sustainable development planning.
+                """)
+        
+        # View Data Table - Last expander
+        with st.expander("View Data Table", expanded=False):
+            # Filter data for this indicator
+            indicator_data = df_display[df_display['indicator_label'] == indicator_tab1].copy()
+            if not indicator_data.empty:
+                cols_to_show = ['country_or_area', 'year', 'value']
+                display_df = indicator_data[[col for col in cols_to_show if col in indicator_data.columns]].copy()
+                if indicator_tab1 and 'value' in display_df.columns:
+                    display_df = display_df.rename(columns={'value': indicator_tab1})
+                st.dataframe(display_df)
+            else:
+                st.info("No data available for this indicator.")
 
 # Indicator 4.1.2 - Right Column
 with col2:

@@ -564,6 +564,222 @@ def create_bar_chart(
         )
         return fig
 
+def create_pefa_heatmap(
+    data,
+    x_column='year',
+    y_column='country_or_area',
+    value_column='value',
+    title='PEFA Score Heatmap',
+    x_label=None,
+    y_label=None,
+    height=600,
+    width=None,
+    intermediate_region_filter=None,
+    reference_data=None,
+    **kwargs
+):
+    """
+    Creates a heatmap for PEFA scores with A-D color mapping.
+    
+    Color mapping:
+    - 4 = A (Deep Blue: 95–105%) → #003366
+    - 3 = B (Medium Blue: 90–110%) → #3366CC
+    - 2 = C (Light Blue: 85–115%) → #99CCFF
+    - 1 = D (Orange: <85 or >115%) → #F26C2B
+    
+    Args:
+        data: DataFrame with country, year, and value columns
+        x_column: Column name for years (x-axis)
+        y_column: Column name for countries (y-axis)
+        value_column: Column name for PEFA scores
+        title: Chart title
+        x_label: X-axis label
+        y_label: Y-axis label
+        height: Chart height
+        width: Chart width
+        intermediate_region_filter: Optional list of intermediate regions to filter by (Africa only)
+        reference_data: Reference data for intermediate region sorting
+    """
+    if data is None or data.empty:
+        st.warning("No data provided for PEFA heatmap.")
+        fig = go.Figure().update_layout(title_text=f"{title} (No Data)", height=height, width=width)
+        return fig
+    
+    # Always filter to only African countries, then by intermediate region if provided
+    plot_data = data.copy()
+    africa_ref = None
+    if reference_data is not None:
+        # First filter to only African countries
+        africa_ref = reference_data[reference_data['Region Name'] == 'Africa'].copy()
+        africa_countries = africa_ref['Country or Area'].unique()
+        plot_data = plot_data[plot_data[y_column].isin(africa_countries)]
+        
+        # Further filter by intermediate region if provided
+        if intermediate_region_filter and 'Intermediate Region Name' in africa_ref.columns:
+            intermediate_region_countries = africa_ref[
+                africa_ref['Intermediate Region Name'].isin(intermediate_region_filter)
+            ]['Country or Area'].unique()
+            plot_data = plot_data[plot_data[y_column].isin(intermediate_region_countries)]
+    
+    # Ensure required columns exist
+    required_cols = [x_column, y_column, value_column]
+    missing_cols = [col for col in required_cols if col not in plot_data.columns]
+    if missing_cols:
+        st.error(f"Missing required columns for PEFA heatmap: {', '.join(missing_cols)}")
+        fig = go.Figure().update_layout(title_text=f"{title} (Error: Missing Columns)", height=height, width=width)
+        return fig
+    
+    # Convert value to numeric
+    plot_data[value_column] = pd.to_numeric(plot_data[value_column], errors='coerce')
+    plot_data = plot_data.dropna(subset=[value_column])
+    
+    if plot_data.empty:
+        st.warning("No valid numeric data to plot after cleaning.")
+        fig = go.Figure().update_layout(title_text=f"{title} (No Valid Data)", height=height, width=width)
+        return fig
+    
+    # Map values to PEFA scores (A=4, B=3, C=2, D=1)
+    # Check if values are already PEFA scores (1-4) or percentages that need conversion
+    max_val = plot_data[value_column].max()
+    min_val = plot_data[value_column].min()
+    
+    if max_val <= 4 and min_val >= 1:
+        # Values are already PEFA scores (1-4)
+        plot_data['pefa_score'] = plot_data[value_column].round().astype(int).clip(1, 4)
+    else:
+        # Values are likely percentages - convert to PEFA scores
+        # A (4): 95-105%, B (3): 90-110%, C (2): 85-115%, D (1): <85% or >115%
+        def convert_to_pefa_score(percent):
+            if pd.isna(percent):
+                return None
+            if 95 <= percent <= 105:
+                return 4  # A
+            elif 90 <= percent <= 110:
+                return 3  # B
+            elif 85 <= percent <= 115:
+                return 2  # C
+            else:
+                return 1  # D
+        
+        plot_data['pefa_score'] = plot_data[value_column].apply(convert_to_pefa_score)
+        plot_data = plot_data.dropna(subset=['pefa_score'])
+        plot_data['pefa_score'] = plot_data['pefa_score'].astype(int)
+    
+    # Map scores to letter grades
+    score_to_letter = {4: 'A', 3: 'B', 2: 'C', 1: 'D'}
+    plot_data['pefa_letter'] = plot_data['pefa_score'].map(score_to_letter)
+    
+    # Sort countries by intermediate region if reference_data is available (Africa only)
+    if africa_ref is not None and 'Intermediate Region Name' in africa_ref.columns:
+        # Merge to get intermediate region information
+        country_intermediate_region = africa_ref[['Country or Area', 'Intermediate Region Name']].drop_duplicates()
+        plot_data = plot_data.merge(
+            country_intermediate_region,
+            left_on=y_column,
+            right_on='Country or Area',
+            how='left'
+        )
+        # Sort by intermediate region, then by country
+        plot_data = plot_data.sort_values(['Intermediate Region Name', y_column], na_position='last')
+    else:
+        plot_data = plot_data.sort_values(y_column)
+    
+    # Create pivot tables for heatmap (score and letter)
+    heatmap_df = plot_data.pivot_table(
+        index=y_column,
+        columns=x_column,
+        values='pefa_score',
+        aggfunc='mean'
+    )
+    
+    # Also create pivot for letter grades for hover
+    heatmap_letters_df = plot_data.pivot_table(
+        index=y_column,
+        columns=x_column,
+        values='pefa_letter',
+        aggfunc=lambda x: x.iloc[0] if len(x) > 0 else None
+    )
+    
+    # Sort years
+    heatmap_df = heatmap_df.sort_index(axis=1)
+    heatmap_letters_df = heatmap_letters_df.sort_index(axis=1)
+    
+    # Create custom color scale for PEFA scores
+    pefa_colorscale = [
+        [0.0, '#F26C2B'],    # D (1) - Orange
+        [0.25, '#F26C2B'],   # D (1) - Orange
+        [0.25, '#99CCFF'],   # C (2) - Light Blue
+        [0.5, '#99CCFF'],    # C (2) - Light Blue
+        [0.5, '#3366CC'],    # B (3) - Medium Blue
+        [0.75, '#3366CC'],   # B (3) - Medium Blue
+        [0.75, '#003366'],   # A (4) - Deep Blue
+        [1.0, '#003366']     # A (4) - Deep Blue
+    ]
+    
+    try:
+        # Create text matrix with letter grades
+        text_matrix = []
+        hover_text_matrix = []
+        for i in range(len(heatmap_df.index)):
+            text_row = []
+            hover_row = []
+            for j in range(len(heatmap_df.columns)):
+                score = heatmap_df.iloc[i, j]
+                letter = heatmap_letters_df.iloc[i, j] if i < len(heatmap_letters_df.index) and j < len(heatmap_letters_df.columns) else None
+                if pd.notna(score):
+                    text_row.append(f"{letter or ''}")
+                    hover_row.append(f"<b>{heatmap_df.index[i]}</b><br>Year: {heatmap_df.columns[j]}<br>PEFA Score: {letter} ({int(score)})")
+                else:
+                    text_row.append("")
+                    hover_row.append("")
+            text_matrix.append(text_row)
+            hover_text_matrix.append(hover_row)
+        
+        # Create heatmap using Plotly
+        fig = go.Figure(data=go.Heatmap(
+            z=heatmap_df.values,
+            x=heatmap_df.columns.tolist(),
+            y=heatmap_df.index.tolist(),
+            colorscale=pefa_colorscale,
+            zmin=1,
+            zmax=4,
+            text=text_matrix,
+            texttemplate='%{text}',
+            textfont={"size": 10, "color": "white"},
+            customdata=hover_text_matrix,
+            hovertemplate='%{customdata}<extra></extra>',
+            colorbar=dict(
+                title="PEFA Score",
+                tickmode='array',
+                tickvals=[1, 2, 3, 4],
+                ticktext=['D', 'C', 'B', 'A'],
+                len=0.5
+            )
+        ))
+        
+        fig.update_layout(
+            title=title,
+            xaxis_title=x_label or x_column.replace('_', ' ').title(),
+            yaxis_title=y_label or y_column.replace('_', ' ').title(),
+            height=height,
+            width=width,
+            yaxis=dict(autorange="reversed"),  # Reverse y-axis so first country is at top
+            margin=dict(l=150, r=50, t=50, b=50)
+        )
+        
+        return fig
+        
+    except Exception as e:
+        st.error(f"Error creating PEFA heatmap: {e}")
+        fig = go.Figure()
+        fig.update_layout(
+            title_text=f"{title} (Plotting Error)",
+            height=height,
+            width=width,
+            annotations=[dict(text=f"Error: {e}", showarrow=False)]
+        )
+        return fig
+
 # 2. Data handling functions:
 
 def load_country_reference_data(file_path=None):
@@ -1026,14 +1242,33 @@ def render_indicator_section(
 
         # --- Create Chart ---
         chart_options = chart_options or {}
-        x_col = chart_options.get('x', 'year' if chart_type == 'line' else 'country_or_area')
-        y_col = chart_options.get('y', 'value')
-        color_col = chart_options.get('color') # Get color if specified
-
+        
+        # Normalize chart type for comparison
+        chart_type_normalized = str(chart_type).lower().strip() if chart_type else ""
+        
+        # Get color column first (needed for conditional logic)
+        color_col = chart_options.get('color')
+        
+        # Set default columns based on chart type
+        if chart_type_normalized == "heatmap":
+            x_col = chart_options.get('x', 'year')
+            y_col = chart_options.get('y', 'country_or_area')
+            # For heatmap, value column is required but not used as y_col
+            required_chart_cols = [x_col, y_col, 'value']
+        elif chart_type_normalized == "line":
+            x_col = chart_options.get('x', 'year')
+            y_col = chart_options.get('y', 'value')
+            required_chart_cols = [x_col, y_col]
+            if color_col:
+                required_chart_cols.append(color_col)
+        else:  # bar or default
+            x_col = chart_options.get('x', 'country_or_area')
+            y_col = chart_options.get('y', 'value')
+            required_chart_cols = [x_col, y_col]
+            if color_col:
+                required_chart_cols.append(color_col)
+        
         # Ensure required columns exist for the chosen chart type
-        required_chart_cols = [x_col, y_col]
-        if color_col:
-            required_chart_cols.append(color_col)
         if not all(col in data_to_plot.columns for col in required_chart_cols):
             st.error(f"Missing columns required for '{chart_type}' chart ({required_chart_cols}). Available: {list(data_to_plot.columns)}")
             return
@@ -1041,7 +1276,7 @@ def render_indicator_section(
         # Dynamically choose the plotting function based on chart_type
         plot_df = data_to_plot # Default to using the fully filtered data
 
-        if chart_type == "line":
+        if chart_type_normalized == "line":
             fig = create_line_chart(
                 plot_df, # Use plot_df
                 x_column=x_col,
@@ -1050,7 +1285,7 @@ def render_indicator_section(
                 title="", # Title is handled by st.subheader
                 **chart_options.get('kwargs', {}) # Pass extra kwargs
             )
-        elif chart_type == "bar":
+        elif chart_type_normalized == "bar":
              # For bar charts, only show latest year if x is country AND color is NOT specified
             if x_col == 'country_or_area' and 'year' in data_to_plot.columns and color_col is None:
                  try:
@@ -1066,6 +1301,22 @@ def render_indicator_section(
                 y_column=y_col,
                 color_column=color_col, # Pass color_col for potential stacking
                 title="",
+                **chart_options.get('kwargs', {})
+            )
+        elif chart_type_normalized == "heatmap":
+            # For heatmap, x should be year, y should be country
+            # Get reference_data from chart_options if provided
+            ref_data = chart_options.get('reference_data', None)
+            intermediate_region_filter = chart_options.get('intermediate_region_filter', None)
+            
+            fig = create_pefa_heatmap(
+                plot_df,
+                x_column=x_col,
+                y_column=y_col,
+                value_column='value',
+                title="",
+                reference_data=ref_data,
+                intermediate_region_filter=intermediate_region_filter,
                 **chart_options.get('kwargs', {})
             )
         else:
