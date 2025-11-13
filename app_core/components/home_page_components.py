@@ -39,8 +39,8 @@ def render_introduction_section():
 
       <h3 class="intro-subheading">Turning Logic into Measurement</h3>
       <p class="intro-paragraph">
-        The Nexus Policy App links OSAA's <a href="/logical_framework" class="text-link">Logical Framework</a>—which articulates the causal logic behind
-        Africa's development pathways—with its <a href="/measurement_framework" class="text-link">Measurement Framework</a>, which translates those logics into
+        The Nexus Policy App links OSAA's <a href="https://www.canva.com/design/DAGhoThzr2I/Jek89TYAmsZUiTX5f9lLEQ/edit" target="_blank" class="text-link">Logical Framework</a>—which articulates the causal logic behind
+        Africa's development pathways—with its <a href="https://www.canva.com/design/DAGhoThzr2I/Jek89TYAmsZUiTX5f9lLEQ/edit" target="_blank" class="text-link">Measurement Framework</a>, which translates those logics into
         actionable indicators and data analytics. Together, they help identify <em>policy entry points, drivers,
         and game changers</em> that enable systemic transformation.
       </p>
