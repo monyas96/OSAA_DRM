@@ -2995,15 +2995,54 @@ elif st.session_state.current_view == 2:
     with st.expander("Show technical details", expanded=False):
         st.markdown("#### 1. Same Data Source")
         st.markdown("Both views query: `df_main + ref_data`")
+        
+        # Load data for display
         if DATA_AVAILABLE:
             try:
                 view2_ref_data = uv.load_country_reference_data()
                 view2_df_main = uv.load_main_data()
-                st.markdown(f"{len(view2_df_main):,} rows | {view2_df_main['indicator_label'].nunique():,} indicators | {view2_df_main['country_or_area'].nunique():,} countries" if not view2_df_main.empty else "616,409 rows | 457 indicators | 239 countries")
+                row_count = len(view2_df_main)
+                indicator_count = view2_df_main['indicator_label'].nunique() if not view2_df_main.empty else 457
+                country_count = view2_df_main['country_or_area'].nunique() if not view2_df_main.empty else 239
+                st.markdown(f"**{row_count:,} rows** | **{indicator_count:,} indicators** | **{country_count:,} countries**")
             except:
-                st.markdown("616,409 rows | 457 indicators | 239 countries")
+                st.markdown("**616,409 rows** | **457 indicators** | **239 countries**")
+                view2_ref_data = None
+                view2_df_main = None
         else:
-            st.markdown("616,409 rows | 457 indicators | 239 countries")
+            st.markdown("**616,409 rows** | **457 indicators** | **239 countries**")
+            view2_ref_data = None
+            view2_df_main = None
+        
+        # Display data tables
+        st.markdown("")
+        col_table1, col_table2 = st.columns(2, gap="large")
+        
+        with col_table1:
+            st.markdown("**df_main** (Main Dataset)")
+            if view2_df_main is not None and not view2_df_main.empty:
+                # Show sample of df_main
+                with st.expander("View sample data (first 5 rows)", expanded=False):
+                    # Select key columns for display
+                    display_cols = ['country_or_area', 'indicator_label', 'year', 'value']
+                    available_cols = [col for col in display_cols if col in view2_df_main.columns]
+                    if available_cols:
+                        st.dataframe(view2_df_main[available_cols].head(5), use_container_width=True, hide_index=True)
+                    else:
+                        st.dataframe(view2_df_main.head(5), use_container_width=True, hide_index=True)
+                st.caption(f"Total: {len(view2_df_main):,} rows")
+            else:
+                st.info("Data not available in this session")
+        
+        with col_table2:
+            st.markdown("**ref_data** (Country Reference)")
+            if view2_ref_data is not None and not view2_ref_data.empty:
+                # Show sample of ref_data
+                with st.expander("View sample data (first 5 rows)", expanded=False):
+                    st.dataframe(view2_ref_data.head(5), use_container_width=True, hide_index=True)
+                st.caption(f"Total: {len(view2_ref_data):,} countries")
+            else:
+                st.info("Data not available in this session")
         
         st.markdown("")
         st.markdown("#### 2. Same Calculation Functions")
