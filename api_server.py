@@ -517,6 +517,9 @@ def list_years():
 if __name__ == "__main__":
     import uvicorn
     
+    # Get port from environment variable (for Railway, Render, etc.) or default to 8000
+    port = int(os.getenv("PORT", 8000))
+    
     print("=" * 60)
     print("Starting DRM Dashboard API server...")
     print("=" * 60)
@@ -543,11 +546,11 @@ if __name__ == "__main__":
     print("\n" + "=" * 60)
     print("API Server Starting...")
     print("=" * 60)
-    print("📍 API URL: http://localhost:8000")
-    print("📚 API Docs: http://localhost:8000/docs")
-    print("🏥 Health Check: http://localhost:8000/api/health")
+    print(f"📍 API URL: http://0.0.0.0:{port}")
+    print(f"📚 API Docs: http://0.0.0.0:{port}/docs")
+    print(f"🏥 Health Check: http://0.0.0.0:{port}/api/health")
     print("=" * 60)
     print("\nServer is running. Press Ctrl+C to stop.\n")
     
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=port)
 
