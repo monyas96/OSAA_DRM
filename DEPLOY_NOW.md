@@ -23,8 +23,7 @@ I've prepared everything. Just follow these steps:
 ### ✅ When done, copy your URL:
 It will look like: `https://osaa-drm-xxxxx.streamlit.app`
 
-**📝 Write it down here:** _________________________________
-
+**📝 Write it down here:** https://osaadrm.streamlit.app/ 
 ---
 
 ## ⚡ STEP 2: Deploy API to Railway (5 minutes)
