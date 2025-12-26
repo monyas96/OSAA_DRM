@@ -1,172 +1,148 @@
+# OSAA DRM Dashboard
 
-# 🌍 Nexus Dashboard
+A comprehensive dashboard for analyzing Domestic Resource Mobilization (DRM) in Africa, featuring interactive policy briefs, exploratory data views, and explanatory narratives.
 
-![OSAA Logo](logos/OSAA%20identifier%20color.png)
-
-**A data-driven tool for development nexus thinking, highlighting the interplay between peace, sustainable financing, and strong institutions.**
-
----
-
-## 🚀 Overview
-
-The Nexus Dashboard delivers interactive visualizations and analytics that connect policy and real-world impact. This tool focuses on the crucial linkage between domestic resource mobilization, sustainable financing, and institutional development across four pillars:
-
-- 🕊️ **Pillar 1**: Durable Peace Requires Sustainable Development  
-- 💰 **Pillar 2**: Sustainable Development Requires Sustainable Financing  
-- 🌐 **Pillar 3**: Sustainable Financing Requires Control Over Economic and Financial Flows  
-- 🏛️ **Pillar 4**: Control Over Economic and Financial Flows Requires Strong Institutions  
-
-🔎 *The dashboard currently showcases Pillar 2 with a deep dive into* **Theme 4: Domestic Resource Mobilization (DRM) Systems.**
-
----
-
-## ✨ Features
-
-- **Interactive Data Exploration**: Filter and explore economic and financial indicators by country and region  
-- **Visual Analytics**: Intuitive charts and maps for comparative analysis  
-- **Structured Framework**: Organized by pillars, themes, and topics for intuitive navigation  
-- **Country Profiles**: Detailed country-specific indicator data  
-- **Embedded Mind Map**: Interactive visualization of the Nexus framework  
-
----
-
-## 📋 Content Structure
-
-The dashboard organizes content hierarchically:
-
-- **Pillars** → High-level conceptual frameworks  
-- **Themes** → Major focus areas within pillars  
-- **Topics** → Specific subjects within each theme  
-- **Indicators** → Measurable metrics for assessment  
-
-### 🎯 Focus Area: Theme 4 – DRM Institutions and Systems
-
-This version focuses on four critical DRM topics:
-
-#### 📊 Topic 4.1: Public Expenditures
-- Public Expenditure Efficiency  
-- Expenditure Quality
-
-#### 🧾 Topic 4.2: Budget and Tax Revenues
-- Tax Revenue Collection  
-- Tax Administration Efficiency
-
-#### 📈 Topic 4.3: Capital Markets
-- Market Capitalization  
-- Financial Intermediation  
-- Institutional Investors
-
-#### 🚫 Topic 4.4: Illicit Financial Flows
-- Magnitude of Illicit Financial Flows  
-- Types of IFFs  
-- Detection and Enforcement
-
----
-
-## 🔗 Data Pipeline
-
-The dashboard uses pre-processed data stored in `data/nexus.parquet`, which is generated from the [`nexus-pipeline`](https://github.com/UN-OSAA/nexus-pipeline) repository. This pipeline integrates data from sources such as:
-
-- World Bank PEFA Assessments  
-- IMF ISORA Database  
-- Global Financial Integrity (GFI)  
-- UNODC Crime Data  
-- World Justice Project
-
----
-
-## 🔧 Installation & Setup
+## 🚀 Quick Start
 
 ### Prerequisites
-- Python 3.8 or higher  
-- Git
+- Node.js 18+ and npm
+- Python 3.12+
+- pip
 
-### Quick Start
+### Installation
 
-```bash
-# Clone the repository
-git clone https://github.com/monyas96/nexus_streamlit_dashboard.git
-cd nexus_streamlit_dashboard
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/monyas96/OSAA_DRM.git
+   cd OSAA_DRM
+   ```
 
-# Create and activate virtual environment
-python -m venv .venv
-source .venv/bin/activate   # On Windows: .venv\Scripts\activate
+2. **Install Python dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-# Install dependencies
-pip install -r requirements.txt
+3. **Install React dependencies**:
+   ```bash
+   cd osaa-drm-app
+   npm install
+   ```
 
-# Run the application
-streamlit run app.py
-🐳 Using Docker
-bash
-Copy
-Edit
-# Build the Docker image
-docker build -t nexus-dashboard .
+### Running Locally
 
-# Run the container
-docker run -p 8501:8501 nexus-dashboard
-🧱 Development with VS Code Dev Containers
-This repo supports VS Code Dev Containers.
+1. **Start the FastAPI server** (Terminal 1):
+   ```bash
+   python api_server.py
+   ```
+   Server runs on `http://localhost:8000`
 
-Install the "Remote - Containers" extension
+2. **Start the Streamlit app** (Terminal 2):
+   ```bash
+   streamlit run app_streamlit.py
+   ```
+   App runs on `http://localhost:8501`
 
-Open this repo in VS Code
+3. **Start the React frontend** (Terminal 3):
+   ```bash
+   cd osaa-drm-app
+   npm run dev
+   ```
+   App runs on `http://localhost:3000` or `http://localhost:5173`
 
-Click “Reopen in Container” when prompted
+## 📁 Project Structure
 
-📂 Project Structure
-bash
-Copy
-Edit
-nexus_streamlit_dashboard/
-├── app.py                     # Main app entry point
-├── requirements.txt           # Dependencies
-├── style_osaa.css             # Styling (branding)
-├── utils.py                   # Reusable utilities
-├── postprocessed.py           # Plotting utilities
-├── data/
-│   └── nexus.parquet          # Cleaned indicator dataset
-├── logos/
-│   └── OSAA identifier color.png
-├── pages/
-│   ├── 0_home.py              # Home
-│   ├── 1_pillar_2.py          # Pillar 2 landing
-│   ├── 2_theme_4.py           # Theme 4 overview
-│   ├── 3_topic_4_1.py         # Public Expenditures
-│   ├── 4_topic_4_2.py         # Budget & Tax Revenues
-│   ├── 5_topic_4_3.py         # Capital Markets
-│   ├── 6_topic_4_4.py         # Illicit Financial Flows
-│   └── 99_indicator_explorer.py  # Exploratory Data Analysis tool
-└── .devcontainer/             # Dev container config
-🧑‍💻 Development
-Adding New Pages
-Create a .py file in pages/
+```
+OSAA_DRM/
+├── osaa-drm-app/          # React frontend
+│   ├── src/
+│   │   ├── pages/         # Main pages (Landing, Exploratory, Explanatory)
+│   │   ├── components/    # Reusable components
+│   │   └── services/      # API services
+│   └── package.json
+├── pages/                  # Streamlit pages
+│   ├── 2_theme_4.py       # Theme 4 overview
+│   ├── 3_topic_4_1.py     # Topic 4.1: Public Expenditures
+│   ├── 4_topic_4_2.py     # Topic 4.2: Budget and Tax Revenues
+│   ├── 5_topic_4_3.py     # Topic 4.3: Capital Markets
+│   ├── 6_topic_4_4.py     # Topic 4.4: Illicit Flows
+│   └── 7_data_availability.py
+├── app_streamlit.py       # Main Streamlit app
+├── api_server.py          # FastAPI backend
+├── data/                   # Data files (parquet, CSV)
+└── requirements.txt       # Python dependencies
+```
 
-Add your st.set_page_config and st.title()
+## 🌐 Deployment
 
-Use layout, filters, and visuals consistent with other topic files
+### Option 1: Vercel (React Frontend) + Streamlit Cloud + Railway (API)
 
-Update app.py to add your page to the navigation
+**React Frontend (Vercel)**:
+1. Install Vercel CLI: `npm i -g vercel`
+2. Deploy: `cd osaa-drm-app && vercel`
+3. Set environment variables:
+   - `VITE_API_URL`: Your FastAPI URL
+   - `VITE_STREAMLIT_URL`: Your Streamlit URL
 
-Styling Guidelines
-The dashboard uses a consistent visual style via style_osaa.css:
+**Streamlit Backend**:
+1. Push code to GitHub
+2. Go to [share.streamlit.io](https://share.streamlit.io)
+3. Connect repository and deploy `app_streamlit.py`
 
-Primary Color: #072D92 (Dark Blue)
+**FastAPI Server (Railway)**:
+1. Install Railway CLI: `npm i -g @railway/cli`
+2. Deploy: `railway up`
+3. Get URL and update React app's `VITE_API_URL`
 
-Accent Color: #F58220 (Orange)
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed instructions.
 
-Background: #FDF4EC (Light Orange)
+## 📊 Features
 
-Highlight: #EC2E07 (Red)
+- **Policy Briefs**: Interactive policy briefs for topics 4.1-4.4
+- **Exploratory View**: Interactive data exploration with filters and visualizations
+- **Explanatory View**: Narrative-driven policy briefs with embedded graphs
+- **Data API**: FastAPI backend for serving data to React frontend
+- **Responsive Design**: Mobile-friendly interface
 
-Contributing
-Contributions are welcome! Feel free to open issues or submit pull requests with improvements.
+## 🛠️ Technology Stack
 
-📄 License
-MIT © Moneera Yassien
-UN Office of the Special Adviser on Africa
+- **Frontend**: React 18, Vite, Tailwind CSS, Recharts
+- **Backend**: Python, Streamlit, FastAPI
+- **Data**: Pandas, Parquet files
+- **Deployment**: Vercel, Streamlit Cloud, Railway/Render
 
-📬 Contact
-For questions or contributions, feel free to reach out via GitHub 
+## 📝 Environment Variables
 
+### React App
+- `VITE_API_URL`: FastAPI server URL (default: `http://localhost:8000`)
+- `VITE_STREAMLIT_URL`: Streamlit app URL (default: `http://localhost:8501`)
+
+### FastAPI Server
+- `ALLOWED_ORIGINS`: Comma-separated list of allowed CORS origins
+
+## 📚 Documentation
+
+- [DEPLOYMENT.md](./DEPLOYMENT.md) - Detailed deployment guide
+- [osaa-drm-app/README_DEPLOYMENT.md](./osaa-drm-app/README_DEPLOYMENT.md) - Quick deployment guide
+- [QUICK_START.md](./QUICK_START.md) - Quick start guide
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Submit a pull request
+
+## 📄 License
+
+This project is part of the OSAA (Office of the Special Adviser on Africa) initiative.
+
+## 🔗 Links
+
+- Repository: https://github.com/monyas96/OSAA_DRM
+- API Documentation: `http://localhost:8000/docs` (when running locally)
+
+## ⚠️ Important Notes
+
+- Large data files (`main_data.json`, parquet files) are not included in the repository
+- Data files should be generated or downloaded separately
+- Ensure all environment variables are set correctly for production deployment
