@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Streamlit Pages Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-link { display: block; margin: 10px 0; padding: 10px; background: #f0f0f0; text-decoration: none; color: #333; border-radius: 4px; }
+        .test-link:hover { background: #e0e0e0; }
+    </style>
+</head>
+<body>
+    <h1>Streamlit Pages Direct Access Test</h1>
+    <p>Click these links to test if Streamlit pages are accessible directly:</p>
+    
+    <a href="http://localhost:8501/3_topic_4_1" target="_blank" class="test-link">
+        Test: Topic 4.1 (3_topic_4_1)
+    </a>
+    
+    <a href="http://localhost:8501/4_topic_4_2" target="_blank" class="test-link">
+        Test: Topic 4.2 (4_topic_4_2)
+    </a>
+    
+    <a href="http://localhost:8501/5_topic_4_3" target="_blank" class="test-link">
+        Test: Topic 4.3 (5_topic_4_3)
+    </a>
+    
+    <a href="http://localhost:8501/6_topic_4_4" target="_blank" class="test-link">
+        Test: Topic 4.4 (6_topic_4_4)
+    </a>
+    
+    <a href="http://localhost:8501/2_theme_4" target="_blank" class="test-link">
+        Test: Theme 4 (2_theme_4)
+    </a>
+    
+    <hr>
+    <p><strong>Instructions:</strong></p>
+    <ol>
+        <li>Make sure Streamlit is running: <code>streamlit run app_streamlit.py</code></li>
+        <li>Click each link above</li>
+        <li>If any link shows "Page not found", that page isn't being recognized by Streamlit</li>
+        <li>If all links work, the React routing should work too</li>
+    </ol>
+</body>
+</html>
+

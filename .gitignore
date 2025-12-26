@@ -40,3 +40,16 @@ Thumbs.db
 *.tmp
 *.temp
 
+# Large data files (should be generated/downloaded separately)
+osaa-drm-app/public/data/main_data.json
+*.parquet
+*.dylib
+*.so
+nexusapp/
+.venv/
+venv/
+
+# Large binary files
+**/libarrow*
+**/pyarrow/lib*
+

@@ -3,6 +3,7 @@ Design 4: The Hero Story
 Full-screen hero sections with background images and narrative flow.
 """
 import streamlit as st
+import streamlit.components.v1 as components
 import sys
 from pathlib import Path
 
@@ -49,7 +50,8 @@ st.markdown("""
 st.markdown("""
 <style>
     .hero-section {
-        min-height: 100vh;
+        position: relative;
+        
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -166,12 +168,45 @@ st.markdown("""
         font-size: 1.1rem;
         margin-bottom: 2rem;
     }
+    
+    .hero-logo {
+        position: absolute;
+        top: 2rem;
+        left: 2rem;
+        z-index: 1000;
+        max-width: 200px;
+        max-height: 80px;
+    }
+    .hero-logo img {
+        max-width: 200px;
+        max-height: 80px;
+        width: auto;
+        height: auto;
+        display: block;
+    }
+    @media (max-width: 768px) {
+        .hero-logo {
+            max-width: 150px;
+            max-height: 60px;
+            top: 1rem;
+            left: 1rem;
+        }
+        .hero-logo img {
+            max-width: 150px;
+            max-height: 60px;
+        }
+    }
 </style>
 """, unsafe_allow_html=True)
 
+
 # === Hero 1: Title ===
+# Hero section with logo and title
 st.markdown("""
 <div class="hero-section">
+    <div class="hero-logo">
+        <img src="logos/OSAA identifier color.png" alt="OSAA Logo" style="max-width: 200px; max-height: 80px;">
+    </div>
     <h1 class="hero-title">Evidence Policy Making in Practice</h1>
     <h2 class="hero-subtitle">The Case of DRM</h2>
     <div class="scroll-indicator">Scroll to explore ↓</div>
@@ -181,15 +216,24 @@ st.markdown("""
 st.markdown("---")
 
 # === Hero 2: Context ===
-PARAGRAPH_1 = """
-Lasting peace is unattainable without addressing the structural drivers of instability—economic vulnerability, social exclusion, and weak governance. This is why Africa's development rests on four interdependent pillars: durable peace requires sustainable development; sustainable development requires sustainable financing; sustainable financing requires control over economic flows; and that control requires strong institutions. These pillars form a virtuous cycle of transformation—not sequential steps, but a dynamic system where each reinforces the others. Any strategy that treats them separately will fail.
-"""
+PARAGRAPH_1A = """The era in which development could be financed primarily through external assistance is over. Africa’s long-term transformation can no longer be anchored in ODA expectations; it must rest on the continent’s own capacity to mobilize, manage, and govern domestic resources. Yet today, weak tax systems, inefficient public spending, illicit financial flows, and under-governed natural and financial assets drain an estimated USD 500–600 billion a year from African economies. The real fiscal crisis is not a lack of wealth, but the loss and misallocation of Africa’s own resources.
+
+In a context of tighter global resources and rising social pressures, Domestic Resource Mobilization (DRM) is no longer a narrow technical reform. It is a central macroeconomic strategy for stability, sovereignty, and development impact—about regaining control over economic and financial flows, restoring the social contract, and financing national priorities at scale, from infrastructure and energy to education and social protection.
+
+This is why Africa’s development rests on four interdependent pillars: durable peace, sustainable development, sustainable financing, and strong institutions. Each depends on the others. These pillars form a virtuous, dynamic system of transformation—not sequential steps, but mutually reinforcing conditions."""
+
+PARAGRAPH_1B = """OSAA describes this tension as the Finance Paradox: Africa urgently needs resources to drive growth and meet social goals, yet its fiscal space is continually eroded by leakages and volatile, externally driven flows. When budgets depend on aid, debt, or commodity cycles, governments struggle to plan, protect social spending, or align financing with nationally defined priorities. For a fuller discussion of this paradox, see OSAA’s analysis <a href="https://www.un.org/osaa/content/solving-paradoxes-development-africa-financing-energy-and-food-systems" target="_blank">here</a>."""
+
+PARAGRAPH_1C = """Domestic Resource Mobilization is how countries turn this paradox around. By strengthening tax systems, improving the efficiency and transparency of public spending, deepening domestic capital markets, and curbing illicit financial flows, African states can create predictable fiscal space and reclaim ownership of their policy choices. These are not technocratic tweaks; they are core instruments of state capacity and economic sovereignty.
+
+This platform translates the DRM framework into measurable indicators and actionable evidence, so policy makers can identify leverage points, track performance across the four pillars, and ground decisions in Africa’s own financing reality."""
 
 st.markdown(f"""
 <div class="story-section">
-    <h2 class="story-title">Part of a Larger System</h2>
+    <h2 class="story-title">Africa and African Partners Must Internalize a Fundamental Shift…</h2>
     <div class="story-content">
-        <p>{PARAGRAPH_1.strip()}</p>
+        <p>{PARAGRAPH_1A.strip()}</p>
+        <p style="color: #E87722; font-weight: 600; margin-top: 1rem;">Any strategy that treats them separately will fail.</p>
     </div>
 </div>
 """, unsafe_allow_html=True)
@@ -212,13 +256,11 @@ st.markdown(pillars_html, unsafe_allow_html=True)
 st.markdown("---")
 
 # === Hero 3: Problem ===
-PARAGRAPH_2 = """
-But sustainable development requires sustainable financing. Countries cannot invest in infrastructure, education, or institutions without funding that is not only substantial but also enduring and resilient. Dependence on volatile external flows—aid, debt, commodity exports—leaves nations unable to align resources with local priorities or plan for long-term growth. Without nationally owned financing, transformation remains theoretical.
-"""
+PARAGRAPH_2 = """As Africa pursues economic transformation, it confronts a profound financing paradox: the urgent need for resources to drive growth collides with massive financial leakages enabled by weakly governed fiscal and financial systems. Each year, Africa loses an estimated USD 500–600 billion through illicit financial flows, inefficient tax systems, poorly negotiated contracts, and misaligned incentives—resources that should be financing development from within. Sustainable development, however, can only be built on sustainable financing. No country can invest consistently in infrastructure, human capital, or institutions using funding that is volatile, externally driven, or short-term. Heavy reliance on aid, debt, and commodity cycles constrains policy space, weakens planning, and disconnects financing from national priorities. (See OSAA's analysis <a href="https://www.un.org/osaa/content/solving-paradoxes-development-africa-financing-energy-and-food-systems" target="_blank">here</a>.)"""
 
 st.markdown(f"""
 <div class="story-section alt">
-    <h2 class="story-title">The Financing Constraint</h2>
+    <h2 class="story-title">The Financing Paradox</h2>
     <div class="story-content">
         <p>{PARAGRAPH_2.strip()}</p>
     </div>
@@ -228,13 +270,13 @@ st.markdown(f"""
 st.markdown("---")
 
 # === Hero 4: Solution + CTA ===
-PARAGRAPH_3 = """
-Domestic Resource Mobilization (DRM) is how countries create the fiscal space to guide their own policy processes. Strengthening tax systems, improving public expenditure efficiency, developing capital markets, and curbing illicit flows—these are not technical exercises. They are the mechanisms that allow African states to mobilize and manage domestic resources sustainably. This tool translates the DRM framework into measurable indicators and actionable evidence, so you can identify leverage points, track performance, and inform policy decisions.
-"""
+PARAGRAPH_3 = """Domestic Resource Mobilization is how countries turn this paradox around. By strengthening tax systems, improving the efficiency and transparency of public spending, deepening domestic capital markets, and curbing illicit financial flows, African states can create predictable fiscal space and reclaim ownership of their policy choices. These are not technocratic tweaks; they are core instruments of state capacity and economic sovereignty.
+
+This platform translates the DRM framework into measurable indicators and actionable evidence, so policy makers can identify leverage points, track performance across the four pillars, and ground decisions in Africa’s own financing reality."""
 
 st.markdown(f"""
 <div class="story-section">
-    <h2 class="story-title">The DRM Solution</h2>
+    <h2 class="story-title">The DRM as the Game Changer...</h2>
     <div class="story-content">
         <p>{PARAGRAPH_3.strip()}</p>
     </div>

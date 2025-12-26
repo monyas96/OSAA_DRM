@@ -9,6 +9,26 @@ import pandas as pd
 import composite_indicator_methods as cim
 import universal_viz as uv
 
+# Set topic in URL parameters (for React navigation support)
+# This allows the React app to track which topic is currently displayed
+try:
+    st.query_params["topic"] = "4.3"
+except Exception:
+    pass  # If query_params not available, continue without it
+
+# Notify React parent of current page (for navigation sync)
+st.markdown("""
+<script>
+    // Notify parent window of current page on load
+    if (window.parent !== window) {
+        window.parent.postMessage({
+            type: 'STREAMLIT_NAVIGATION',
+            pagePath: '5_topic_4_3'
+        }, '*');
+    }
+</script>
+""", unsafe_allow_html=True)
+
 # Navigation - Home button and logo
 try:
     from app_core.components.navigation import render_page_logo
@@ -72,19 +92,58 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-home_col, title_col = st.columns([0.15, 3.85])
+# Back to Theme 4 button - placed above the topic card
+st.markdown("""
+<style>
+    button[key="back_to_theme_4_3"] {
+        background: linear-gradient(135deg, #F26C2B 0%, #E85A1F 100%) !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 8px !important;
+        padding: 0.6rem 1.5rem !important;
+        font-weight: 600 !important;
+        font-size: 0.9rem !important;
+        cursor: pointer !important;
+        transition: all 0.3s ease !important;
+        box-shadow: 0 2px 4px rgba(242, 108, 43, 0.2) !important;
+        white-space: nowrap !important;
+        line-height: 1.2 !important;
+        min-height: 40px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    button[key="back_to_theme_4_3"]:hover {
+        background: linear-gradient(135deg, #E85A1F 0%, #D1490F 100%) !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 4px 8px rgba(242, 108, 43, 0.3) !important;
+    }
+</style>
+""", unsafe_allow_html=True)
 
-with home_col:
-    if st.button("Home", key="nav_home_topic_4_3", use_container_width=True):
-        st.switch_page("pages/00_prototype_switcher.py")
-
-with title_col:
+if st.button("← Back to Theme 4", key="back_to_theme_4_3", use_container_width=False):
+    # Notify React parent before switching
     st.markdown("""
-    <div class="section-header">
-        <h1>Topic 4.3: Capital Markets</h1>
-        <p>Capital markets are essential for mobilizing domestic financial resources and channeling savings into productive investments. A well-developed capital market reduces reliance on foreign financing, supports sustainable economic growth, and strengthens financial stability. Effective management of capital markets ensures that resources are directed toward areas that maximize national development.</p>
-    </div>
+    <script>
+        if (window.parent !== window) {
+            window.parent.postMessage({
+                type: 'STREAMLIT_NAVIGATION',
+                pagePath: '2_theme_4'
+            }, '*');
+        }
+    </script>
     """, unsafe_allow_html=True)
+    st.switch_page("app_streamlit.py")
+
+st.markdown("<br>", unsafe_allow_html=True)
+
+# Topic header (full width)
+st.markdown("""
+<div class="section-header">
+    <h1>Topic 4.3: Capital Markets</h1>
+    <p>Capital markets are essential for mobilizing domestic financial resources and channeling savings into productive investments. A well-developed capital market reduces reliance on foreign financing, supports sustainable economic growth, and strengthens financial stability. Effective management of capital markets ensures that resources are directed toward areas that maximize national development.</p>
+</div>
+""", unsafe_allow_html=True)
 
 # Use filtered data directly (no global filters)
 df_display = df_filtered.copy()
@@ -802,28 +861,17 @@ with tab_subtopic_1:
         
         # D. Supporting Information Layers
         with st.expander("Learn more about this indicator", expanded=False):
-            tab_def, tab_rel, tab_proxy, tab_pillar = st.tabs(["Definition", "Relevance", "Proxy Justification", "Pillar Connection"])
+            tab_def, tab_proxy = st.tabs(["Definition", "Proxy Justification"])
             with tab_def:
                 st.markdown("""
                 Measures total value of listed companies as a percentage of GDP. This indicator shows capital mobilization capacity and links to sectoral investment.
                 
                 **Source:** World Bank - Calculated from Market Capitalization and GDP data
                 """)
-            with tab_rel:
-                st.markdown("""
-                - **Efficiency**: Capital mobilization — how effectively savings are channeled into productive investments.
-                - **Effectiveness**: Links to sectoral investment — deeper markets support broader economic development.
-                """)
             with tab_proxy:
                 st.markdown("""
                 No proxy needed. This is a calculated indicator derived from World Bank data on market capitalization and GDP.
                 """)
-            with tab_pillar:
-                st.markdown("""
-                Under Theme 4: Ownership and Financial Sovereignty, this indicator reveals how domestic capital markets contribute to national financing capacity. Deep, well-capitalized markets empower governments and firms to fund growth from within rather than rely on external debt.
-                """)
-        
-        with st.expander("Analytical Lens (Efficiency and Effectiveness)", expanded=False):
             st.markdown("""
             **Efficiency:** A growing market cap/GDP ratio suggests that savings are being mobilized and allocated effectively through capital markets. Countries with efficient capital markets can channel domestic savings into productive investments without excessive intermediation costs.
             
@@ -840,51 +888,6 @@ with tab_subtopic_1:
         africa_countries = ref_data[ref_data['Region Name'] == 'Africa']['Country or Area'].unique()
         df_africa = df_main[df_main['country_or_area'].isin(africa_countries)]
         
-        # Calculate coverage summary
-        countries_with_data = df_africa[df_africa['indicator_label'].isin(subtab_indicators_431_1.values())]['country_or_area'].nunique()
-        total_africa_countries = len(africa_countries)
-        coverage = round((countries_with_data / total_africa_countries * 100)) if total_africa_countries > 0 else 0
-        
-        st.markdown(f"""
-        <div class="data-availability-box">
-          <div class="left">
-            <h4>Data Availability in Africa</h4>
-            <p>
-              Data availability determines how confidently we can interpret market capitalization trends across Africa. 
-              This view highlights which countries report recent data and where gaps persist — often due to differences in statistical capacity, reporting cycles, or institutional coverage.
-            </p>
-            <p><strong>Use the heatmap below to explore:</strong></p>
-            <ul>
-              <li><strong>Countries with up-to-date reporting</strong> (strong coverage)</li>
-              <li><strong>Countries with partial or outdated data</strong></li>
-              <li><strong>Indicators missing post-2021 updates</strong></li>
-            </ul>
-            <p style="margin-top: 1rem;"><em>Current data coverage: {coverage}% of African countries</em></p>
-          </div>
-          <div class="right">
-            <p><strong>Legend:</strong></p>
-            <ul style="text-align: left;">
-              <li><strong>Dark cells:</strong> Recent, consistent reporting (post-2020)</li>
-              <li><strong>Light cells:</strong> Partial or outdated reporting</li>
-              <li><strong>Empty cells:</strong> Missing or unreported values</li>
-            </ul>
-            <p><em>Hover over a cell in the heatmap below to view country-year coverage.</em></p>
-          </div>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        with st.expander("View data availability heatmap", expanded=False):
-            selected_gap_indicator = st.selectbox(
-                "Select indicator to view data availability:",
-                options=list(subtab_indicators_431_1.keys()),
-                key="ind_4_3_1_1_gap_indicator_select"
-            )
-            uv.render_data_availability_heatmap(
-                df=df_africa,
-                indicator_label=subtab_indicators_431_1[selected_gap_indicator],
-                title=f"Data Availability for {selected_gap_indicator} (Africa)",
-                container_key="ind_4_3_1_1_gap"
-            )
     
     # ========================================
     # SUB-TAB 2: Indicator 4.3.1.2 - Portfolio Investment Bonds
@@ -1512,33 +1515,18 @@ with tab_subtopic_1:
             
             # D. Supporting Information Layers
             with st.expander("Learn more about this indicator", expanded=False):
-                tab_def, tab_rel, tab_proxy, tab_pillar = st.tabs(["Definition", "Relevance", "Proxy Justification", "Pillar Connection"])
+                tab_def, tab_proxy = st.tabs(["Definition", "Proxy Justification"])
                 with tab_def:
                     st.markdown("""
                     Bonds are securities issued with a fixed rate of interest for a period of more than one year. They include net flows through cross-border public and publicly guaranteed and private nonguaranteed bond issues. Data are in current U.S. dollars.
                     
                     **Source:** World Bank - [DT.NFL.BOND.CD](https://data.worldbank.org/indicator/DT.NFL.BOND.CD)
                     """)
-                with tab_rel:
-                    st.markdown("""
-                    - **Efficiency**: Evaluates how well countries attract capital without excessive volatility or cost.
-                    - **Effectiveness**: Assesses whether external bond flows contribute to productive financing (vs short-term vulnerability).
-                    """)
                 with tab_proxy:
                     st.markdown("""
                     Direct indicator from World Bank. No proxy needed.
                     """)
-                with tab_pillar:
-                    st.markdown("""
-                    Under Theme 4: Ownership and Financial Sovereignty, this indicator measures how much African countries rely on external portfolio capital. Stable, moderate flows support development; volatile or excessive inflows can erode fiscal sovereignty and increase vulnerability to global shocks.
-                    """)
             
-            with st.expander("Analytical Lens (Efficiency and Effectiveness)", expanded=False):
-                st.markdown("""
-                **Efficiency:** Sustainable portfolios show stable inflows tied to investment and growth. Countries that attract capital without excessive volatility demonstrate efficient financial market integration.
-                
-                **Effectiveness:** Overreliance or volatility signals vulnerability — external debt servicing risks and limited domestic absorption capacity. Effective bond market development requires balancing access to external financing with maintaining fiscal sovereignty.
-                """)
             
             # Data Availability Section for this indicator
             st.markdown("""
@@ -1549,52 +1537,6 @@ with tab_subtopic_1:
             subtab_indicators_431_2 = {"Portfolio Investment Bonds": "Portfolio investment, bonds (PPG + PNG) (NFL, current US$)"}
             africa_countries = ref_data[ref_data['Region Name'] == 'Africa']['Country or Area'].unique()
             df_africa = df_main[df_main['country_or_area'].isin(africa_countries)]
-            
-            # Calculate coverage summary
-            countries_with_data = df_africa[df_africa['indicator_label'].isin(subtab_indicators_431_2.values())]['country_or_area'].nunique()
-            total_africa_countries = len(africa_countries)
-            coverage = round((countries_with_data / total_africa_countries * 100)) if total_africa_countries > 0 else 0
-            
-            st.markdown(f"""
-            <div class="data-availability-box">
-              <div class="left">
-                <h4>Data Availability in Africa</h4>
-                <p>
-                  Data availability determines how confidently we can interpret portfolio investment bonds trends across Africa. 
-                  This view highlights which countries report recent data and where gaps persist — often due to differences in statistical capacity, reporting cycles, or institutional coverage.
-                </p>
-                <p><strong>Use the heatmap below to explore:</strong></p>
-                <ul>
-                  <li><strong>Countries with up-to-date reporting</strong> (strong coverage)</li>
-                  <li><strong>Countries with partial or outdated data</strong></li>
-                  <li><strong>Indicators missing post-2021 updates</strong></li>
-                </ul>
-                <p style="margin-top: 1rem;"><em>Current data coverage: {coverage}% of African countries</em></p>
-              </div>
-              <div class="right">
-                <p><strong>Legend:</strong></p>
-                <ul style="text-align: left;">
-                  <li><strong>Dark cells:</strong> Recent, consistent reporting (post-2020)</li>
-                  <li><strong>Light cells:</strong> Partial or outdated reporting</li>
-                  <li><strong>Empty cells:</strong> Missing or unreported values</li>
-                </ul>
-                <p><em>Hover over a cell in the heatmap below to view country-year coverage.</em></p>
-              </div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            with st.expander("View data availability heatmap", expanded=False):
-                selected_gap_indicator = st.selectbox(
-                    "Select indicator to view data availability:",
-                    options=list(subtab_indicators_431_2.keys()),
-                    key="ind_4_3_1_2_gap_indicator_select"
-                )
-                uv.render_data_availability_heatmap(
-                    df=df_africa,
-                    indicator_label=subtab_indicators_431_2[selected_gap_indicator],
-                    title=f"Data Availability for {selected_gap_indicator} (Africa)",
-                    container_key="ind_4_3_1_2_gap"
-                )
     
     # ========================================
     # SUB-TAB 3: Indicator 4.3.1.3 - Adequacy of International Reserves
@@ -2319,7 +2261,7 @@ with tab_subtopic_1:
             
             # D. Supporting Information Layers
             with st.expander("Learn more about this indicator", expanded=False):
-                tab_def, tab_rel, tab_proxy, tab_pillar = st.tabs(["Definition", "Relevance", "Proxy Justification", "Pillar Connection"])
+                tab_def, tab_proxy = st.tabs(["Definition", "Proxy Justification"])
                 with tab_def:
                     st.markdown("""
                     Ratio of International Reserves (BoP, current US$) to External Debt Stocks, Short-Term (DOD, Current US$).
@@ -2331,7 +2273,6 @@ with tab_subtopic_1:
                     
                     **Source:** World Bank - Calculated from Reserves and Short-Term Debt data
                     """)
-                with tab_rel:
                     st.markdown("""
                     - **Efficiency**: Evaluates prudent financial management — whether reserves are built sustainably without over-hoarding.
                     - **Effectiveness**: Measures policy capacity to respond to shocks, stabilize exchange rates, and manage liquidity crises.
@@ -2340,17 +2281,9 @@ with tab_subtopic_1:
                     st.markdown("""
                     Calculated indicator. See methodology above.
                     """)
-                with tab_pillar:
                     st.markdown("""
-                    Under Theme 4 this indicator measures a country's ability to protect itself from external volatility. Adequate reserves mean greater control over national financial policy — a foundation for fiscal and monetary independence.
                     """)
             
-            with st.expander("Analytical Lens (Efficiency and Effectiveness)", expanded=False):
-                st.markdown("""
-                **Efficiency:** Stable or rising ratios reflect disciplined reserve accumulation without overburdening fiscal space. Countries that maintain adequate reserves without excessive hoarding demonstrate efficient financial management.
-                
-                **Effectiveness:** Adequate reserves enable governments to absorb external shocks — a sign of resilient and self-reliant financial governance. Effective reserve management supports policy autonomy and reduces vulnerability to global financial volatility.
-                """)
             
             # Data Availability Section for this indicator
             st.markdown("""
@@ -2361,52 +2294,6 @@ with tab_subtopic_1:
             subtab_indicators_431_3 = {"Adequacy of International Reserves": "Adequacy of International Reserves"}
             africa_countries = ref_data[ref_data['Region Name'] == 'Africa']['Country or Area'].unique()
             df_africa = df_main[df_main['country_or_area'].isin(africa_countries)]
-            
-            # Calculate coverage summary
-            countries_with_data = df_africa[df_africa['indicator_label'].isin(subtab_indicators_431_3.values())]['country_or_area'].nunique()
-            total_africa_countries = len(africa_countries)
-            coverage = round((countries_with_data / total_africa_countries * 100)) if total_africa_countries > 0 else 0
-            
-            st.markdown(f"""
-            <div class="data-availability-box">
-              <div class="left">
-                <h4>Data Availability in Africa</h4>
-                <p>
-                  Data availability determines how confidently we can interpret international reserves adequacy trends across Africa. 
-                  This view highlights which countries report recent data and where gaps persist — often due to differences in statistical capacity, reporting cycles, or institutional coverage.
-                </p>
-                <p><strong>Use the heatmap below to explore:</strong></p>
-                <ul>
-                  <li><strong>Countries with up-to-date reporting</strong> (strong coverage)</li>
-                  <li><strong>Countries with partial or outdated data</strong></li>
-                  <li><strong>Indicators missing post-2021 updates</strong></li>
-                </ul>
-                <p style="margin-top: 1rem;"><em>Current data coverage: {coverage}% of African countries</em></p>
-              </div>
-              <div class="right">
-                <p><strong>Legend:</strong></p>
-                <ul style="text-align: left;">
-                  <li><strong>Dark cells:</strong> Recent, consistent reporting (post-2020)</li>
-                  <li><strong>Light cells:</strong> Partial or outdated reporting</li>
-                  <li><strong>Empty cells:</strong> Missing or unreported values</li>
-                </ul>
-                <p><em>Hover over a cell in the heatmap below to view country-year coverage.</em></p>
-              </div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            with st.expander("View data availability heatmap", expanded=False):
-                selected_gap_indicator = st.selectbox(
-                    "Select indicator to view data availability:",
-                    options=list(subtab_indicators_431_3.keys()),
-                    key="ind_4_3_1_3_gap_indicator_select"
-                )
-                uv.render_data_availability_heatmap(
-                    df=df_africa,
-                    indicator_label=subtab_indicators_431_3[selected_gap_indicator],
-                    title=f"Data Availability for {selected_gap_indicator} (Africa)",
-                    container_key="ind_4_3_1_3_gap"
-                )
 
 # ========================================
 # SUB-TOPIC 4.3.2 – Financial Intermediation
@@ -2836,7 +2723,7 @@ with tab_subtopic_2:
             
             # D. Supporting Information Layers
             with st.expander("Learn more about this indicator", expanded=False):
-                tab_def, tab_rel, tab_proxy, tab_pillar = st.tabs(["Definition", "Relevance", "Proxy Justification", "Pillar Connection"])
+                tab_def, tab_proxy = st.tabs(["Definition", "Proxy Justification"])
                 with tab_def:
                     st.markdown("""
                     The Banking Sector Development Index (BSDI) is a composite index combining three key banking indicators:
@@ -2848,7 +2735,6 @@ with tab_subtopic_2:
                     
                     **Source:** World Bank - Calculated from component indicators
                     """)
-                with tab_rel:
                     st.markdown("""
                     - **Efficiency**: Stable or improving BSDI values show well-capitalized banks using assets efficiently.
                     - **Effectiveness**: Growth in BSDI signals banks effectively channel savings into productive lending, supporting inclusive development.
@@ -2857,17 +2743,10 @@ with tab_subtopic_2:
                     st.markdown("""
                     Calculated composite indicator. See methodology above.
                     """)
-                with tab_pillar:
                     st.markdown("""
                     Within Theme 4, this indicator captures how domestic banking systems drive financial resilience. Strong, well-capitalized banks reduce reliance on external finance and improve resource allocation efficiency.
                     """)
             
-            with st.expander("Analytical Lens (Efficiency and Effectiveness)", expanded=False):
-                st.markdown("""
-                **Efficiency:** Stable or improving BSDI values show well-capitalized banks using assets efficiently. Countries with efficient banking systems can mobilize savings and allocate credit effectively without excessive risk.
-                
-                **Effectiveness:** Growth in BSDI signals banks effectively channel savings into productive lending, supporting inclusive development. Effective banking systems support real-sector activity and reduce dependence on external financing.
-                """)
             
             # Data Availability Section for this indicator
             st.markdown("""
@@ -2878,52 +2757,6 @@ with tab_subtopic_2:
             subtab_indicators_432_1 = {"Banking Sector Development Index": "Banking Sector Development Index"}
             africa_countries = ref_data[ref_data['Region Name'] == 'Africa']['Country or Area'].unique()
             df_africa = df_main[df_main['country_or_area'].isin(africa_countries)]
-            
-            # Calculate coverage summary
-            countries_with_data = df_africa[df_africa['indicator_label'].isin(subtab_indicators_432_1.values())]['country_or_area'].nunique()
-            total_africa_countries = len(africa_countries)
-            coverage = round((countries_with_data / total_africa_countries * 100)) if total_africa_countries > 0 else 0
-            
-            st.markdown(f"""
-            <div class="data-availability-box">
-              <div class="left">
-                <h4>Data Availability in Africa</h4>
-                <p>
-                  Data availability determines how confidently we can interpret banking sector development trends across Africa. 
-                  This view highlights which countries report recent data and where gaps persist — often due to differences in statistical capacity, reporting cycles, or institutional coverage.
-                </p>
-                <p><strong>Use the heatmap below to explore:</strong></p>
-                <ul>
-                  <li><strong>Countries with up-to-date reporting</strong> (strong coverage)</li>
-                  <li><strong>Countries with partial or outdated data</strong></li>
-                  <li><strong>Indicators missing post-2021 updates</strong></li>
-                </ul>
-                <p style="margin-top: 1rem;"><em>Current data coverage: {coverage}% of African countries</em></p>
-              </div>
-              <div class="right">
-                <p><strong>Legend:</strong></p>
-                <ul style="text-align: left;">
-                  <li><strong>Dark cells:</strong> Recent, consistent reporting (post-2020)</li>
-                  <li><strong>Light cells:</strong> Partial or outdated reporting</li>
-                  <li><strong>Empty cells:</strong> Missing or unreported values</li>
-                </ul>
-                <p><em>Hover over a cell in the heatmap below to view country-year coverage.</em></p>
-              </div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            with st.expander("View data availability heatmap", expanded=False):
-                selected_gap_indicator = st.selectbox(
-                    "Select indicator to view data availability:",
-                    options=list(subtab_indicators_432_1.keys()),
-                    key="ind_4_3_2_1_gap_indicator_select"
-                )
-                uv.render_data_availability_heatmap(
-                    df=df_africa,
-                    indicator_label=subtab_indicators_432_1[selected_gap_indicator],
-                    title=f"Data Availability for {selected_gap_indicator} (Africa)",
-                    container_key="ind_4_3_2_1_gap"
-                )
     
     # ========================================
     # SUB-TAB 2: Indicator 4.3.2.2 - Private Sector Credit to GDP
@@ -3349,7 +3182,7 @@ with tab_subtopic_2:
             
             # D. Supporting Information Layers
             with st.expander("Learn more about this indicator", expanded=False):
-                tab_def, tab_rel, tab_proxy, tab_pillar = st.tabs(["Definition", "Relevance", "Proxy Justification", "Pillar Connection"])
+                tab_def, tab_proxy = st.tabs(["Definition", "Proxy Justification"])
                 with tab_def:
                     st.markdown("""
                     Domestic credit provided by the financial sector includes all credit to various sectors on a gross basis, with the exception of credit to the central government, which is net. The financial sector includes monetary authorities and deposit money banks, as well as other financial corporations where data are available.
@@ -3358,7 +3191,6 @@ with tab_subtopic_2:
                     
                     **Source:** World Bank - [FS.AST.DOMS.GD.ZS](https://data.worldbank.org/indicator/FS.AST.DOMS.GD.ZS)
                     """)
-                with tab_rel:
                     st.markdown("""
                     - **Efficiency**: Measures how effectively financial systems mobilize and allocate funds to productive sectors.
                     - **Effectiveness**: Reflects how financial intermediation supports overall economic activity and private-sector investment.
@@ -3367,17 +3199,9 @@ with tab_subtopic_2:
                     st.markdown("""
                     Direct indicator from World Bank. No proxy needed.
                     """)
-                with tab_pillar:
                     st.markdown("""
-                    Under Theme 4, this indicator tracks how much of national income is intermediated domestically. It highlights whether growth is financed by internal banking systems or reliant on external capital.
                     """)
             
-            with st.expander("Analytical Lens (Efficiency and Effectiveness)", expanded=False):
-                st.markdown("""
-                **Efficiency:** A growing ratio shows stronger financial intermediation — banks and institutions efficiently converting savings into loans. Countries with efficient financial systems can channel domestic savings into productive investments.
-                
-                **Effectiveness:** Deepening credit-to-GDP indicates broader access to finance and more inclusive economic growth. Effective financial systems support real-sector activity and reduce dependence on external financing.
-                """)
             
             # Data Availability Section for this indicator
             st.markdown("""
@@ -3388,52 +3212,6 @@ with tab_subtopic_2:
             subtab_indicators_432_2 = {"Private Sector Credit to GDP": "Domestic credit provided by financial sector (% of GDP)"}
             africa_countries = ref_data[ref_data['Region Name'] == 'Africa']['Country or Area'].unique()
             df_africa = df_main[df_main['country_or_area'].isin(africa_countries)]
-            
-            # Calculate coverage summary
-            countries_with_data = df_africa[df_africa['indicator_label'].isin(subtab_indicators_432_2.values())]['country_or_area'].nunique()
-            total_africa_countries = len(africa_countries)
-            coverage = round((countries_with_data / total_africa_countries * 100)) if total_africa_countries > 0 else 0
-            
-            st.markdown(f"""
-            <div class="data-availability-box">
-              <div class="left">
-                <h4>Data Availability in Africa</h4>
-                <p>
-                  Data availability determines how confidently we can interpret private sector credit trends across Africa. 
-                  This view highlights which countries report recent data and where gaps persist — often due to differences in statistical capacity, reporting cycles, or institutional coverage.
-                </p>
-                <p><strong>Use the heatmap below to explore:</strong></p>
-                <ul>
-                  <li><strong>Countries with up-to-date reporting</strong> (strong coverage)</li>
-                  <li><strong>Countries with partial or outdated data</strong></li>
-                  <li><strong>Indicators missing post-2021 updates</strong></li>
-                </ul>
-                <p style="margin-top: 1rem;"><em>Current data coverage: {coverage}% of African countries</em></p>
-              </div>
-              <div class="right">
-                <p><strong>Legend:</strong></p>
-                <ul style="text-align: left;">
-                  <li><strong>Dark cells:</strong> Recent, consistent reporting (post-2020)</li>
-                  <li><strong>Light cells:</strong> Partial or outdated reporting</li>
-                  <li><strong>Empty cells:</strong> Missing or unreported values</li>
-                </ul>
-                <p><em>Hover over a cell in the heatmap below to view country-year coverage.</em></p>
-              </div>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            with st.expander("View data availability heatmap", expanded=False):
-                selected_gap_indicator = st.selectbox(
-                    "Select indicator to view data availability:",
-                    options=list(subtab_indicators_432_2.keys()),
-                    key="ind_4_3_2_2_gap_indicator_select"
-                )
-                uv.render_data_availability_heatmap(
-                    df=df_africa,
-                    indicator_label=subtab_indicators_432_2[selected_gap_indicator],
-                    title=f"Data Availability for {selected_gap_indicator} (Africa)",
-                    container_key="ind_4_3_2_2_gap"
-                )
 
 # ========================================
 # SUB-TOPIC 4.3.3 – Investment from Institutional Investors

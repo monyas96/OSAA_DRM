@@ -8,6 +8,26 @@ parent_dir = str(Path(__file__).resolve().parent.parent)
 if parent_dir not in sys.path:
     sys.path.append(parent_dir)
 
+# Set topic in URL parameters (for React navigation support)
+# This allows the React app to track which topic is currently displayed
+try:
+    st.query_params["topic"] = "4.1"
+except Exception:
+    pass  # If query_params not available, continue without it
+
+# Notify React parent of current page (for navigation sync)
+st.markdown("""
+<script>
+    // Notify parent window of current page on load
+    if (window.parent !== window) {
+        window.parent.postMessage({
+            type: 'STREAMLIT_NAVIGATION',
+            pagePath: '3_topic_4_1'
+        }, '*');
+    }
+</script>
+""", unsafe_allow_html=True)
+
 # Import the universal visualization module
 import universal_viz as uv
 
@@ -24,6 +44,7 @@ try:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 except Exception:
         pass
+
 
 # --- Data Loading ---
 @st.cache_data
@@ -82,19 +103,58 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-home_col, title_col = st.columns([0.15, 3.85])
+# Back to Theme 4 button - placed above the topic card
+st.markdown("""
+<style>
+    button[key="back_to_theme_4_1"] {
+        background: linear-gradient(135deg, #F26C2B 0%, #E85A1F 100%) !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 8px !important;
+        padding: 0.6rem 1.5rem !important;
+        font-weight: 600 !important;
+        font-size: 0.9rem !important;
+        cursor: pointer !important;
+        transition: all 0.3s ease !important;
+        box-shadow: 0 2px 4px rgba(242, 108, 43, 0.2) !important;
+        white-space: nowrap !important;
+        line-height: 1.2 !important;
+        min-height: 40px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    button[key="back_to_theme_4_1"]:hover {
+        background: linear-gradient(135deg, #E85A1F 0%, #D1490F 100%) !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 4px 8px rgba(242, 108, 43, 0.3) !important;
+    }
+</style>
+""", unsafe_allow_html=True)
 
-with home_col:
-    if st.button("Home", key="nav_home_topic_4_1", use_container_width=True):
-        st.switch_page("pages/00_prototype_switcher.py")
-
-with title_col:
+if st.button("← Back to Theme 4", key="back_to_theme_4_1", use_container_width=False):
+    # Notify React parent before switching
     st.markdown("""
-    <div class="section-header">
-        <h1>Topic 4.1: Public Expenditures</h1>
-        <p>Public expenditures focus on how governments allocate resources to essential services such as education, health, and infrastructure. Effective public expenditure management ensures that resources are not wasted and are directed toward development priorities.</p>
-    </div>
+    <script>
+        if (window.parent !== window) {
+            window.parent.postMessage({
+                type: 'STREAMLIT_NAVIGATION',
+                pagePath: '2_theme_4'
+            }, '*');
+        }
+    </script>
     """, unsafe_allow_html=True)
+    st.switch_page("app_streamlit.py")
+
+st.markdown("<br>", unsafe_allow_html=True)
+
+# Topic header (full width)
+st.markdown("""
+<div class="section-header">
+    <h1>Topic 4.1: Public Expenditures</h1>
+    <p>Topic 4.1 tracks "expenditure leakages"—where public money is lost after it is collected. Use this view to see (1) whether spending matches the approved budget, and (2) whether spending stays aligned with stated priorities.</p>
+</div>
+""", unsafe_allow_html=True)
 
 # Use filtered data directly (no global filters)
 df_display = df_filtered.copy()
@@ -173,15 +233,14 @@ with tab_subtopic_1:
         st.markdown("""
         <div class='indicator-card'>
             <h4>
-                Indicator 4.1.1.1 – Public Expenditure Efficiency Index
+                Indicator 4.1.1.1 – Budget Execution Credibility (PEFA PI-1)
                 <button type="button" class="info-icon-btn" data-tooltip="Measures how closely actual aggregate expenditures align with the original budget. This is a proxy for Public Expenditure Efficiency Index and indicates budget credibility." style="background: none; border: none; cursor: help; font-size: 0.8em; color: #666; margin-left: 0.5rem; padding: 0;">ℹ️</button>
             </h4>
             <p style="color: #888; font-size: 0.9em; margin-bottom: 0.5rem;">
                 <em>Proxied by: Aggregate Expenditure Outturn</em>
             </p>
             <p style="color: #555; line-height: 1.5; margin-bottom: 0.75rem;">
-                <strong>Analytical Focus Question:</strong> How consistent are governments in executing their approved budgets over time? 
-                Does actual spending align with planned expenditure?
+                <strong>Leakage diagnostic question:</strong> How large are the gaps between approved budgets and actual spending—and are these gaps persistent over time?
             </p>
         </div>
         <style>
@@ -283,7 +342,7 @@ with tab_subtopic_1:
             # Add "How to Read This Graph" hover button
             st.markdown("""
             <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
-                <button type="button" class="how-to-read-btn" data-tooltip="Each cell represents a country's PEFA score for a specific year. Dark blue (A) = Strong fiscal discipline (spending within 95–105% of budget). Medium blue (B) = Moderate variation (spending within 90–110% of budget). Light blue (C) = Moderate deviation (spending within 85–115% of budget). Orange (D) = Significant deviation from planned budgets (spending <85% or >115% of budget). Read horizontally to see how fiscal discipline changes over time for each country. Read vertically to compare countries' performance in a given year." style="background: none; border: none; cursor: help; font-size: 0.9em; color: #666; padding: 0.25rem 0.5rem; margin-left: auto;">
+                <button type="button" class="how-to-read-btn" data-tooltip="Each cell shows how closely a country's actual total spending matched the original approved budget in that year. A = close to plan (about 95–105% of budget). B/C = moderate deviations. D = large deviations (<85% or >115%), suggesting weak budget credibility and higher risk of waste, arrears, or ad-hoc reallocations." style="background: none; border: none; cursor: help; font-size: 0.9em; color: #666; padding: 0.25rem 0.5rem; margin-left: auto;">
                     How to Read This Graph <span style="font-size: 0.8em;">ℹ️</span>
                 </button>
             </div>
@@ -351,6 +410,7 @@ with tab_subtopic_1:
                 # PEFA Score Legend - Directly under the graph
                 st.markdown("""
                 <div style="background-color: #f8f9fa; padding: 0.75rem; border-radius: 8px; margin: 0.5rem 0;">
+                    <p style="color: #666; font-size: 0.85em; margin-bottom: 0.5rem;"><em>Lower credibility = higher expenditure leakage risk.</em></p>
                     <h5 style="color: #002B7F; margin-bottom: 0.5rem;">PEFA Score Legend</h5>
                     <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem;">
                         <div style="text-align: center;">
@@ -558,39 +618,17 @@ with tab_subtopic_1:
         # D. Supporting Information Layers (collapsible, in order)
         # 1. Learn more about this indicator
         with st.expander("Learn more about this indicator", expanded=False):
-            tab_def, tab_rel, tab_proxy, tab_pillar = st.tabs(["Definition", "Relevance", "Proxy Justification", "Pillar Connection"])
+            tab_def, tab_proxy = st.tabs(["Definition", "Proxy Justification"])
             with tab_def:
                 st.markdown("""
-                This indicator measures the extent to which aggregate budget expenditure outturn reflects the amount 
-                originally approved, as defined in government budget documentation and fiscal reports.
+                PI-1 is a budget credibility signal. When spending deviates sharply from the approved budget, governments are more likely to cut priorities mid-year, accumulate arrears, or rely on inefficient emergency spending. Use the time pattern to see whether credibility is improving or deteriorating.
                 
                 **Source:** [PEFA Framework - PI-1](https://www.pefa.org/node/4762)
-                """)
-            with tab_rel:
-                st.markdown("""
-                - **Efficiency**: Reflects fiscal discipline — how well governments adhere to planned spending and minimize waste.
-                - **Effectiveness**: Indicates reliability of budget execution — predictable spending supports stable service delivery.
                 """)
             with tab_proxy:
                 st.markdown("""
                 PEFA standard indicator, globally recognized as a measure of budget credibility and public financial management quality.
                 """)
-            with tab_pillar:
-                st.markdown("""
-                Sustainable development requires not only mobilizing funds but also managing them effectively. This indicator links 
-                directly to Theme 1: Budget Credibility and Efficiency — a government that consistently spends as planned builds 
-                investor confidence, supports fiscal stability, and enables long-term sustainable development planning.
-                """)
-        
-        # 2. Analytical Lens (Efficiency and Effectiveness)
-        with st.expander("Analytical Lens (Efficiency and Effectiveness)", expanded=False):
-            st.markdown("""
-            **Efficiency:** Higher (blue) scores show efficient use of funds and credible budget execution. 
-            Countries with consistent A/B scores demonstrate strong fiscal frameworks and better planning capacity.
-            
-            **Effectiveness:** Stable or improving scores suggest predictable implementation, supporting trust and 
-            sustained development outcomes. Predictable spending enables stable service delivery and long-term planning.
-            """)
 
 # ========================================
 # SUB-TOPIC 4.1.2 – Expenditure Quality
@@ -602,14 +640,14 @@ with tab_subtopic_2:
         st.markdown("""
         <div class='indicator-card'>
             <h4>
-                Indicator 4.1.2.1 – Expenditure Quality Score
+                Indicator 4.1.2.1 – Spending Alignment with Priorities (PEFA PI-2)
                 <button type="button" class="info-icon-btn" data-tooltip="Measures the variance between budgeted and actual expenditure composition. Shows strategic allocation adherence and predictability of sector funding." style="background: none; border: none; cursor: help; font-size: 0.8em; color: #666; margin-left: 0.5rem; padding: 0;">ℹ️</button>
             </h4>
             <p style="color: #888; font-size: 0.9em; margin-bottom: 0.5rem;">
                 <em>Proxied by: Expenditure Composition Outturn</em>
             </p>
             <p style="color: #555; line-height: 1.5; margin-bottom: 0.75rem;">
-                <strong>Analytical Focus Question:</strong> To what extent are public expenditures aligned with development priorities and strategic objectives?
+                <strong>Leakage diagnostic question:</strong> When spending happens, does it stay aligned with the budget's intended priorities—or does it drift during execution?
             </p>
         </div>
         <style>
@@ -703,7 +741,7 @@ with tab_subtopic_2:
             # Add "How to Read This Graph" hover button
             st.markdown("""
             <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
-                <button type="button" class="how-to-read-btn" data-tooltip="This vertical bar chart shows PEFA Expenditure Composition Outturn scores (1–4) for the latest available year. Each bar represents a country's PEFA PI-2 score, indicating how closely actual expenditures match approved budgets. Use the selector above to switch between the three related PEFA views: PI-2 Overall: Each country's aggregate composition outturn score. By Function: Composition classified by function (e.g., education, health, infrastructure). By Economic Type: Composition classified by economic category (e.g., wages, capital, goods &amp; services). How to interpret: X-axis: PEFA Score (1 = D, 4 = A). Y-axis: Country. Bar color: Reflects PEFA grade (A–D). Higher scores (closer to 4) indicate better alignment between planned and actual expenditure composition." style="background: none; border: none; cursor: help; font-size: 0.9em; color: #666; padding: 0.25rem 0.5rem; margin-left: auto;">
+                <button type="button" class="how-to-read-btn" data-tooltip="Each cell shows how closely a country's actual total spending matched the original approved budget in that year. A = close to plan (about 95–105% of budget). B/C = moderate deviations. D = large deviations (<85% or >115%), suggesting weak budget credibility and higher risk of waste, arrears, or ad-hoc reallocations." style="background: none; border: none; cursor: help; font-size: 0.9em; color: #666; padding: 0.25rem 0.5rem; margin-left: auto;">
                     How to Read This Graph <span style="font-size: 0.8em;">ℹ️</span>
                 </button>
             </div>
@@ -756,6 +794,11 @@ with tab_subtopic_2:
                 key="ind_4_1_2_pefa_view",
                 horizontal=True
             )
+            st.markdown("""
+            <p style="color: #666; font-size: 0.9em; margin-top: 0.5rem; margin-bottom: 1rem;">
+                <em>These views show whether the <strong>composition</strong> of spending matches the approved budget (overall, by function, or by economic type).</em>
+            </p>
+            """, unsafe_allow_html=True)
             
             # Load data based on selected view
             import plotly.graph_objects as go
@@ -1097,40 +1140,17 @@ with tab_subtopic_2:
         # D. Supporting Information Layers (collapsible, in order)
         # 1. Learn more about this indicator
         with st.expander("Learn more about this indicator", expanded=False):
-            tab_def, tab_rel, tab_proxy, tab_pillar = st.tabs(["Definition", "Relevance", "Proxy Justification", "Pillar Connection"])
+            tab_def, tab_proxy = st.tabs(["Definition", "Proxy Justification"])
             with tab_def:
                 st.markdown("""
-                Variance in expenditure composition compared to the original budget by functional classification.
+                PI-2 shows whether spending shifts away from planned priorities during execution. High composition variance can signal weak planning, ad-hoc reallocations, and reduced value-for-money—another pathway for expenditure leakages.
                 
                 **Source:** [PEFA Framework - PI-2](https://www.pefa.org/)
-                """)
-            with tab_rel:
-                st.markdown("""
-                - **Efficiency**: Strategic allocation adherence — how well governments stick to planned sector priorities.
-                - **Effectiveness**: Predictability of sector funding — consistent allocation supports service delivery planning.
                 """)
             with tab_proxy:
                 st.markdown("""
                 PEFA standard indicator, globally recognized as a measure of budget composition credibility and public financial management quality.
                 """)
-            with tab_pillar:
-                st.markdown("""
-                Effective public expenditure management requires not only spending within budget totals but also allocating resources according to strategic priorities. 
-                This indicator links directly to Theme 1: Budget Credibility and Efficiency — governments that maintain planned expenditure composition demonstrate 
-                stronger fiscal discipline and better strategic resource allocation, supporting sustainable development outcomes.
-                """)
-        
-        # 2. Analytical Lens (Efficiency and Effectiveness)
-        with st.expander("Analytical Lens (Efficiency and Effectiveness)", expanded=False):
-            st.markdown("""
-            **Efficiency:** Lower variance values indicate efficient adherence to planned expenditure allocations. 
-            Countries with consistent, low variance demonstrate strong strategic planning and execution capacity, 
-            ensuring resources are directed toward intended priorities.
-            
-            **Effectiveness:** Stable or improving composition adherence suggests predictable sector funding, 
-            enabling better service delivery planning and resource management. Predictable allocations support 
-            long-term development planning and institutional capacity building.
-            """)
 
 # Orange divider before Data Availability
     st.markdown("""
@@ -1147,48 +1167,3 @@ all_indicators_4_1 = {
 africa_countries = ref_data[ref_data['Region Name'] == 'Africa']['Country or Area'].unique()
 df_africa = df_main[df_main['country_or_area'].isin(africa_countries)]
 
-# Calculate coverage summary
-countries_with_data = df_africa[df_africa['indicator_label'].isin(all_indicators_4_1.values())]['country_or_area'].nunique()
-total_africa_countries = len(africa_countries)
-coverage = round((countries_with_data / total_africa_countries * 100)) if total_africa_countries > 0 else 0
-
-st.markdown(f"""
-<div class="data-availability-box">
-  <div class="left">
-    <h4>Data Availability in Africa</h4>
-    <p>
-      Data availability determines how confidently we can interpret trends across Africa. 
-      This view highlights which countries report recent data and where gaps persist — often due to differences in statistical capacity, reporting cycles, or institutional coverage.
-    </p>
-    <p><strong>Use the heatmap below to explore:</strong></p>
-    <ul>
-      <li><strong>Countries with up-to-date reporting</strong> (strong coverage)</li>
-      <li><strong>Countries with partial or outdated data</strong></li>
-      <li><strong>Indicators missing post-2021 updates</strong></li>
-    </ul>
-    <p style="margin-top: 1rem;"><em>Current data coverage: {coverage}% of African countries</em></p>
-  </div>
-  <div class="centre"> 
-  <p><strong>Legend:</strong></p>
-    <ul style="text-align: left;">
-      <li><strong>Dark cells:</strong> Recent, consistent reporting (post-2020)</li>
-      <li><strong>Light cells:</strong> Partial or outdated reporting</li>
-      <li><strong>Empty cells:</strong> Missing or unreported values</li>
-    </ul>
-    <p><em>Hover over a cell in the heatmap below to view country-year coverage.</em></p>
-  </div>
-</div>
-""", unsafe_allow_html=True)
-
-with st.expander("View data availability heatmap", expanded=False):
-    selected_gap_indicator = st.selectbox(
-        "Select indicator to view data availability:",
-        options=list(all_indicators_4_1.keys()),
-        key="topic4_1_gap_indicator_select"
-    )
-    uv.render_data_availability_heatmap(
-        df=df_africa,
-        indicator_label=all_indicators_4_1[selected_gap_indicator],
-        title=f"Data Availability for {selected_gap_indicator} (Africa)",
-        container_key="topic4_1_gap"
-    )

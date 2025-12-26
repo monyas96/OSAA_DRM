@@ -6,6 +6,7 @@ streamlit-extras>=0.3.3
 pandas>=2.0.0
 numpy>=1.24.0
 pyarrow>=14.0.0
+jinja2>=3.1.2
 
 # Visualization libraries
 plotly>=5.20.0

@@ -13,6 +13,26 @@ import composite_indicator_methods as cim
 import universal_viz as uv
 from special_pages.tab_4_4_1 import render_tab_4_4_1
 
+# Set topic in URL parameters (for React navigation support)
+# This allows the React app to track which topic is currently displayed
+try:
+    st.query_params["topic"] = "4.4"
+except Exception:
+    pass  # If query_params not available, continue without it
+
+# Notify React parent of current page (for navigation sync)
+st.markdown("""
+<script>
+    // Notify parent window of current page on load
+    if (window.parent !== window) {
+        window.parent.postMessage({
+            type: 'STREAMLIT_NAVIGATION',
+            pagePath: '6_topic_4_4'
+        }, '*');
+    }
+</script>
+""", unsafe_allow_html=True)
+
 # Navigation - Home button and logo
 try:
     from app_core.components.navigation import render_page_logo
@@ -67,19 +87,58 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-home_col, title_col = st.columns([0.15, 3.85])
+# Back to Theme 4 button - placed above the topic card
+st.markdown("""
+<style>
+    button[key="back_to_theme_4_4"] {
+        background: linear-gradient(135deg, #F26C2B 0%, #E85A1F 100%) !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 8px !important;
+        padding: 0.6rem 1.5rem !important;
+        font-weight: 600 !important;
+        font-size: 0.9rem !important;
+        cursor: pointer !important;
+        transition: all 0.3s ease !important;
+        box-shadow: 0 2px 4px rgba(242, 108, 43, 0.2) !important;
+        white-space: nowrap !important;
+        line-height: 1.2 !important;
+        min-height: 40px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    button[key="back_to_theme_4_4"]:hover {
+        background: linear-gradient(135deg, #E85A1F 0%, #D1490F 100%) !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 4px 8px rgba(242, 108, 43, 0.3) !important;
+    }
+</style>
+""", unsafe_allow_html=True)
 
-with home_col:
-    if st.button("Home", key="nav_home_topic_4_4", use_container_width=True):
-        st.switch_page("pages/00_prototype_switcher.py")
-
-with title_col:
+if st.button("← Back to Theme 4", key="back_to_theme_4_4", use_container_width=False):
+    # Notify React parent before switching
     st.markdown("""
-    <div class="section-header">
-        <h1>Topic 4.4: Illicit Financial Flows (IFFs)</h1>
-        <p>This section analyzes illicit financial flows (IFFs) in Africa, including their magnitude, types, and enforcement measures. IFFs undermine domestic resource mobilization, erode trust in institutions, and hinder sustainable development. Understanding and combating IFFs is crucial for achieving fiscal stability and development goals.</p>
-    </div>
+    <script>
+        if (window.parent !== window) {
+            window.parent.postMessage({
+                type: 'STREAMLIT_NAVIGATION',
+                pagePath: '2_theme_4'
+            }, '*');
+        }
+    </script>
     """, unsafe_allow_html=True)
+    st.switch_page("app_streamlit.py")
+
+st.markdown("<br>", unsafe_allow_html=True)
+
+# Topic header (full width)
+st.markdown("""
+<div class="section-header">
+    <h1>Topic 4.4: Illicit Financial Flows (IFFs)</h1>
+    <p>This section analyzes illicit financial flows (IFFs) in Africa, including their magnitude, types, and enforcement measures. IFFs undermine domestic resource mobilization, erode trust in institutions, and hinder sustainable development. Understanding and combating IFFs is crucial for achieving fiscal stability and development goals.</p>
+</div>
+""", unsafe_allow_html=True)
 
 # Use filtered data directly (no global filters)
 df_display = df_filtered.copy()
@@ -254,12 +313,11 @@ with tab_subtopic_1:
             
             # D. Supporting Information Layers
             with st.expander("Learn more about this indicator", expanded=False):
-                tab_def, tab_rel, tab_proxy, tab_pillar = st.tabs(["Definition", "Relevance", "Proxy Justification", "Pillar Connection"])
+                tab_def, tab_proxy = st.tabs(["Definition", "Proxy Justification"])
                 with tab_def:
                     st.markdown("""
                     Illicit financial flows (IFFs) are cross-border movements of money that are illegal in origin, transfer, or use. This includes tax evasion, trade mispricing, corruption, and proceeds from criminal activity. Measuring IFFs as a percentage of GDP helps contextualize their relative economic burden on countries.
                     """)
-                with tab_rel:
                     st.markdown("""
                     - **Efficiency**: Understanding IFF magnitude helps identify systemic leakages that reduce fiscal efficiency.
                     - **Effectiveness**: Tracking IFF trends assesses how well governance and enforcement systems prevent illicit outflows.
@@ -268,17 +326,10 @@ with tab_subtopic_1:
                     st.markdown("""
                     Text-based analysis from UNCTAD reports provides estimates of IFF magnitude as a percentage of GDP.
                     """)
-                with tab_pillar:
                     st.markdown("""
                     Under Theme 4: Ownership and Financial Sovereignty, this indicator measures the scale of illicit financial flows that erode domestic resources and undermine sustainable financing capacity.
                     """)
             
-            with st.expander("Analytical Lens (Efficiency and Effectiveness)", expanded=False):
-                st.markdown("""
-                **Efficiency:** Understanding IFF magnitude helps identify systemic leakages that reduce fiscal efficiency. Countries with lower IFF-to-GDP ratios demonstrate more effective resource retention and better institutional capacity to prevent illicit outflows.
-                
-                **Effectiveness:** Tracking IFF trends assesses how well governance and enforcement systems prevent illicit outflows. Declining IFF ratios over time indicate successful implementation of anti-IFF measures, stronger financial transparency, and improved regulatory frameworks.
-                """)
     
     # ========================================
     # SUB-TAB 2: Indicator 4.4.1.2 - Annual IFF Volume
@@ -353,12 +404,11 @@ with tab_subtopic_1:
             
             # D. Supporting Information Layers
             with st.expander("Learn more about this indicator", expanded=False):
-                tab_def, tab_rel, tab_proxy, tab_pillar = st.tabs(["Definition", "Relevance", "Proxy Justification", "Pillar Connection"])
+                tab_def, tab_proxy = st.tabs(["Definition", "Proxy Justification"])
                 with tab_def:
                     st.markdown("""
                     UNCTAD estimates that Africa loses approximately USD 88.6 billion each year through illicit financial flows. This far exceeds the annual aid inflows (~USD 48 billion) and foreign direct investment (~USD 54 billion) received by the continent.
                     """)
-                with tab_rel:
                     st.markdown("""
                     - **Efficiency**: Understanding annual IFF volume helps quantify the scale of resource leakage that reduces fiscal efficiency.
                     - **Effectiveness**: Tracking IFF volumes assesses how well enforcement systems prevent illicit outflows and protect domestic resources.
@@ -367,17 +417,10 @@ with tab_subtopic_1:
                     st.markdown("""
                     Text-based analysis from UNCTAD reports provides estimates of annual IFF volume in absolute terms.
                     """)
-                with tab_pillar:
                     st.markdown("""
                     Under Theme 4: Ownership and Financial Sovereignty, this indicator quantifies the absolute magnitude of illicit financial flows that erode domestic resources and undermine sustainable financing capacity.
                     """)
             
-            with st.expander("Analytical Lens (Efficiency and Effectiveness)", expanded=False):
-                st.markdown("""
-                **Efficiency:** Understanding annual IFF volume helps quantify the scale of resource leakage that reduces fiscal efficiency. Countries with lower absolute IFF volumes relative to their economic size demonstrate more effective resource retention and better institutional capacity to prevent illicit outflows.
-                
-                **Effectiveness:** Tracking IFF volumes assesses how well enforcement systems prevent illicit outflows and protect domestic resources. Declining IFF volumes over time indicate successful implementation of anti-IFF measures, stronger financial transparency, improved regulatory frameworks, and enhanced cross-border cooperation.
-                """)
 
 # ========================================
 # SUB-TOPIC 4.4.2 – Channels of IFFs
@@ -831,12 +874,11 @@ with tab_subtopic_2:
             st.markdown("---")
             
             with st.expander("Learn more about this indicator", expanded=False):
-                tab_def, tab_rel, tab_proxy, tab_pillar = st.tabs(["Definition", "Relevance", "Proxy Justification", "Pillar Connection"])
+                tab_def, tab_proxy = st.tabs(["Definition", "Proxy Justification"])
                 with tab_def:
                     st.markdown("""
 Trade mispricing is a major channel for illicit financial flows, where goods are intentionally over- or under-valued to shift profits abroad or avoid taxes. This indicator measures the volume and value of trade mispricing activities detected through bilateral trade mismatch analysis.
                     """)
-                with tab_rel:
                     st.markdown("""
 **Efficiency:** Reveals systemic leakages — inefficient customs enforcement, weak valuation frameworks, or poor transparency that enable IFFs.
 
@@ -846,20 +888,10 @@ Trade mispricing is a major channel for illicit financial flows, where goods are
                     st.markdown("""
 GFI's trade gap data is widely used for estimating IFFs due to trade mispricing, as direct measurement is not feasible. The indicators show trade mispricing between developing and advanced economies and with all global trading partners.
                     """)
-                with tab_pillar:
                     st.markdown("""
 This indicator exposes a key IFF pathway — trade mispricing, where goods are intentionally over- or under-valued to shift profits abroad or avoid taxes. Reducing such gaps enhances transparency, fiscal fairness, and sustainable financing capacity under Theme 4: Ownership and Financial Sovereignty.
                     """)
             
-            with st.expander("Analytical Lens (Efficiency and Effectiveness)", expanded=False):
-                st.markdown("""
-**How to Read This Graph:**  
-Each bar represents the estimated value of mispriced trade flows — the difference between what a country reports and what its trading partners record. The larger the gap, the greater the potential IFFs escaping regulation.
-
-**How to Apply Analytical Lens:**  
-- **Efficiency:** Persistent or widening mispricing signals gaps in customs data, valuation practices, and inter-agency coordination.
-- **Effectiveness:** Declining mispricing over time suggests stronger IFF prevention, better governance, and enhanced fiscal control.
-                """)
             
             # Data Availability Section for this indicator
             st.markdown("""
@@ -879,51 +911,6 @@ Each bar represents the estimated value of mispriced trade flows — the differe
                 africa_countries = ref_data[ref_data['Region Name'] == 'Africa']['Country or Area'].unique()
                 df_africa = df_main[df_main['country_or_area'].isin(africa_countries)]
                 
-                # Calculate coverage summary
-                countries_with_data = df_africa[df_africa['indicator_label'].isin(subtab_indicators_442_1.values())]['country_or_area'].nunique()
-                total_africa_countries = len(africa_countries)
-                coverage = round((countries_with_data / total_africa_countries * 100)) if total_africa_countries > 0 else 0
-                
-                st.markdown(f"""
-                <div class="data-availability-box">
-                  <div class="left">
-                    <h4>Data Availability in Africa</h4>
-                    <p>
-                      Data availability determines how confidently we can interpret trade mispricing trends across Africa. 
-                      This view highlights which countries report recent data and where gaps persist — often due to differences in statistical capacity, reporting cycles, or institutional coverage.
-                    </p>
-                    <p><strong>Use the heatmap below to explore:</strong></p>
-                    <ul>
-                      <li><strong>Countries with up-to-date reporting</strong> (strong coverage)</li>
-                      <li><strong>Countries with partial or outdated data</strong></li>
-                      <li><strong>Indicators missing post-2021 updates</strong></li>
-                    </ul>
-                    <p style="margin-top: 1rem;"><em>Current data coverage: {coverage}% of African countries</em></p>
-                  </div>
-                  <div class="right">
-                    <p><strong>Legend:</strong></p>
-                    <ul style="text-align: left;">
-                      <li><strong>Dark cells:</strong> Recent, consistent reporting (post-2020)</li>
-                      <li><strong>Light cells:</strong> Partial or outdated reporting</li>
-                      <li><strong>Empty cells:</strong> Missing or unreported values</li>
-                    </ul>
-                    <p><em>Hover over a cell in the heatmap below to view country-year coverage.</em></p>
-                  </div>
-                </div>
-                """, unsafe_allow_html=True)
-                
-                with st.expander("View data availability heatmap", expanded=False):
-                    selected_gap_indicator = st.selectbox(
-                        "Select indicator to view data availability:",
-                        options=list(subtab_indicators_442_1.keys()),
-                        key="ind_4_4_2_1_gap_indicator_select"
-                    )
-                    uv.render_data_availability_heatmap(
-                        df=df_africa,
-                        indicator_label=subtab_indicators_442_1[selected_gap_indicator],
-                        title=f"Data Availability for {selected_gap_indicator} (Africa)",
-                        container_key="ind_4_4_2_1_gap"
-                    )
     
     # ========================================
     # SUB-TAB 2: Indicator 4.4.2.2 - Tax Evasion (ISORA)
@@ -1178,12 +1165,11 @@ Each bar represents the estimated value of mispriced trade flows — the differe
             st.markdown("---")
             
             with st.expander("Learn more about this indicator", expanded=False):
-                tab_def, tab_rel, tab_proxy, tab_pillar = st.tabs(["Definition", "Relevance", "Proxy Justification", "Pillar Connection"])
+                tab_def, tab_proxy = st.tabs(["Definition", "Proxy Justification"])
                 with tab_def:
                     st.markdown("""
 Tax evasion indicators measure the share of active and inactive taxpayers on various registers (PIT, CIT, VAT, PAYE, Excise) as a percentage of the labor force or population. Proxied by IMF ISORA Tax Registration Data.
                     """)
-                with tab_rel:
                     st.markdown("""
 **Efficiency:** Measures coverage and compliance — how well the tax administration converts economic activity into registered taxpayers.
 
@@ -1193,20 +1179,10 @@ Tax evasion indicators measure the share of active and inactive taxpayers on var
                     st.markdown("""
 IMF ISORA tax registration data provides a standardized approach to estimate taxpayer activity and evasion across countries.
                     """)
-                with tab_pillar:
                     st.markdown("""
 Under Theme 4: DRM Systems and Institutions, this indicator examines domestic IFFs via tax evasion. Low taxpayer registration reveals institutional weakness in capturing economic activity and signals potential loss of resources to informal or illicit channels. Strengthening tax administration efficiency directly reduces IFFs and enhances fiscal sovereignty.
                     """)
             
-            with st.expander("Analytical Lens (Efficiency and Effectiveness)", expanded=False):
-                st.markdown("""
-**How to Read This Graph:**  
-Each bar shows the share of the eligible population or labor force registered for a specific tax. Lower percentages mean large segments of economic activity remain outside the tax net — potential domestic IFF zones.
-
-**How to Apply Analytical Lens:**  
-- **Efficiency:** High registration ratios indicate strong institutional capacity to capture economic actors.
-- **Effectiveness:** Expanding coverage reduces tax evasion and leakages, ensuring domestic resources stay within national systems to finance development.
-                """)
             
             # Data Availability Section for this indicator
             st.markdown("""
@@ -1223,51 +1199,6 @@ Each bar shows the share of the eligible population or labor force registered fo
                 africa_countries = ref_data[ref_data['Region Name'] == 'Africa']['Country or Area'].unique()
                 df_africa = df_main[df_main['country_or_area'].isin(africa_countries)]
                 
-                # Calculate coverage summary
-                countries_with_data = df_africa[df_africa['indicator_label'].isin(subtab_indicators_442_2.values())]['country_or_area'].nunique()
-                total_africa_countries = len(africa_countries)
-                coverage = round((countries_with_data / total_africa_countries * 100)) if total_africa_countries > 0 else 0
-                
-                st.markdown(f"""
-                <div class="data-availability-box">
-                  <div class="left">
-                    <h4>Data Availability in Africa</h4>
-                    <p>
-                      Data availability determines how confidently we can interpret tax evasion trends across Africa. 
-                      This view highlights which countries report recent data and where gaps persist — often due to differences in statistical capacity, reporting cycles, or institutional coverage.
-                    </p>
-                    <p><strong>Use the heatmap below to explore:</strong></p>
-                    <ul>
-                      <li><strong>Countries with up-to-date reporting</strong> (strong coverage)</li>
-                      <li><strong>Countries with partial or outdated data</strong></li>
-                      <li><strong>Indicators missing post-2021 updates</strong></li>
-                    </ul>
-                    <p style="margin-top: 1rem;"><em>Current data coverage: {coverage}% of African countries</em></p>
-                  </div>
-                  <div class="right">
-                    <p><strong>Legend:</strong></p>
-                    <ul style="text-align: left;">
-                      <li><strong>Dark cells:</strong> Recent, consistent reporting (post-2020)</li>
-                      <li><strong>Light cells:</strong> Partial or outdated reporting</li>
-                      <li><strong>Empty cells:</strong> Missing or unreported values</li>
-                    </ul>
-                    <p><em>Hover over a cell in the heatmap below to view country-year coverage.</em></p>
-                  </div>
-                </div>
-                """, unsafe_allow_html=True)
-                
-                with st.expander("View data availability heatmap", expanded=False):
-                    selected_gap_indicator = st.selectbox(
-                        "Select indicator to view data availability:",
-                        options=list(subtab_indicators_442_2.keys()),
-                        key="ind_4_4_2_2_gap_indicator_select"
-                    )
-                    uv.render_data_availability_heatmap(
-                        df=df_africa,
-                        indicator_label=subtab_indicators_442_2[selected_gap_indicator],
-                        title=f"Data Availability for {selected_gap_indicator} (Africa)",
-                        container_key="ind_4_4_2_2_gap"
-                    )
     
     # ========================================
     # SUB-TAB 3: Indicator 4.4.2.3 - Criminal Activities
@@ -1574,12 +1505,11 @@ Each bar shows the share of the eligible population or labor force registered fo
             st.markdown("---")
             
             with st.expander("Learn more about this indicator", expanded=False):
-                tab_def, tab_rel, tab_proxy, tab_pillar = st.tabs(["Definition", "Relevance", "Proxy Justification", "Pillar Connection"])
+                tab_def, tab_proxy = st.tabs(["Definition", "Proxy Justification"])
                 with tab_def:
                     st.markdown("""
 Monetary losses (in USD) to drug sales. This indicator is calculated as the amount of drugs seized in kilograms multiplied by the drug price per kilogram. All seizures not measured in grams or kilograms are excluded from the calculation. Proxied by UNODC Crime Flow Data.
                     """)
-                with tab_rel:
                     st.markdown("""
 **Efficiency:** How well law enforcement intercepts and monitors criminal financial flows. Low values may reflect limited data or enforcement capacity.
 
@@ -1589,20 +1519,10 @@ Monetary losses (in USD) to drug sales. This indicator is calculated as the amou
                     st.markdown("""
 This indicator uses UNODC drug seizure and price data, which are internationally recognized and reported by national authorities. The methodology ensures comparability and reliability by standardizing units and excluding ambiguous measurements.
                     """)
-                with tab_pillar:
                     st.markdown("""
 This indicator quantifies the financial magnitude of criminally generated IFFs using drug-trade seizure values. It helps identify how crime-related financial leakages erode domestic revenues and signal institutional enforcement capacity.
                     """)
             
-            with st.expander("Analytical Lens (Efficiency and Effectiveness)", expanded=False):
-                st.markdown("""
-**How to Read This Graph:**  
-Use the filters to explore how much money leaves each country through criminal activity (proxied by drug-trade values). Select a country to see its trend or a year to compare across countries. Higher values = larger criminal economies or better detection.
-
-**How to Apply Analytical Lens:**  
-- **Efficiency:** Trends showing stable or falling IFFs suggest improving interception systems.
-- **Effectiveness:** Compare IFF intensity across countries to assess where enforcement coordination or financial-intelligence reforms yield results.
-                """)
             
             # Data Availability Section for this indicator
             st.markdown("""
@@ -1624,51 +1544,6 @@ Use the filters to explore how much money leaves each country through criminal a
                 africa_countries = ref_data[ref_data['Region Name'] == 'Africa']['Country or Area'].unique()
                 df_africa = df_main[df_main['country_or_area'].isin(africa_countries)]
                 
-                # Calculate coverage summary
-                countries_with_data = df_africa[df_africa['indicator_label'].isin(subtab_indicators_442_3.values())]['country_or_area'].nunique()
-                total_africa_countries = len(africa_countries)
-                coverage = round((countries_with_data / total_africa_countries * 100)) if total_africa_countries > 0 else 0
-                
-                st.markdown(f"""
-                <div class="data-availability-box">
-                  <div class="left">
-                    <h4>Data Availability in Africa</h4>
-                    <p>
-                      Data availability determines how confidently we can interpret criminal activities trends across Africa. 
-                      This view highlights which countries report recent data and where gaps persist — often due to differences in statistical capacity, reporting cycles, or institutional coverage.
-                    </p>
-                    <p><strong>Use the heatmap below to explore:</strong></p>
-                    <ul>
-                      <li><strong>Countries with up-to-date reporting</strong> (strong coverage)</li>
-                      <li><strong>Countries with partial or outdated data</strong></li>
-                      <li><strong>Indicators missing post-2021 updates</strong></li>
-                    </ul>
-                    <p style="margin-top: 1rem;"><em>Current data coverage: {coverage}% of African countries</em></p>
-                  </div>
-                  <div class="right">
-                    <p><strong>Legend:</strong></p>
-                    <ul style="text-align: left;">
-                      <li><strong>Dark cells:</strong> Recent, consistent reporting (post-2020)</li>
-                      <li><strong>Light cells:</strong> Partial or outdated reporting</li>
-                      <li><strong>Empty cells:</strong> Missing or unreported values</li>
-                    </ul>
-                    <p><em>Hover over a cell in the heatmap below to view country-year coverage.</em></p>
-                  </div>
-                </div>
-                """, unsafe_allow_html=True)
-                
-                with st.expander("View data availability heatmap", expanded=False):
-                    selected_gap_indicator = st.selectbox(
-                        "Select indicator to view data availability:",
-                        options=list(subtab_indicators_442_3.keys()),
-                        key="ind_4_4_2_3_gap_indicator_select"
-                    )
-                    uv.render_data_availability_heatmap(
-                        df=df_africa,
-                        indicator_label=subtab_indicators_442_3[selected_gap_indicator],
-                        title=f"Data Availability for {selected_gap_indicator} (Africa)",
-                        container_key="ind_4_4_2_3_gap"
-                    )
     
     # ========================================
     # SUB-TAB 4: Indicator 4.4.2.4 - Corruption and Bribery
@@ -1906,7 +1781,7 @@ Use the filters to explore how much money leaves each country through criminal a
             st.markdown("---")
             
             with st.expander("Learn more about this indicator", expanded=False):
-                tab_def, tab_rel, tab_proxy, tab_pillar = st.tabs(["Definition", "Relevance", "Proxy Justification", "Pillar Connection"])
+                tab_def, tab_proxy = st.tabs(["Definition", "Proxy Justification"])
                 with tab_def:
                     st.markdown("""
 **Calculation Methodology:**
@@ -1926,7 +1801,6 @@ Use the filters to explore how much money leaves each country through criminal a
 
 **Data Source:** Worldwide Governance Indicators (WGI) from World Bank
                     """)
-                with tab_rel:
                     st.markdown("""
 **Efficiency:** Measures how well institutional and financial governance systems reduce leakage through corruption.
 
@@ -1940,20 +1814,10 @@ Use the filters to explore how much money leaves each country through criminal a
 - Uses Unobserved Components Model (UCM) for robust aggregation
 - Provides comprehensive view of governance quality
                     """)
-                with tab_pillar:
                     st.markdown("""
 Under Theme 4: DRM Systems and Institutions, this indicator estimates the potential contribution of corruption and bribery to Illicit Financial Flows. It uses governance quality as a proxy for leakage risk — recognizing that weak institutions and rent-seeking behaviors often enable large unrecorded outflows.
                     """)
             
-            with st.expander("Analytical Lens (Efficiency and Effectiveness)", expanded=False):
-                st.markdown("""
-**How to Read This Graph:**  
-Each bar shows the estimated share of corruption-driven IFF vulnerability in Africa, derived from normalized governance scores. Countries with lower control of corruption contribute disproportionately to total potential IFFs.
-
-**How to Apply Analytical Lens:**  
-- **Efficiency:** Assess how institutional integrity systems (anti-corruption agencies, financial disclosure laws) limit leakages.
-- **Effectiveness:** Track improvements in governance scores as indicators of progress in preventing corruption-linked IFFs.
-                """)
             
             # Data Availability Section for this indicator
             st.markdown("""
@@ -1970,51 +1834,6 @@ Each bar shows the estimated share of corruption-driven IFF vulnerability in Afr
                 africa_countries = ref_data[ref_data['Region Name'] == 'Africa']['Country or Area'].unique()
                 df_africa = df_main[df_main['country_or_area'].isin(africa_countries)]
                 
-                # Calculate coverage summary
-                countries_with_data = df_africa[df_africa['indicator_label'].isin(subtab_indicators_442_4.values())]['country_or_area'].nunique()
-                total_africa_countries = len(africa_countries)
-                coverage = round((countries_with_data / total_africa_countries * 100)) if total_africa_countries > 0 else 0
-                
-                st.markdown(f"""
-                <div class="data-availability-box">
-                  <div class="left">
-                    <h4>Data Availability in Africa</h4>
-                    <p>
-                      Data availability determines how confidently we can interpret corruption and bribery trends across Africa. 
-                      This view highlights which countries report recent data and where gaps persist — often due to differences in statistical capacity, reporting cycles, or institutional coverage.
-                    </p>
-                    <p><strong>Use the heatmap below to explore:</strong></p>
-                    <ul>
-                      <li><strong>Countries with up-to-date reporting</strong> (strong coverage)</li>
-                      <li><strong>Countries with partial or outdated data</strong></li>
-                      <li><strong>Indicators missing post-2021 updates</strong></li>
-                    </ul>
-                    <p style="margin-top: 1rem;"><em>Current data coverage: {coverage}% of African countries</em></p>
-                  </div>
-                  <div class="right">
-                    <p><strong>Legend:</strong></p>
-                    <ul style="text-align: left;">
-                      <li><strong>Dark cells:</strong> Recent, consistent reporting (post-2020)</li>
-                      <li><strong>Light cells:</strong> Partial or outdated reporting</li>
-                      <li><strong>Empty cells:</strong> Missing or unreported values</li>
-                    </ul>
-                    <p><em>Hover over a cell in the heatmap below to view country-year coverage.</em></p>
-                  </div>
-                </div>
-                """, unsafe_allow_html=True)
-                
-                with st.expander("View data availability heatmap", expanded=False):
-                    selected_gap_indicator = st.selectbox(
-                        "Select indicator to view data availability:",
-                        options=list(subtab_indicators_442_4.keys()),
-                        key="ind_4_4_2_4_gap_indicator_select"
-                    )
-                    uv.render_data_availability_heatmap(
-                        df=df_africa,
-                        indicator_label=subtab_indicators_442_4[selected_gap_indicator],
-                        title=f"Data Availability for {selected_gap_indicator} (Africa)",
-                        container_key="ind_4_4_2_4_gap"
-                    )
 
 # ========================================
 # SUB-TOPIC 4.4.3 – Detection and Enforcement
@@ -2311,12 +2130,11 @@ with tab_subtopic_3:
     
             # D. Supporting Information Layers
             with st.expander("Learn more about Indicator 4.4.3.1: Efficacy of Anti-IFF Measures", expanded=False):
-                tab_def, tab_rel, tab_proxy, tab_pillar = st.tabs(["Definition", "Relevance", "Proxy Justification", "Pillar Connection"])
+                tab_def, tab_proxy = st.tabs(["Definition", "Proxy Justification"])
                 with tab_def:
                     st.markdown("""
 This indicator assesses the efficacy of efforts to combat illicit financial flows (IFFs) by measuring successful prosecutions for IFF-related offenses. Given the challenges in obtaining direct prosecution data across jurisdictions, this study proxies effectiveness using the enablers framework outlined in Coherent Policies for Combatting Illicit Financial Flows (UNODC-OECD, 2016).
                     """)
-                with tab_rel:
                     st.markdown("""
 The effectiveness of anti-IFF measures is assessed using multiple governance, regulatory, and institutional indicators that influence the ability to combat IFFs effectively. These proxies include Rule of Law (Regulatory Enforcement), Control of Corruption, Sound Institutions, and Identity Documentation.
                     """)
@@ -2327,20 +2145,10 @@ The effectiveness of anti-IFF measures is assessed using multiple governance, re
 - The World Justice Project, World Bank, and Mo Ibrahim Index provide validated, cross-country governance data relevant to financial crime control.
 - Transparency and identity documentation are essential enablers for tracking and prosecuting illicit financial flows.
                     """)
-                with tab_pillar:
                     st.markdown("""
 This composite indicator measures how capable a country is in implementing coherent policies to combat IFFs. It integrates multiple governance and institutional metrics to reflect the "effectiveness architecture" behind detection and enforcement.
                     """)
             
-            with st.expander("Analytical Lens (Efficiency and Effectiveness)", expanded=False):
-                st.markdown("""
-**How to Read This Graph:**  
-Each sub-indicator represents a key enabler of anti-IFF enforcement. Use the selector to explore performance on rule of law, justice systems, corruption control, institutional quality, and identity documentation. Higher scores = stronger foundations for combating IFFs.
-
-**How to Apply Analytical Lens:**  
-- **Efficiency:** Focus on how effectively administrative systems (tax, justice, customs) coordinate enforcement.
-- **Effectiveness:** Assess whether strong institutional and governance scores align with actual reductions in IFFs or improved detection/reporting.
-                """)
             
             # Data Availability Section for this indicator
             st.markdown("""
@@ -2361,51 +2169,6 @@ Each sub-indicator represents a key enabler of anti-IFF enforcement. Use the sel
                 africa_countries = ref_data[ref_data['Region Name'] == 'Africa']['Country or Area'].unique()
                 df_africa = df_main[df_main['country_or_area'].isin(africa_countries)]
                 
-                # Calculate coverage summary
-                countries_with_data = df_africa[df_africa['indicator_label'].isin(subtab_indicators_443_1.values())]['country_or_area'].nunique()
-                total_africa_countries = len(africa_countries)
-                coverage = round((countries_with_data / total_africa_countries * 100)) if total_africa_countries > 0 else 0
-                
-                st.markdown(f"""
-                <div class="data-availability-box">
-                  <div class="left">
-                    <h4>Data Availability in Africa</h4>
-                    <p>
-                      Data availability determines how confidently we can interpret anti-IFF measures trends across Africa. 
-                      This view highlights which countries report recent data and where gaps persist — often due to differences in statistical capacity, reporting cycles, or institutional coverage.
-                    </p>
-                    <p><strong>Use the heatmap below to explore:</strong></p>
-                    <ul>
-                      <li><strong>Countries with up-to-date reporting</strong> (strong coverage)</li>
-                      <li><strong>Countries with partial or outdated data</strong></li>
-                      <li><strong>Indicators missing post-2021 updates</strong></li>
-                    </ul>
-                    <p style="margin-top: 1rem;"><em>Current data coverage: {coverage}% of African countries</em></p>
-                  </div>
-                  <div class="right">
-                    <p><strong>Legend:</strong></p>
-                    <ul style="text-align: left;">
-                      <li><strong>Dark cells:</strong> Recent, consistent reporting (post-2020)</li>
-                      <li><strong>Light cells:</strong> Partial or outdated reporting</li>
-                      <li><strong>Empty cells:</strong> Missing or unreported values</li>
-                    </ul>
-                    <p><em>Hover over a cell in the heatmap below to view country-year coverage.</em></p>
-                  </div>
-                </div>
-                """, unsafe_allow_html=True)
-                
-                with st.expander("View data availability heatmap", expanded=False):
-                    selected_gap_indicator = st.selectbox(
-                        "Select indicator to view data availability:",
-                        options=list(subtab_indicators_443_1.keys()),
-                        key="ind_4_4_3_1_gap_indicator_select"
-                    )
-                    uv.render_data_availability_heatmap(
-                        df=df_africa,
-                        indicator_label=subtab_indicators_443_1[selected_gap_indicator],
-                        title=f"Data Availability for {selected_gap_indicator} (Africa)",
-                        container_key="ind_4_4_3_1_gap"
-                    )
     
     # ========================================
     # INDICATOR 4.4.3.2.a: Operating Metrics Audit
@@ -2614,12 +2377,11 @@ Each sub-indicator represents a key enabler of anti-IFF enforcement. Use the sel
             
             # D. Supporting Information Layers
             with st.expander("Learn more about Indicator 4.4.3.2.a: Operating Metrics Audit", expanded=False):
-                tab_def, tab_rel, tab_proxy, tab_pillar = st.tabs(["Definition", "Relevance", "Proxy Justification", "Pillar Connection"])
+                tab_def, tab_proxy = st.tabs(["Definition", "Proxy Justification"])
                 with tab_def:
                     st.markdown("""
 This indicator measures operational effectiveness of tax administrations in detecting non-compliance and converting audits into additional assessed revenue. It includes number of audits completed, percentage of audits leading to adjustment, and additional assessments raised (total and by tax type).
                     """)
-                with tab_rel:
                     st.markdown("""
 Operating metrics reflect the capacity of tax and customs authorities to detect and prevent IFFs. Higher audit completion rates and additional assessments indicate stronger enforcement capacity.
                     """)
@@ -2629,20 +2391,10 @@ Operating metrics reflect the capacity of tax and customs authorities to detect 
 - IMF ISORA survey provides comprehensive, cross-country data on tax and customs administration operations.
 - Resource allocation, staff capacity, and operational effectiveness are key determinants of the ability to detect and prevent IFFs.
                     """)
-                with tab_pillar:
                     st.markdown("""
 Under Theme 4: DRM Systems and Institutions, this indicator captures a country's operational strength in tax enforcement. It links to Detection and Enforcement by showing how institutional processes translate into real fiscal discipline.
                     """)
             
-            with st.expander("Analytical Lens (Efficiency and Effectiveness)", expanded=False):
-                st.markdown("""
-**How to Read This Graph:**  
-Bars show how many audits were completed by each country or year. The line shows the total value of additional assessments raised from those audits. The darker the bar, the more effective audits are at finding discrepancies (higher % of adjustments).
-
-**How to Apply Analytical Lens:**  
-- **Efficiency:** A high percentage of audits resulting in adjustments means audit selection is well-targeted and resources are efficiently used.
-- **Effectiveness:** High additional assessments reflect strong institutional capacity for enforcement and revenue recovery.
-                """)
     
     # ========================================
     # INDICATOR 4.4.3.2.b: Resources and ICT Infrastructure
@@ -2855,12 +2607,11 @@ Bars show how many audits were completed by each country or year. The line shows
             
             # D. Supporting Information Layers
             with st.expander("Learn more about Indicator 4.4.3.2.b: Resources and ICT Infrastructure", expanded=False):
-                tab_def, tab_rel, tab_proxy, tab_pillar = st.tabs(["Definition", "Relevance", "Proxy Justification", "Pillar Connection"])
+                tab_def, tab_proxy = st.tabs(["Definition", "Proxy Justification"])
                 with tab_def:
                     st.markdown("""
 This indicator measures investment in digital systems and resources for efficient, modern revenue collection. It includes ICT expenditure (% of total), ICT operating cost (% of total operating expenditure), and % staff in ICT support.
                     """)
-                with tab_rel:
                     st.markdown("""
 Digital infrastructure is essential for modern tax administration. Adequate ICT investment enables efficient data processing, risk assessment, and enforcement capabilities.
                     """)
@@ -2870,20 +2621,10 @@ Digital infrastructure is essential for modern tax administration. Adequate ICT 
 - IMF ISORA survey provides comprehensive data on ICT infrastructure and resource allocation in tax administrations.
 - ICT investment reflects a country's commitment to modernizing revenue collection systems.
                     """)
-                with tab_pillar:
                     st.markdown("""
 Under Theme 4: DRM Systems and Institutions, this indicator shows how resource allocation and digital infrastructure support effective tax administration and IFF detection.
                     """)
             
-            with st.expander("Analytical Lens (Efficiency and Effectiveness)", expanded=False):
-                st.markdown("""
-**How to Read This Graph:**  
-The scatterplot shows the relationship between ICT staffing and ICT expenditure. Countries in the upper right quadrant have both high ICT staffing and high ICT investment, indicating strong digital capacity.
-
-**How to Apply Analytical Lens:**  
-- **Efficiency:** Higher ICT investment relative to staffing suggests efficient use of technology resources.
-- **Effectiveness:** Countries with balanced ICT investment and staffing demonstrate stronger capacity for modern revenue collection and IFF detection.
-                """)
     
     # ========================================
     # INDICATOR 4.4.3.2.c: Staff Metrics
@@ -3077,12 +2818,11 @@ The scatterplot shows the relationship between ICT staffing and ICT expenditure.
             
             # D. Supporting Information Layers
             with st.expander("Learn more about Indicator 4.4.3.2.c: Staff Metrics", expanded=False):
-                tab_def, tab_rel, tab_proxy, tab_pillar = st.tabs(["Definition", "Relevance", "Proxy Justification", "Pillar Connection"])
+                tab_def, tab_proxy = st.tabs(["Definition", "Proxy Justification"])
                 with tab_def:
                     st.markdown("""
 This indicator measures human capital strength of tax and customs authorities. It includes staff strength levels (at start, end, recruitments, departures), academic qualifications (Bachelors, Masters or above), and length of service (Under 5 years, 5-9 years, 10-19 years, Over 19 years).
                     """)
-                with tab_rel:
                     st.markdown("""
 Staff capacity is a key determinant of tax administration effectiveness. Well-qualified, experienced staff are essential for detecting and preventing IFFs.
                     """)
@@ -3092,20 +2832,10 @@ Staff capacity is a key determinant of tax administration effectiveness. Well-qu
 - IMF ISORA survey provides comprehensive data on staff metrics, qualifications, and experience in tax administrations.
 - Staff capacity reflects a country's ability to effectively implement tax enforcement and IFF detection measures.
                     """)
-                with tab_pillar:
                     st.markdown("""
 Under Theme 4: DRM Systems and Institutions, this indicator shows how human capital capacity supports effective tax administration and IFF detection capabilities.
                     """)
             
-            with st.expander("Analytical Lens (Efficiency and Effectiveness)", expanded=False):
-                st.markdown("""
-**How to Read This Graph:**  
-The line chart shows trends in staff metrics over time. Higher values indicate stronger human capital capacity. Academic qualifications and length of service reflect staff quality and experience.
-
-**How to Apply Analytical Lens:**  
-- **Efficiency:** Higher ratios of qualified staff relative to total staff suggest efficient use of human resources.
-- **Effectiveness:** Countries with experienced, well-qualified staff demonstrate stronger capacity for complex tax enforcement and IFF detection.
-                """)
 
 # ========================================
 # SUB-TOPIC 4.4.4 – Transparency and Accountability
@@ -3167,15 +2897,24 @@ with tab_subtopic_4:
                             del st.session_state[key]
                     st.rerun()
             
-            # Filter data - Get FSI indicators (format: fsi_YYYY_value)
-            indicator_data_444_1 = df_filtered[
-                df_filtered['indicator_label'].str.startswith('fsi_', na=False) & 
-                df_filtered['indicator_label'].str.endswith('_value', na=False)
+            # Filter data - Get FSI indicators (format: "Secrecy Score - Financial Secrecy Index YYYY" or "fsi_YYYY_value")
+            # Use df_main instead of df_filtered to ensure data is available regardless of sidebar filters
+            indicator_data_444_1 = df_main[
+                df_main['indicator_label'].str.contains('Secrecy Score - Financial Secrecy Index|^fsi_\d{4}_value$', na=False, regex=True)
             ].copy()
+            # Filter for Africa only (as per requirements)
+            if not ref_data.empty:
+                africa_countries = ref_data[ref_data['Region Name'] == 'Africa']['Country or Area'].unique()
+                indicator_data_444_1 = indicator_data_444_1[indicator_data_444_1['country_or_area'].isin(africa_countries)]
             
             # Extract year from indicator label and add as a column for easier filtering
             if not indicator_data_444_1.empty:
-                indicator_data_444_1['fsi_year'] = indicator_data_444_1['indicator_label'].str.extract(r'fsi_(\d{4})_value')[0].astype(float)
+                # Try to extract year from "Secrecy Score - Financial Secrecy Index YYYY" format
+                fsi_year_from_label = indicator_data_444_1['indicator_label'].str.extract(r'Financial Secrecy Index (\d{4})')[0]
+                # Try to extract year from "fsi_YYYY_value" format
+                fsi_year_from_fsi = indicator_data_444_1['indicator_label'].str.extract(r'fsi_(\d{4})_value')[0]
+                # Combine both
+                indicator_data_444_1['fsi_year'] = fsi_year_from_label.fillna(fsi_year_from_fsi).astype(float)
             
             # Normalize FSI values to 0-100 scale per year
             def minmax_0_100(s):
@@ -3462,7 +3201,7 @@ with tab_subtopic_4:
             
             # D. Supporting Information Layers
             with st.expander("Learn more about Indicator 4.4.4.1: Financial Secrecy Index", expanded=False):
-                tab_def, tab_rel, tab_proxy, tab_pillar = st.tabs(["Definition", "Relevance", "Proxy Justification", "Pillar Connection"])
+                tab_def, tab_proxy = st.tabs(["Definition", "Proxy Justification"])
                 with tab_def:
                     st.markdown("""
 **Definition:** The Financial Secrecy Index (FSI) measures the volume and value of funds held in offshore accounts by residents. The index combines the volume of financial services provided to non-residents with the secrecy of jurisdictions.
@@ -3477,7 +3216,6 @@ with tab_subtopic_4:
 
 **Indicator Format:** fsi_YYYY_value (e.g., fsi_2011_value, fsi_2013_value, fsi_2015_value, etc.)
                     """)
-                with tab_rel:
                     st.markdown("""
 Financial secrecy enables illicit financial flows by allowing individuals and corporations to hide assets and avoid taxation. Countries with high financial secrecy scores are more vulnerable to IFFs and less aligned with global transparency standards.
                     """)
@@ -3489,20 +3227,10 @@ Financial secrecy enables illicit financial flows by allowing individuals and co
 - Provides standardized, cross-country data on financial transparency
 - Regularly updated to reflect changes in financial secrecy regulations
                     """)
-                with tab_pillar:
                     st.markdown("""
 Under Theme 4: DRM Systems and Institutions, this indicator measures how financial secrecy affects a country's vulnerability to Illicit Financial Flows. Countries with lower secrecy scores demonstrate stronger alignment with global transparency standards and reduced IFF risk.
                     """)
             
-            with st.expander("Analytical Lens (Efficiency and Effectiveness)", expanded=False):
-                st.markdown("""
-**How to Read This Graph:**  
-The line chart tracks each country's financial secrecy score over time (2011-2025). Higher scores indicate greater financial secrecy and higher IFF vulnerability. Countries with declining trends show progress toward transparency; rising trends signal increasing risk.
-
-**How to Apply Analytical Lens:**  
-- **Efficiency:** Lower secrecy scores reflect efficient implementation of transparency standards and reduced administrative burden from hidden financial flows.
-- **Effectiveness:** Countries with consistently low or declining secrecy scores demonstrate effective alignment with global transparency standards and reduced IFF vulnerability.
-                """)
             
             # Data Availability Section for this indicator
             st.markdown("""
@@ -3519,51 +3247,6 @@ The line chart tracks each country's financial secrecy score over time (2011-202
             if len(fsi_indicators) > 0:
                 subtab_indicators_444_1 = {"Financial Secrecy Index": fsi_indicators[0]}
                 
-                # Calculate coverage summary
-                countries_with_data = df_africa[df_africa['indicator_label'].isin(subtab_indicators_444_1.values())]['country_or_area'].nunique()
-                total_africa_countries = len(africa_countries)
-                coverage = round((countries_with_data / total_africa_countries * 100)) if total_africa_countries > 0 else 0
-                
-                st.markdown(f"""
-                <div class="data-availability-box">
-                  <div class="left">
-                    <h4>Data Availability in Africa</h4>
-                    <p>
-                      Data availability determines how confidently we can interpret financial secrecy trends across Africa. 
-                      This view highlights which countries report recent data and where gaps persist — often due to differences in statistical capacity, reporting cycles, or institutional coverage.
-                    </p>
-                    <p><strong>Use the heatmap below to explore:</strong></p>
-                    <ul>
-                      <li><strong>Countries with up-to-date reporting</strong> (strong coverage)</li>
-                      <li><strong>Countries with partial or outdated data</strong></li>
-                      <li><strong>Indicators missing post-2021 updates</strong></li>
-                    </ul>
-                    <p style="margin-top: 1rem;"><em>Current data coverage: {coverage}% of African countries</em></p>
-                  </div>
-                  <div class="right">
-                    <p><strong>Legend:</strong></p>
-                    <ul style="text-align: left;">
-                      <li><strong>Dark cells:</strong> Recent, consistent reporting (post-2020)</li>
-                      <li><strong>Light cells:</strong> Partial or outdated reporting</li>
-                      <li><strong>Empty cells:</strong> Missing or unreported values</li>
-                    </ul>
-                    <p><em>Hover over a cell in the heatmap below to view country-year coverage.</em></p>
-                  </div>
-                </div>
-                """, unsafe_allow_html=True)
-                
-                with st.expander("View data availability heatmap", expanded=False):
-                    selected_gap_indicator = st.selectbox(
-                        "Select indicator to view data availability:",
-                        options=list(subtab_indicators_444_1.keys()),
-                        key="ind_4_4_4_1_gap_indicator_select"
-                    )
-                    uv.render_data_availability_heatmap(
-                        df=df_africa,
-                        indicator_label=subtab_indicators_444_1[selected_gap_indicator],
-                        title=f"Data Availability for {selected_gap_indicator} (Africa)",
-                        container_key="ind_4_4_4_1_gap"
-                    )
 
 # ========================================
 # SUB-TOPIC 4.4.5 – Financing Resilience
@@ -3575,12 +3258,212 @@ with tab_subtopic_5:
         "4.4.5.2 – Social Impact of Lost Tax"
     ])
     
-    # Placeholder for each sub-tab - to be implemented
+    # ========================================
+    # INDICATOR 4.4.5.1: Tax Buoyancy
+    # ========================================
     with subtab_445_1:
-        st.info("Indicator 4.4.5.1: Tax Buoyancy - To be implemented with unified dashboard structure")
+        with st.container():
+            # A. Indicator Header
+            st.markdown("""
+            <div class="indicator-card">
+                <h4>Indicator 4.4.5.1: Tax Buoyancy
+                    <button type="button" class="info-icon-btn" data-tooltip="Responsiveness of tax revenue to GDP growth. Elasticity coefficient (β) from log-log regression: ln(Tax Revenue) = α + β*ln(GDP) + ε. A buoyancy of 1.0 means tax revenue grows at the same rate as GDP." style="background: none; border: none; cursor: help; font-size: 0.8em; color: #666; margin-left: 0.5rem; padding: 0;">ℹ️</button>
+                </h4>
+                <p><strong>Analytical Focus Question:</strong> How responsive is a country's tax system to economic growth — and how might Illicit Financial Flows weaken this relationship?</p>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            # B. Load Tax Buoyancy data
+            # Use df_main instead of df_filtered to ensure data is available regardless of sidebar filters
+            buoyancy_data_all = df_main[df_main['indicator_label'] == 'Tax Buoyancy (Elasticity)'].copy()
+            
+            # Filter for Africa only (as per requirements)
+            buoyancy_data = pd.DataFrame()  # Initialize as empty
+            if not ref_data.empty and not buoyancy_data_all.empty:
+                africa_countries = ref_data[ref_data['Region Name'] == 'Africa']['Country or Area'].unique()
+                buoyancy_data = buoyancy_data_all[buoyancy_data_all['country_or_area'].isin(africa_countries)].copy()
+            
+            # Fallback: if Africa filter resulted in empty but we have data, use all data
+            if buoyancy_data.empty and not buoyancy_data_all.empty:
+                buoyancy_data = buoyancy_data_all.copy()
+                st.warning("⚠️ Showing all available Tax Buoyancy data (Africa filter may have country name mismatches).")
+            
+            gdp_growth_data = df_filtered[df_filtered['indicator_label'].str.contains('GDP.*growth', case=False, na=False)].copy()
+            
+            if not buoyancy_data.empty:
+                import plotly.graph_objects as go
+                import numpy as np
+                
+                # Year selector
+                available_years = sorted(buoyancy_data['year'].unique(), reverse=True)
+                selected_year_buoy = st.selectbox(
+                    "Select Year",
+                    options=available_years,
+                    index=0,
+                    key="ind_4_4_5_1_year"
+                )
+                
+                year_buoy_data = buoyancy_data[buoyancy_data['year'] == selected_year_buoy].copy()
+                
+                if not year_buoy_data.empty:
+                    # Try to get GDP growth data for the same year
+                    if not gdp_growth_data.empty:
+                        # Merge with GDP growth if available
+                        year_buoy_data = year_buoy_data.merge(
+                            gdp_growth_data[['country_or_area', 'year', 'value']],
+                            on=['country_or_area', 'year'],
+                            how='left',
+                            suffixes=('_buoyancy', '_gdp_growth')
+                        )
+                        year_buoy_data = year_buoy_data.rename(columns={
+                            'value_buoyancy': 'tax_buoyancy',
+                            'value_gdp_growth': 'gdp_growth'
+                        })
+                    else:
+                        year_buoy_data = year_buoy_data.rename(columns={'value': 'tax_buoyancy'})
+                        year_buoy_data['gdp_growth'] = None
+                    
+                    # Remove outliers
+                    year_buoy_data = year_buoy_data[
+                        (year_buoy_data['tax_buoyancy'] > -2) & 
+                        (year_buoy_data['tax_buoyancy'] < 5)
+                    ]
+                    
+                    if not year_buoy_data.empty:
+                        fig = go.Figure()
+                        
+                        # Color code by buoyancy level
+                        def get_buoyancy_color(buoyancy):
+                            if pd.isna(buoyancy):
+                                return '#999999'
+                            elif buoyancy >= 1.5:
+                                return '#009D8C'  # Teal - Over-responsive
+                            elif buoyancy >= 1.0:
+                                return '#1B75BB'  # Blue - Responsive
+                            elif buoyancy >= 0.5:
+                                return '#E87722'  # Orange - Weakly responsive
+                            else:
+                                return '#D32F2F'  # Red - Unresponsive
+                        
+                        colors = [get_buoyancy_color(x) for x in year_buoy_data['tax_buoyancy'].values]
+                        
+                        # Create scatter plot
+                        if year_buoy_data['gdp_growth'].notna().any():
+                            # Scatter: Tax Buoyancy vs GDP Growth
+                            fig.add_trace(go.Scatter(
+                                x=year_buoy_data['gdp_growth'],
+                                y=year_buoy_data['tax_buoyancy'],
+                                mode='markers',
+                                marker=dict(
+                                    size=10,
+                                    color=colors,
+                                    opacity=0.7,
+                                    line=dict(width=1, color='white')
+                                ),
+                                text=year_buoy_data['country_or_area'],
+                                hovertemplate="<b>%{text}</b><br>GDP Growth: %{x:.2f}%<br>Tax Buoyancy: %{y:.2f}<extra></extra>",
+                                name='Countries'
+                            ))
+                            
+                            fig.update_layout(
+                                title="Tax Buoyancy vs GDP Growth",
+                                xaxis_title="GDP Growth Rate (%)",
+                                yaxis_title="Tax Buoyancy (Elasticity)",
+                                height=600,
+                                hovermode='closest'
+                            )
+                        else:
+                            # Bar chart if no GDP growth data
+                            year_buoy_data_sorted = year_buoy_data.sort_values('tax_buoyancy', ascending=False).head(20)
+                            
+                            fig.add_trace(go.Bar(
+                                x=year_buoy_data_sorted['country_or_area'],
+                                y=year_buoy_data_sorted['tax_buoyancy'],
+                                marker=dict(color=colors[:len(year_buoy_data_sorted)]),
+                                hovertemplate="<b>%{x}</b><br>Tax Buoyancy: %{y:.2f}<extra></extra>",
+                                name='Tax Buoyancy'
+                            ))
+                            
+                            # Add reference lines
+                            fig.add_hline(y=1.0, line_dash="dash", line_color="#1B75BB", 
+                                        annotation_text="Buoyancy = 1.0 (Balanced)", annotation_position="right")
+                            fig.add_hline(y=0.5, line_dash="dash", line_color="#E87722", 
+                                        annotation_text="Buoyancy = 0.5 (Weak)", annotation_position="right")
+                            
+                            fig.update_layout(
+                                title=f"Tax Buoyancy by Country - {int(selected_year_buoy)}",
+                                xaxis_title="Country",
+                                yaxis_title="Tax Buoyancy (Elasticity)",
+                                height=600,
+                                hovermode='closest',
+                                xaxis=dict(tickangle=-45)
+                            )
+                        
+                        st.plotly_chart(fig, use_container_width=True, key="plot_4_4_5_1_buoyancy")
+                        
+                        # Interpretation
+                        st.markdown("""
+                        <div style="background: #f0f9ff; padding: 1rem; border-radius: 8px; border-left: 4px solid #0072BC; margin-top: 1rem;">
+                            <p style="margin: 0; color: #555;">
+                                <strong>Interpretation:</strong> A buoyancy of 1.0 means tax revenue grows at the same rate as GDP — a balanced system. 
+                                Values below 1 indicate that tax revenues are lagging behind economic expansion, signaling inefficiencies or leakages.
+                            </p>
+                        </div>
+                        """, unsafe_allow_html=True)
+                    else:
+                        st.warning(f"No valid data available for year {selected_year_buoy}")
+                else:
+                    st.warning(f"No data available for year {selected_year_buoy}")
+            else:
+                # Check if data exists but wasn't loaded
+                buoyancy_check = df_main[df_main['indicator_label'] == 'Tax Buoyancy (Elasticity)'].copy()
+                if buoyancy_check.empty:
+                    st.info("Data not available. Tax Buoyancy indicator needs to be calculated and added to the dataset.")
+                else:
+                    st.warning("⚠️ Tax Buoyancy data exists but may be filtered out. Try adjusting sidebar filters or check country name matching.")
     
     with subtab_445_2:
-        st.info("Indicator 4.4.5.2: Social Impact of Lost Tax - To be implemented with unified dashboard structure")
+        with st.container():
+            # A. Indicator Header
+            st.markdown("""
+            <div class="indicator-card">
+                <h4>Indicator 4.4.5.2: Social Impact of Lost Tax
+                    <button type="button" class="info-icon-btn" data-tooltip="Calculates the social impact of lost tax revenue by comparing Tax Gap to social spending needs. Shows how much additional social services could be funded with recovered tax revenue." style="background: none; border: none; cursor: help; font-size: 0.8em; color: #666; margin-left: 0.5rem; padding: 0;">ℹ️</button>
+                </h4>
+                <p><strong>Analytical Focus Question:</strong> What is the social opportunity cost of lost tax revenue — how many schools, hospitals, or social programs could be funded with recovered tax gaps?</p>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            # Load Tax Gap data
+            tax_gap_data = df_main[df_main['indicator_label'] == 'Tax Gap (% of GDP)'].copy()
+            
+            # Filter for Africa only
+            if not ref_data.empty and not tax_gap_data.empty:
+                africa_countries = ref_data[ref_data['Region Name'] == 'Africa']['Country or Area'].unique()
+                tax_gap_data = tax_gap_data[tax_gap_data['country_or_area'].isin(africa_countries)]
+            
+            if not tax_gap_data.empty:
+                st.info("""
+                **Status:** This indicator requires social spending data (health, education, social protection expenditures) to calculate the social impact.
+                
+                **Available Data:**
+                - Tax Gap: ✅ Available ({:,} records for {} African countries)
+                
+                **Required Data:**
+                - Social spending indicators (health, education, social protection as % of GDP)
+                - Per-capita social spending data
+                
+                **Calculation Method:**
+                - Social Impact = (Tax Gap % of GDP) × (GDP) / (Per-capita social spending)
+                - Shows: Number of additional beneficiaries, schools, hospitals, etc. that could be funded
+                
+                Once social spending data is integrated, this visualization will show:
+                - Bar chart: Tax Gap vs. Social Spending needs
+                - Scatter plot: Tax Gap vs. Social Impact (number of beneficiaries)
+                - Time series: Evolution of social opportunity cost over time
+                """.format(len(tax_gap_data), tax_gap_data['country_or_area'].nunique()))
+            else:
+                st.info("Tax Gap data not available. This indicator requires Tax Gap calculations to be completed first.")
 
 # ========================================
 # SUB-TOPIC 4.4.6 – Sector-Specific Analysis
@@ -3592,9 +3475,76 @@ with tab_subtopic_6:
         "4.4.6.1.b – Rent Sharing"
     ])
     
-    # Placeholder for each sub-tab - to be implemented
+    # ========================================
+    # INDICATOR 4.4.6.1.a: Specific Sectors
+    # ========================================
     with subtab_446_1a:
-        st.info("Indicator 4.4.6.1.a: Specific Sectors - To be implemented with unified dashboard structure")
+        with st.container():
+            # A. Indicator Header
+            st.markdown("""
+            <div class="indicator-card">
+                <h4>Indicator 4.4.6.1.a: Specific Sectors
+                    <button type="button" class="info-icon-btn" data-tooltip="Analyzes IFFs by specific economic sectors (mining, oil & gas, agriculture, manufacturing) to identify sector-specific vulnerabilities and leakages." style="background: none; border: none; cursor: help; font-size: 0.8em; color: #666; margin-left: 0.5rem; padding: 0;">ℹ️</button>
+                </h4>
+                <p><strong>Analytical Focus Question:</strong> Which economic sectors are most vulnerable to Illicit Financial Flows, and how do sector-specific leakages impact domestic resource mobilization?</p>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            st.info("""
+            **Status:** This indicator requires sector-specific IFF data and trade mispricing data by sector.
+            
+            **Available Data:**
+            - General IFF indicators: ✅ Available
+            - Trade mispricing data: ✅ Available (Topic 4.4.2.1)
+            - Sector-specific breakdowns: ⚠️ Needs sector classification
+            
+            **Required Data:**
+            - IFF estimates by sector (mining, oil & gas, agriculture, manufacturing, services)
+            - Sector-specific trade mispricing data
+            - Sector revenue and export data
+            
+            **Visualization Plan:**
+            - Stacked bar chart: IFFs by sector (% of total)
+            - Heatmap: Sector vulnerability matrix (IFF volume vs. sector size)
+            - Time series: Sector-specific IFF trends
+            - Comparison: Sector IFFs vs. sector contribution to GDP
+            
+            Once sector-specific data is integrated, this will provide detailed analysis of which sectors are most vulnerable to IFFs.
+            """)
     
+    # ========================================
+    # INDICATOR 4.4.6.1.b: Rent Sharing
+    # ========================================
     with subtab_446_1b:
-        st.info("Indicator 4.4.6.1.b: Rent Sharing - To be implemented with unified dashboard structure")
+        with st.container():
+            # A. Indicator Header
+            st.markdown("""
+            <div class="indicator-card">
+                <h4>Indicator 4.4.6.1.b: Rent Sharing
+                    <button type="button" class="info-icon-btn" data-tooltip="Measures how natural resource rents are shared between government, companies, and communities. Analyzes transparency and equity in resource revenue distribution." style="background: none; border: none; cursor: help; font-size: 0.8em; color: #666; margin-left: 0.5rem; padding: 0;">ℹ️</button>
+                </h4>
+                <p><strong>Analytical Focus Question:</strong> How are natural resource rents shared between government, companies, and local communities, and what mechanisms ensure equitable distribution?</p>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            st.info("""
+            **Status:** This indicator requires natural resource rent data and revenue sharing mechanism data.
+            
+            **Available Data:**
+            - Resource revenue indicators: ⚠️ Partial (needs rent-specific data)
+            - Tax revenue data: ✅ Available
+            
+            **Required Data:**
+            - Natural resource rent estimates (oil, gas, mining, forestry)
+            - Revenue sharing formulas and mechanisms
+            - Company vs. government revenue shares
+            - Community benefit data (if available)
+            
+            **Visualization Plan:**
+            - Pie chart: Rent distribution (Government, Companies, Communities)
+            - Bar chart: Rent sharing by resource type
+            - Time series: Evolution of rent sharing over time
+            - Comparison: Actual vs. optimal rent sharing (if benchmarks available)
+            
+            Once rent sharing data is integrated, this will show how resource wealth is distributed and whether mechanisms ensure equitable sharing.
+            """)
