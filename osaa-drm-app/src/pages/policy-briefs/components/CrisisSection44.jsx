@@ -1,6 +1,7 @@
 import React from 'react'
 import SectionHeader from './SectionHeader'
 import StreamlitGraphDirectEmbed from '../../../components/StreamlitGraphDirectEmbed'
+import StreamlitGraphEmbed from './StreamlitGraphEmbed'
 import PullQuote from '../shared/PullQuote'
 
 const CrisisSection44 = () => {
