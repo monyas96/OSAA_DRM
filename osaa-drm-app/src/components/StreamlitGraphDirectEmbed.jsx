@@ -35,6 +35,7 @@ const StreamlitGraphDirectEmbed = ({
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [isFullscreen, setIsFullscreen] = useState(autoFullscreen)
+  const [iframeHeight, setIframeHeight] = useState(height) // Dynamic height based on chart size
 
   // Get Streamlit URL from environment variable
   const STREAMLIT_BASE_URL = import.meta.env.VITE_STREAMLIT_URL || 'http://localhost:8501'
