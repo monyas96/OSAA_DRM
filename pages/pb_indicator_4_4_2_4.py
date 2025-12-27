@@ -107,18 +107,55 @@ if bar_chart:
     # Use full container width and enable responsive sizing
     st.altair_chart(bar_chart, use_container_width=True, theme=None)
     
-    # Auto-trigger fullscreen using JavaScript
+    # Auto-trigger fullscreen using JavaScript (for Altair/Vega charts)
     st.markdown("""
     <script>
     (function() {
-        // Wait for chart to render
-        setTimeout(function() {
-            // Find fullscreen button in Vega-Altair chart
-            const fullscreenBtn = document.querySelector('.vega-embed .vega-actions a[title*="fullscreen"], .vega-embed .vega-actions a[title*="Fullscreen"]');
-            if (fullscreenBtn) {
-                fullscreenBtn.click();
+        function triggerFullscreen() {
+            // Try multiple selectors for the fullscreen button in Vega-Altair charts
+            const selectors = [
+                '.vega-embed .vega-actions a[title*="fullscreen" i]',
+                '.vega-embed .vega-actions a[title*="Fullscreen"]',
+                '.vega-embed .vega-actions a:has-text("Fullscreen")',
+                'button:contains("Fullscreen")',
+                '.vega-actions a[href*="fullscreen"]'
+            ];
+            
+            let fullscreenBtn = null;
+            for (const selector of selectors) {
+                try {
+                    fullscreenBtn = document.querySelector(selector);
+                    if (fullscreenBtn) break;
+                } catch (e) {
+                    // Invalid selector, try next
+                }
             }
-        }, 1000);
+            
+            // Alternative: find by text content
+            if (!fullscreenBtn) {
+                const allLinks = document.querySelectorAll('.vega-embed .vega-actions a');
+                allLinks.forEach(function(link) {
+                    const title = link.getAttribute('title') || link.textContent || '';
+                    if (title.toLowerCase().includes('fullscreen')) {
+                        fullscreenBtn = link;
+                    }
+                });
+            }
+            
+            if (fullscreenBtn) {
+                console.log('Found fullscreen button, clicking...');
+                fullscreenBtn.click();
+            } else {
+                console.log('Fullscreen button not found, retrying...');
+                // Retry after a longer delay
+                setTimeout(triggerFullscreen, 2000);
+            }
+        }
+        
+        // Wait for chart to render (Vega-Altair charts take time to initialize)
+        setTimeout(triggerFullscreen, 1500);
+        // Also try after longer delay in case chart loads slowly
+        setTimeout(triggerFullscreen, 3000);
     })();
     </script>
     """, unsafe_allow_html=True)

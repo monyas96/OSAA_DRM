@@ -111,34 +111,47 @@ if fig:
         }
     })
     
-    # Auto-trigger fullscreen using JavaScript
+    # Auto-trigger fullscreen using JavaScript (for Plotly charts)
     st.markdown("""
     <script>
     (function() {
-        // Wait for Plotly chart to render
-        setTimeout(function() {
-            // Find fullscreen button in Plotly modebar
+        function triggerFullscreen() {
+            // Find Plotly chart container
             const plotlyDiv = document.querySelector('.js-plotly-plot');
             if (plotlyDiv) {
                 const modebar = plotlyDiv.querySelector('.modebar');
                 if (modebar) {
-                    // Look for fullscreen button (usually has title "Zoom" or icon)
-                    const fullscreenBtn = modebar.querySelector('[data-title*="fullscreen" i], [data-title*="Fullscreen" i], .modebar-btn[data-attr="fullscreen"]');
+                    // Look for fullscreen button by data-title attribute
+                    const fullscreenBtn = modebar.querySelector('[data-title*="fullscreen" i], [data-title*="Fullscreen" i]');
                     if (fullscreenBtn) {
+                        console.log('Found Plotly fullscreen button, clicking...');
                         fullscreenBtn.click();
-                    } else {
-                        // Try finding by icon pattern (fullscreen icon)
-                        const allButtons = modebar.querySelectorAll('.modebar-btn');
-                        allButtons.forEach(function(btn) {
-                            const title = btn.getAttribute('data-title') || btn.title || '';
-                            if (title.toLowerCase().includes('fullscreen') || title.toLowerCase().includes('zoom')) {
-                                btn.click();
-                            }
-                        });
+                        return;
                     }
+                    
+                    // Alternative: find by checking all buttons
+                    const allButtons = modebar.querySelectorAll('.modebar-btn');
+                    allButtons.forEach(function(btn) {
+                        const title = btn.getAttribute('data-title') || btn.getAttribute('title') || '';
+                        if (title.toLowerCase().includes('fullscreen')) {
+                            console.log('Found Plotly fullscreen button by title, clicking...');
+                            btn.click();
+                        }
+                    });
+                } else {
+                    console.log('Plotly modebar not found, retrying...');
+                    setTimeout(triggerFullscreen, 1000);
                 }
+            } else {
+                console.log('Plotly chart not found, retrying...');
+                setTimeout(triggerFullscreen, 1000);
             }
-        }, 1500);
+        }
+        
+        // Wait for Plotly chart to render
+        setTimeout(triggerFullscreen, 1500);
+        // Also try after longer delay in case chart loads slowly
+        setTimeout(triggerFullscreen, 3000);
     })();
     </script>
     """, unsafe_allow_html=True)
