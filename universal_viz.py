@@ -542,12 +542,16 @@ def create_bar_chart(
             text_auto='.2f' # Display values on bars, formatted
         )
 
+        # Only show legend if there's a color column (multiple series)
+        show_legend = color_column is not None
+        
         fig.update_layout(
             height=height,
             width=width,
             legend_title_text=legend_title or (color_column.replace('_', ' ').title() if color_column else ''),
             xaxis_title=x_label or x_axis.replace('_', ' ').title(),
             yaxis_title=y_label or y_axis.replace('_', ' ').title(),
+            showlegend=show_legend
         )
         fig.update_traces(textposition='outside')
 
