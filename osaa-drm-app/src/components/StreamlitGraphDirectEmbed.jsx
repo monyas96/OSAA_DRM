@@ -266,13 +266,13 @@ const StreamlitGraphDirectEmbed = ({
             </div>
           )}
 
-          {/* Streamlit iframe */}
+          {/* Streamlit iframe - fullscreen-like view */}
           <iframe
             src={streamlitUrl}
             className="w-full border border-gray-200 rounded-lg bg-white"
             style={{ 
-              height: height,
-              minHeight: '500px',
+              height: '80vh',  // Use viewport height for fullscreen-like view
+              minHeight: '600px',
               width: '100%',
               display: loading || error ? 'none' : 'block'
             }}

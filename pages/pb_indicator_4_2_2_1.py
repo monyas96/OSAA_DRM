@@ -39,6 +39,8 @@ st.markdown("""
         padding-left: 0;
         padding-right: 0;
         padding-bottom: 0;
+        height: 100vh;
+        overflow: hidden;
     }
     .main .block-container {
         padding-top: 0.5rem;
@@ -47,10 +49,19 @@ st.markdown("""
         padding-right: 0.5rem;
         max-width: 100%;
         width: 100%;
+        height: calc(100vh - 1rem);
+        display: flex;
+        flex-direction: column;
     }
-    /* Make charts full width */
+    /* Make charts full width and height - fullscreen-like view */
     .stPlotlyChart, .vega-embed {
         width: 100% !important;
+        height: calc(100vh - 2rem) !important;
+        min-height: 600px !important;
+    }
+    /* Make chart containers fill available space */
+    [data-testid="stVerticalBlock"] > [style*="flex-direction: column"] {
+        height: 100%;
     }
     /* Ensure Plotly fullscreen button is visible */
     .js-plotly-plot .plotly .modebar {

@@ -46,7 +46,7 @@ def render_corruption_losses(df_filtered, ref_data):
     ).properties(
         title='',
         width='container',  # Use full container width
-        height=500  # Increased height for better visibility
+        height=700  # Larger height for fullscreen-like view (will be constrained by CSS to viewport)
     )
     
     # Return chart with actions enabled (fullscreen, export, etc.)
@@ -121,10 +121,10 @@ def render_tax_effort(df_filtered, ref_data):
                 showlegend=True
             ))
     
-    # Update layout - full width responsive
+    # Update layout - fullscreen-like view (will be constrained by CSS to viewport height)
     fig.update_layout(
-        height=500,  # Increased height
-        autosize=True,  # Make responsive
+        height=700,  # Larger height for fullscreen-like view
+        autosize=True,  # Make responsive - will fill container
         xaxis_title="Year",
         yaxis_title="Tax Effort (Actual / Capacity)",
         hovermode='closest',
