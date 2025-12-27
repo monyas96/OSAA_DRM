@@ -60,12 +60,31 @@ const StreamlitGraphDirectEmbed = ({
 
   // Build Streamlit URL with query parameters
   const buildStreamlitUrl = () => {
-    // Use the dedicated graph embed page (8_graph_embed.py)
-    const page = '8_graph_embed'
+    // Map indicator codes to policy brief graph pages (pb_indicator_X_X_X_X.py)
+    // Each indicator has its own pre-configured page
+    const indicatorPageMap = {
+      '4.1.1.1': 'pb_indicator_4_1_1_1',
+      '4.1.2.1': 'pb_indicator_4_1_2_1',
+      '4.2.2.1': 'pb_indicator_4_2_2_1',
+      '4.2.2.2.a': 'pb_indicator_4_2_2_2a',
+      '4.2.2.2.b': 'pb_indicator_4_2_2_2b',
+      '4.3.1.1': 'pb_indicator_4_3_1_1',
+      '4.3.1.2': 'pb_indicator_4_3_1_2',
+      '4.3.2.1': 'pb_indicator_4_3_2_1',
+      '4.3.2.2': 'pb_indicator_4_3_2_2',
+      '4.3.3.1': 'pb_indicator_4_3_3_1',
+      '4.4.2.1': 'pb_indicator_4_4_2_1',
+      '4.4.2.2': 'pb_indicator_4_4_2_2',
+      '4.4.2.3': 'pb_indicator_4_4_2_3',
+      '4.4.2.4': 'pb_indicator_4_4_2_4',
+      '4.4.3.1': 'pb_indicator_4_4_3_1',
+      '4.4.4.1': 'pb_indicator_4_4_4_1'
+    }
     
-    // Build query parameters
+    const page = indicatorPageMap[indicator] || '8_graph_embed'
+    
+    // Build query parameters (for backward compatibility, but pages are pre-configured)
     const params = new URLSearchParams({
-      indicator: indicator,
       embed: 'true',
       hide_header: 'true'
     })
