@@ -169,6 +169,8 @@ if bar_chart:
                     const title = action.getAttribute('title') || '';
                     const text = action.textContent || '';
                     
+                    logToParent('Vega action - href: "' + href + '", title: "' + title + '", text: "' + text + '"');
+                    
                     if (href.includes('fullscreen') || 
                         title.toLowerCase().includes('fullscreen') ||
                         text.toLowerCase().includes('fullscreen')) {
@@ -176,6 +178,34 @@ if bar_chart:
                         logToParent('✅ Found fullscreen button in vega-actions');
                     }
                 });
+            }
+            
+            // Method 3: Fallback - use browser native fullscreen API on the chart container
+            if (!fullscreenBtn) {
+                logToParent('⚠️ Fullscreen button not found in vega-actions');
+                logToParent('🔄 Attempting browser native fullscreen API as fallback...');
+                const vegaEmbed = document.querySelector('.vega-embed');
+                if (vegaEmbed) {
+                    try {
+                        if (vegaEmbed.requestFullscreen) {
+                            vegaEmbed.requestFullscreen();
+                            logToParent('✅ Triggered browser native fullscreen');
+                            return;
+                        } else if (vegaEmbed.webkitRequestFullscreen) {
+                            vegaEmbed.webkitRequestFullscreen();
+                            logToParent('✅ Triggered browser native fullscreen (webkit)');
+                            return;
+                        } else if (vegaEmbed.mozRequestFullScreen) {
+                            vegaEmbed.mozRequestFullScreen();
+                            logToParent('✅ Triggered browser native fullscreen (moz)');
+                            return;
+                        } else {
+                            logToParent('❌ Browser native fullscreen API not available');
+                        }
+                    } catch (e) {
+                        logToParent('❌ Error triggering native fullscreen: ' + e.message);
+                    }
+                }
             }
             
             if (fullscreenBtn) {
@@ -187,10 +217,22 @@ if bar_chart:
                         logToParent('✅ Fullscreen button clicked successfully');
                     } catch (e) {
                         logToParent('❌ Error clicking fullscreen button: ' + e.message);
+                        // Fallback to native API
+                        const vegaEmbed = document.querySelector('.vega-embed');
+                        if (vegaEmbed) {
+                            try {
+                                if (vegaEmbed.requestFullscreen) {
+                                    vegaEmbed.requestFullscreen();
+                                    logToParent('✅ Fallback: Triggered browser native fullscreen');
+                                }
+                            } catch (e2) {
+                                logToParent('❌ Fallback also failed: ' + e2.message);
+                            }
+                        }
                     }
                 }, 100);
             } else {
-                logToParent('⚠️ Fullscreen button not found after checking all methods, retrying...');
+                logToParent('⚠️ Fullscreen button not found after all methods, retrying...');
                 // Retry after a longer delay
                 setTimeout(triggerFullscreen, 2000);
             }

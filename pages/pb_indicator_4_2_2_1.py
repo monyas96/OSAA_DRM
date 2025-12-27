@@ -97,11 +97,14 @@ fig = render_tax_effort(df_filtered, ref_data)
 
 if fig:
     # Use full container width with responsive sizing and enable fullscreen
+    # IMPORTANT: Do NOT remove fullscreen from modebar - it's a default button
+    # The fullscreen button is NOT in modeBarButtonsToRemove list
     st.plotly_chart(fig, use_container_width=True, config={
         'displayModeBar': True,
         'responsive': True,
         'autosizable': True,
-        'modeBarButtonsToAdd': ['toggleSpikelines'],
+        # Do not remove fullscreen - it's a default button that should always be available
+        'modeBarButtonsToRemove': [],  # Keep all default buttons including fullscreen
         'toImageButtonOptions': {
             'format': 'png',
             'filename': 'tax_effort_chart',
@@ -128,17 +131,6 @@ if fig:
         logToParent('🚀 Starting Plotly fullscreen trigger attempts...');
         
         function triggerFullscreen() {
-            // Send debug messages to parent
-            function logToParent(message) {
-                if (window.parent !== window) {
-                    window.parent.postMessage({
-                        type: 'STREAMLIT_FULLSCREEN_DEBUG',
-                        message: message
-                    }, '*');
-                }
-                console.log(message);
-            }
-            
             logToParent('🔍 Searching for Plotly fullscreen button...');
             
             // Find Plotly chart container
@@ -158,26 +150,64 @@ if fig:
             }
             
             logToParent('✅ Found Plotly modebar');
-            const allButtons = modebar.querySelectorAll('.modebar-btn');
+            const allButtons = modebar.querySelectorAll('.modebar-btn, .modebar-btn--hover');
             logToParent('Found ' + allButtons.length + ' modebar buttons');
             
             let fullscreenBtn = null;
             
-            // Check all buttons for fullscreen
+            // Method 1: Check all buttons for fullscreen by data-title (Plotly's standard)
             allButtons.forEach(function(btn) {
                 const title = btn.getAttribute('data-title') || btn.getAttribute('title') || '';
                 const className = btn.className || '';
                 const dataAttr = btn.getAttribute('data-attr') || '';
+                const dataVal = btn.getAttribute('data-val') || '';
                 
                 logToParent('Button - title: "' + title + '", class: "' + className + '", data-attr: "' + dataAttr + '"');
                 
+                // Plotly fullscreen button typically has data-title="Toggle fullscreen" or similar
                 if (title.toLowerCase().includes('fullscreen') || 
+                    title.toLowerCase().includes('full screen') ||
                     className.toLowerCase().includes('fullscreen') ||
                     dataAttr.toLowerCase().includes('fullscreen')) {
                     fullscreenBtn = btn;
                     logToParent('✅ Found Plotly fullscreen button by title/attr');
                 }
             });
+            
+            // Method 2: If not found, try to find by icon class or data attribute
+            if (!fullscreenBtn) {
+                // Plotly fullscreen button might have specific class or data attribute
+                const possibleFullscreen = modebar.querySelector('[data-title*="fullscreen" i], [data-title*="Fullscreen"], [title*="fullscreen" i]');
+                if (possibleFullscreen) {
+                    fullscreenBtn = possibleFullscreen;
+                    logToParent('✅ Found Plotly fullscreen button by attribute selector');
+                }
+            }
+            
+            // Method 3: Fallback - use browser native fullscreen API on the chart container
+            if (!fullscreenBtn) {
+                logToParent('⚠️ Fullscreen button not found in modebar');
+                logToParent('🔄 Attempting browser native fullscreen API as fallback...');
+                try {
+                    if (plotlyDiv.requestFullscreen) {
+                        plotlyDiv.requestFullscreen();
+                        logToParent('✅ Triggered browser native fullscreen');
+                        return;
+                    } else if (plotlyDiv.webkitRequestFullscreen) {
+                        plotlyDiv.webkitRequestFullscreen();
+                        logToParent('✅ Triggered browser native fullscreen (webkit)');
+                        return;
+                    } else if (plotlyDiv.mozRequestFullScreen) {
+                        plotlyDiv.mozRequestFullScreen();
+                        logToParent('✅ Triggered browser native fullscreen (moz)');
+                        return;
+                    } else {
+                        logToParent('❌ Browser native fullscreen API not available');
+                    }
+                } catch (e) {
+                    logToParent('❌ Error triggering native fullscreen: ' + e.message);
+                }
+            }
             
             if (fullscreenBtn) {
                 logToParent('✅ Found fullscreen button, clicking in 100ms...');
@@ -187,11 +217,20 @@ if fig:
                         logToParent('✅ Fullscreen button clicked successfully');
                     } catch (e) {
                         logToParent('❌ Error clicking fullscreen button: ' + e.message);
+                        // Fallback to native API
+                        try {
+                            if (plotlyDiv.requestFullscreen) {
+                                plotlyDiv.requestFullscreen();
+                                logToParent('✅ Fallback: Triggered browser native fullscreen');
+                            }
+                        } catch (e2) {
+                            logToParent('❌ Fallback also failed: ' + e2.message);
+                        }
                     }
                 }, 100);
             } else {
-                logToParent('⚠️ Fullscreen button not found in modebar, retrying...');
-                setTimeout(triggerFullscreen, 1000);
+                logToParent('⚠️ Fullscreen button not found after all methods, retrying...');
+                setTimeout(triggerFullscreen, 2000);
             }
         }
         
