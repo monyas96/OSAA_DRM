@@ -78,9 +78,10 @@ africa_ref_data = ref_data[ref_data['Region Name'] == 'Africa'].copy()
 africa_countries = africa_ref_data['Country or Area'].unique()
 df_filtered = df_main[df_main['country_or_area'].isin(africa_countries)].copy()
 
-# Title (matching policy brief)
+# Title (matching policy brief) - compact styling
 st.markdown("### Estimated Annual Corruption Loss")
 st.markdown("**Indicator 4.4.2.4 - Corruption and Bribery**")
+st.markdown("<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True)
 
 # Render graph using shared helper (exact same as exploratory view)
 bar_chart = render_corruption_losses(df_filtered, ref_data)
