@@ -123,25 +123,19 @@ const CrisisSection44 = () => {
             {/* Graph 1C: Corruption Loss Distribution */}
             <div className="mb-6">
               <h4 className="text-base font-bold text-[#003366] mb-3">Graph 1C: Corruption Loss Distribution</h4>
-              <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm mb-4">
-                <div className="mb-4">
-                  <h3 className="text-lg font-bold text-gray-900 mb-1">Estimated Annual Corruption Loss</h3>
-                  <p className="text-sm text-gray-600">Indicator 4.4.2.4 - Corruption and Bribery</p>
-                </div>
-                <div className="bg-gray-50 rounded-lg border border-gray-200" style={{ minHeight: '600px' }}>
-                  <iframe
-                    src={`${import.meta.env.VITE_STREAMLIT_URL || 'http://localhost:8501'}/6_topic_4_4?indicator=4.4.2.4&embed=true&view=graph`}
-                    className="w-full border-0 rounded-lg"
-                    style={{ height: '600px', minHeight: '600px' }}
-                    title="Corruption Loss Distribution"
-                    allow="clipboard-read; clipboard-write"
-                    sandbox="allow-same-origin allow-scripts allow-forms allow-popups"
-                  />
-                </div>
-                <p className="text-xs text-gray-500 mt-3 italic">
-                  Estimated corruption losses show concentration in fragile and resource-rich states. The gradient reveals that corruption-related IFFs disproportionately affect countries with weak institutions and heavy resource dependence.
-                </p>
-              </div>
+              <StreamlitGraphEmbed
+                indicator="4.4.2.4"
+                title="Estimated Annual Corruption Loss"
+                subtitle="Indicator 4.4.2.4 - Corruption and Bribery"
+                caption="Estimated corruption losses show concentration in fragile and resource-rich states. The gradient reveals that corruption-related IFFs disproportionately affect countries with weak institutions and heavy resource dependence."
+                filters={{
+                  countries: 'all',
+                  years: 'latest',
+                  view: 'bar'
+                }}
+                viewType="bar"
+                height={600}
+              />
               <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg mb-6">
                 <p className="text-sm text-gray-800">
                   <strong>Key Insight:</strong> Corruption-related IFFs are concentrated in countries with weak governance and high resource dependence. The enabling role of corruption—protecting trade fraud and criminal networks—makes it particularly damaging to institutional integrity.
