@@ -23,6 +23,16 @@ def render_corruption_losses(df_filtered, ref_data):
     # Calculate corruption losses using the function
     latest_corruption = cim.calculate_corruption_losses(corruption_data)
     
+    # Filter out invalid values (NaN, Infinity)
+    import numpy as np
+    latest_corruption = latest_corruption[
+        (latest_corruption['corruption_loss_billion_usd'].notna()) &
+        (np.isfinite(latest_corruption['corruption_loss_billion_usd']))
+    ].copy()
+    
+    if latest_corruption.empty:
+        return None
+    
     # Sort by corruption loss (descending)
     latest_corruption_sorted = latest_corruption.sort_values('corruption_loss_billion_usd', ascending=False)
     
