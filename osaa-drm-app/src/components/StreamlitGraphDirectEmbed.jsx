@@ -136,6 +136,17 @@ const StreamlitGraphDirectEmbed = ({
     }
   }, [indicator, JSON.stringify(filters), autoFullscreen])
 
+  // Listen for debug messages from Streamlit iframe
+  useEffect(() => {
+    const handleMessage = (event) => {
+      if (event.data && event.data.type === 'STREAMLIT_FULLSCREEN_DEBUG') {
+        console.log('[Streamlit Fullscreen Debug]', event.data.message)
+      }
+    }
+    window.addEventListener('message', handleMessage)
+    return () => window.removeEventListener('message', handleMessage)
+  }, [])
+
   const handleLoad = () => {
     setLoading(false)
     setError(null)

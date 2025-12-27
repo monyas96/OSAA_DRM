@@ -108,10 +108,23 @@ if bar_chart:
     st.altair_chart(bar_chart, use_container_width=True, theme=None)
     
     # Auto-trigger fullscreen using JavaScript (for Altair/Vega charts)
+    # Note: Console logs from iframe won't show in parent window, so we use postMessage
     st.markdown("""
     <script>
     (function() {
+        // Send messages to parent window for debugging
+        function logToParent(message) {
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'STREAMLIT_FULLSCREEN_DEBUG',
+                    message: message
+                }, '*');
+            }
+            console.log(message); // Also log in iframe console
+        }
+        
         function triggerFullscreen() {
+            logToParent('🔍 Searching for fullscreen button...');
             // Try multiple selectors for the fullscreen button in Vega-Altair charts
             const selectors = [
                 '.vega-embed .vega-actions a[title*="fullscreen" i]',
@@ -143,24 +156,24 @@ if bar_chart:
             }
             
             if (fullscreenBtn) {
-                console.log('✅ Found fullscreen button, clicking...', fullscreenBtn);
+                logToParent('✅ Found fullscreen button, clicking...');
                 // Use a small delay to ensure button is ready
                 setTimeout(function() {
                     try {
                         fullscreenBtn.click();
-                        console.log('✅ Fullscreen button clicked successfully');
+                        logToParent('✅ Fullscreen button clicked successfully');
                     } catch (e) {
-                        console.error('❌ Error clicking fullscreen button:', e);
+                        logToParent('❌ Error clicking fullscreen button: ' + e.message);
                     }
                 }, 100);
             } else {
-                console.log('⚠️ Fullscreen button not found, retrying...');
+                logToParent('⚠️ Fullscreen button not found, retrying...');
                 // Retry after a longer delay
                 setTimeout(triggerFullscreen, 2000);
             }
         }
         
-        console.log('🚀 Starting fullscreen trigger attempts...');
+        logToParent('🚀 Starting fullscreen trigger attempts...');
         // Wait for chart to render (Vega-Altair charts take time to initialize)
         setTimeout(triggerFullscreen, 2000);
         // Also try after longer delay in case chart loads slowly
