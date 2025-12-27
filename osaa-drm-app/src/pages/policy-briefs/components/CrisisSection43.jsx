@@ -136,17 +136,8 @@ const CrisisSection43 = () => {
             {/* Graph 2A: Banking Sector Development */}
             <div className="mb-6">
               <h4 className="text-base font-bold text-[#003366] mb-3">Graph 2A: Banking Sector Development Index</h4>
-              <StreamlitGraphEmbed
+              <StreamlitGraphDirectEmbed
                 indicator="4.3.2.1"
-                title="Banking Sector Development Index - Line Chart with Zones"
-                subtitle="Indicator 4.3.2.1 - Banking Sector Development Index"
-                caption="Banking sector development indices reveal that most African banking systems have plateaued at moderate levels (0.4-0.7) for nearly two decades. While leaders like Mauritius and South Africa maintain higher development scores, the regional average remains stuck around 0.45-0.50—insufficient for effective financial intermediation. This stagnation reflects structural barriers: weak credit infrastructure, limited competition, and conservative risk practices that prevent systems from deepening enough to channel savings productively."
-                filters={{
-                  countries: ['Mauritius', 'South Africa', 'Botswana', 'Angola', 'Namibia', 'Zambia', 'Uganda', 'Africa (Region Average)'],
-                  years: '2006-2023',
-                  view: 'line'
-                }}
-                viewType="line"
                 height={500}
               />
               <div className="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-r-lg mb-6">
@@ -159,17 +150,8 @@ const CrisisSection43 = () => {
             {/* Graph 2B: Private Sector Credit */}
             <div className="mb-6">
               <h4 className="text-base font-bold text-[#003366] mb-3">Graph 2B: Private Sector Credit to GDP</h4>
-              <StreamlitGraphEmbed
+              <StreamlitGraphDirectEmbed
                 indicator="4.3.2.2"
-                title="Private Sector Credit to GDP - Line Chart with Zones"
-                subtitle="Indicator 4.3.2.2 - Private Sector Credit to GDP"
-                caption="Private sector credit penetration shows the scale of Africa's intermediation failure. Most countries provide credit equal to less than 40% of GDP—well below the 80-120% typical in emerging markets. South Africa and Mauritius demonstrate that deeper penetration is achievable, but the regional average remains stuck around 35%. This shallow credit system cannot mobilize savings for productive investment, forcing businesses and households to seek financing elsewhere or remain capital-constrained."
-                filters={{
-                  countries: ['South Africa', 'Mauritius', 'Morocco', 'Ethiopia', 'Malawi', 'Comoros', 'Uganda', 'Zambia', 'Zimbabwe', 'Africa (Region Average)'],
-                  years: 'all',
-                  view: 'line'
-                }}
-                viewType="line"
                 height={500}
               />
               <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg mb-6">
@@ -204,17 +186,8 @@ const CrisisSection43 = () => {
             {/* Graph 1C: Portfolio Investment Volatility */}
             <div className="mb-6">
               <h4 className="text-base font-bold text-[#003366] mb-3">Graph 1C: The Volatility of External Dependency</h4>
-              <StreamlitGraphEmbed
+              <StreamlitGraphDirectEmbed
                 indicator="4.3.1.2"
-                title="Portfolio Investment Bonds - Line Chart with Crisis Markers"
-                subtitle="Indicator 4.3.1.2 - Portfolio Investment Bonds"
-                caption="Portfolio investment flows are highly volatile, surging during global liquidity booms and collapsing during crises. Each sudden stop (2008, 2014-16, 2020) forced countries into fiscal adjustments and emergency external borrowing. This volatility reflects Africa's dependence on external capital that could be captured domestically if markets were deeper. Notice Gabon's extreme spike (~17% of GDP) followed by collapse—a pattern repeated across multiple countries during each crisis."
-                filters={{
-                  countries: ['Gabon', 'Egypt', 'South Africa', 'Nigeria', 'Ethiopia', 'Morocco', 'Africa (Region Average)'],
-                  years: 'all',
-                  view: 'line'
-                }}
-                viewType="line"
                 height={500}
               />
               <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg mb-6">
