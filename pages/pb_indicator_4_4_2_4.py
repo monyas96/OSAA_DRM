@@ -144,7 +144,10 @@ if bar_chart:
             
             if (fullscreenBtn) {
                 console.log('Found fullscreen button, clicking...');
-                fullscreenBtn.click();
+                // Use a small delay to ensure button is ready
+                setTimeout(function() {
+                    fullscreenBtn.click();
+                }, 100);
             } else {
                 console.log('Fullscreen button not found, retrying...');
                 // Retry after a longer delay
@@ -153,9 +156,10 @@ if bar_chart:
         }
         
         // Wait for chart to render (Vega-Altair charts take time to initialize)
-        setTimeout(triggerFullscreen, 1500);
+        setTimeout(triggerFullscreen, 2000);
         // Also try after longer delay in case chart loads slowly
-        setTimeout(triggerFullscreen, 3000);
+        setTimeout(triggerFullscreen, 4000);
+        setTimeout(triggerFullscreen, 6000);
     })();
     </script>
     """, unsafe_allow_html=True)
