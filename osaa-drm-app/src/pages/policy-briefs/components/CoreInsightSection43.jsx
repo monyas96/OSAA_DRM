@@ -50,8 +50,8 @@ const CoreInsightSection43 = () => {
           </div>
 
           {/* Bottom Line */}
-          <div className="bg-gradient-to-br from-orange-50 to-orange-100 border-2 border-orange-300 p-6 rounded-xl mt-8">
-            <h3 className="text-lg font-bold text-orange-900 mb-3">The Bottom Line</h3>
+          <div className="bg-slate-50 border-2 border-slate-200 p-6 rounded-xl mt-8">
+            <h3 className="text-lg font-semibold text-gray-900 mb-3">The Bottom Line</h3>
             <p className="text-sm text-gray-800 leading-relaxed">
               These three failures create a vicious cycle: Shallow markets → banks can't lend → no institutional vehicles → capital leaks → markets stay shallow. Breaking this cycle requires simultaneous intervention across all three dimensions.
             </p>

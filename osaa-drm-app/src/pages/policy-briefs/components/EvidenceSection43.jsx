@@ -22,23 +22,23 @@ const EvidenceSection43 = () => {
               indicator="4.3.3.1"
               height={500}
             />
-            <div className="bg-purple-50 border-l-4 border-purple-500 p-4 rounded-r-lg mb-6">
+            <div className="bg-slate-50 border-l-4 border-slate-300 p-4 rounded-r-lg mb-6 border-opacity-50">
               <p className="text-sm text-gray-800 mb-3">
                 <strong>Key Message:</strong> Pension funds allocate 70-80% to bonds and listed equities, &lt;5% to infrastructure. Yet Africa faces a $100B annual infrastructure gap. Capital exists but allocation is mismatched.
               </p>
               <div className="grid grid-cols-2 md:grid-cols-5 gap-2 mt-4 text-xs">
-                <div className="bg-orange-100 p-2 rounded">Domestic Equities</div>
-                <div className="bg-blue-100 p-2 rounded">Domestic Bonds (50-70%)</div>
-                <div className="bg-teal-100 p-2 rounded">Private Equity / Real Estate</div>
-                <div className="bg-green-100 p-2 rounded">Cash & Deposits</div>
-                <div className="bg-yellow-100 p-2 rounded">Foreign Assets</div>
+                <div className="bg-gray-100 p-2 rounded border border-gray-200">Domestic Equities</div>
+                <div className="bg-gray-100 p-2 rounded border border-gray-200">Domestic Bonds (50-70%)</div>
+                <div className="bg-gray-100 p-2 rounded border border-gray-200">Private Equity / Real Estate</div>
+                <div className="bg-gray-100 p-2 rounded border border-gray-200">Cash & Deposits</div>
+                <div className="bg-gray-100 p-2 rounded border border-gray-200">Foreign Assets</div>
               </div>
             </div>
           </div>
 
           {/* Opportunity Box */}
-          <div className="bg-gradient-to-br from-blue-50 to-purple-50 border-2 border-blue-300 p-6 rounded-xl mt-8">
-            <h3 className="text-lg font-bold text-blue-900 mb-3">The Pension Fund Opportunity</h3>
+          <div className="bg-slate-50 border-2 border-slate-200 p-6 rounded-xl mt-8">
+            <h3 className="text-lg font-semibold text-gray-900 mb-3">The Pension Fund Opportunity</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <h4 className="font-bold text-gray-900 mb-2">Current Allocation</h4>

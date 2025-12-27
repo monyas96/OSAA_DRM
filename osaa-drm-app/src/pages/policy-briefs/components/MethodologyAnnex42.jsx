@@ -12,7 +12,7 @@ const MethodologyAnnex42 = () => {
           onClick={() => setShowMethodology(!showMethodology)}
           className="w-full bg-white border-2 border-gray-300 rounded-lg px-6 py-4 flex items-center justify-between hover:border-blue-500 transition-colors text-left"
         >
-          <span className="text-base font-semibold text-gray-900">
+          <span className="text-base font-normal text-gray-900">
             {showMethodology ? 'Hide Detailed Methodology' : 'Show Detailed Methodology'}
           </span>
           {showMethodology ? (

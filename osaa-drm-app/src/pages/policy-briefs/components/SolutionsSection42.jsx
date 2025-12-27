@@ -2,12 +2,13 @@ import React from 'react'
 import SectionHeader from './SectionHeader'
 import StrategicPriority from './StrategicPriority'
 import ThePrize from './ThePrize'
+import SolutionsBanner from '../shared/SolutionsBanner'
 
 const SolutionsSection42 = () => {
   return (
     <section className="py-8 px-4 sm:px-6 lg:px-8 bg-white">
       <div className="max-w-7xl mx-auto">
-        <SectionHeader
+        <SolutionsBanner
           title="What Needs to Happen: A Three-Pillar Strategy to Stop the Leak"
           subtitle="Closing the $120-145 billion tax leakage requires coordinated action across three fronts: strengthening collection efficiency, building elastic revenue systems, and addressing political economy barriers."
           color="teal"

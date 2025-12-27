@@ -27,7 +27,7 @@ const ThePrize = () => {
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      className="bg-gradient-to-br from-blue-900 via-blue-800 to-teal-900 text-white p-8 rounded-xl shadow-xl mb-8"
+      className="bg-gradient-to-br from-slate-700 via-slate-800 to-slate-900 text-white p-8 rounded-xl shadow-xl mb-8"
     >
       <h3 className="text-xl font-bold mb-8">The Prize: What Success Looks Like</h3>
       <p className="text-xl mb-8 opacity-90">If these reforms succeed:</p>
@@ -35,12 +35,12 @@ const ThePrize = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         {outcomes.map((outcome, index) => (
           <div key={index} className="flex items-start gap-4">
-            <div className="bg-teal-500 rounded-full p-2 flex-shrink-0">
+            <div className="bg-slate-600 rounded-full p-2 flex-shrink-0">
               <CheckCircle className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h4 className="text-base font-bold mb-2">{outcome.title}</h4>
-              <p className="text-sm text-blue-100 leading-relaxed">{outcome.description}</p>
+              <h4 className="text-base font-semibold mb-2">{outcome.title}</h4>
+              <p className="text-sm text-slate-200 leading-relaxed">{outcome.description}</p>
             </div>
           </div>
         ))}

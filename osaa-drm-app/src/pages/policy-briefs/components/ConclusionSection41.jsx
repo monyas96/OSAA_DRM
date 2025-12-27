@@ -27,19 +27,19 @@ const ConclusionSection41 = () => {
           <strong>The stakes are existential.</strong> When governments cannot execute budgets, they cannot deliver on promises—the most fundamental test of state capacity. Strengthening budget execution means regaining control over public spending, restoring the social contract between citizens and the state, and ensuring that allocated resources actually reach intended priorities. The question is no longer whether Africa can afford these reforms, but <strong>whether it can afford not to</strong>.
         </p>
 
-        <div className="bg-gradient-to-br from-blue-900 via-blue-800 to-teal-900 text-white p-8 rounded-xl shadow-xl">
-          <h3 className="text-xl font-bold mb-4">The Prize: What Success Looks Like</h3>
+        <div className="bg-gradient-to-br from-slate-700 via-slate-800 to-slate-900 text-white p-8 rounded-xl shadow-xl">
+          <h3 className="text-xl font-semibold mb-4">The Prize: What Success Looks Like</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
-              <div className="text-3xl font-bold mb-2">More Predictable</div>
+              <div className="text-2xl font-semibold mb-2">More Predictable</div>
               <div className="text-sm opacity-90">Budgets with fewer extreme deviations</div>
             </div>
             <div>
-              <div className="text-3xl font-bold mb-2">Protected Priorities</div>
+              <div className="text-2xl font-semibold mb-2">Protected Priorities</div>
               <div className="text-sm opacity-90">Health and education receive allocated funds</div>
             </div>
             <div>
-              <div className="text-3xl font-bold mb-2">Stronger Trust</div>
+              <div className="text-2xl font-semibold mb-2">Stronger Trust</div>
               <div className="text-sm opacity-90">Citizen confidence in government delivery</div>
             </div>
           </div>

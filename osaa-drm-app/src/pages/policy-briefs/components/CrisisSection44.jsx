@@ -2,6 +2,7 @@ import React from 'react'
 import SectionHeader from './SectionHeader'
 import StreamlitGraphDirectEmbed from '../../../components/StreamlitGraphDirectEmbed'
 import PullQuote from '../shared/PullQuote'
+import NetFlowLeakDiagram from '../../../components/charts/NetFlowLeakDiagram'
 
 const CrisisSection44 = () => {
   return (
@@ -25,47 +26,10 @@ const CrisisSection44 = () => {
             This is the <strong>reverse flow</strong>—money generated in Africa that flows backward out of the continent before it can finance development. The flow happens through systematic mechanisms: trade manipulation, corruption, criminal networks, and financial secrecy. The scale is staggering: $88.6 billion leaves annually, representing 3.7% of GDP lost. West Africa loses 10.3% of GDP, North Africa 2.7%. From 2000 to 2015, cumulative losses reached $836 billion.
           </p>
 
-          {/* Graph 1A: The Net Flow Reality */}
+          {/* Graph 1A: The Net Flow Reality - Vertical Leak Diagram */}
           <div className="mb-6">
             <h3 className="text-base font-bold text-[#003366] mb-3">Graph 1A: The Net Flow Reality</h3>
-            <div className="bg-blue-50 border-l-4 border-blue-500 p-6 rounded-r-lg mb-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div>
-                  <h4 className="font-bold text-[#003366] mb-4">Inflows</h4>
-                  <div className="space-y-3">
-                    <div className="bg-green-100 p-4 rounded">
-                      <div className="text-sm font-semibold text-gray-700">Aid</div>
-                      <div className="text-2xl font-bold text-green-700">$48B</div>
-                    </div>
-                    <div className="bg-green-100 p-4 rounded">
-                      <div className="text-sm font-semibold text-gray-700">FDI</div>
-                      <div className="text-2xl font-bold text-green-700">$54B</div>
-                    </div>
-                    <div className="bg-green-200 p-4 rounded border-2 border-green-500">
-                      <div className="text-sm font-semibold text-gray-700">Total Inflow</div>
-                      <div className="text-3xl font-bold text-green-800">$102B</div>
-                    </div>
-                  </div>
-                </div>
-                <div>
-                  <h4 className="font-bold text-[#003366] mb-4">Outflows</h4>
-                  <div className="space-y-3">
-                    <div className="bg-red-100 p-4 rounded">
-                      <div className="text-sm font-semibold text-gray-700">IFFs</div>
-                      <div className="text-2xl font-bold text-red-700">$88.6B</div>
-                    </div>
-                    <div className="bg-yellow-100 p-4 rounded border-2 border-yellow-500 mt-4">
-                      <div className="text-sm font-semibold text-gray-700">Net Benefit</div>
-                      <div className="text-3xl font-bold text-yellow-800">$13.4B</div>
-                      <div className="text-xs text-gray-600 mt-2">87% Leakage Rate</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <p className="text-sm text-gray-800 mt-6">
-                <strong>Key Insight:</strong> Africa receives $102 billion in aid and FDI but loses $88.6 billion to illicit financial flows, leaving a net benefit of only $13.4 billion—an 87% leakage rate. The dominant flow is outward, not inward.
-              </p>
-            </div>
+            <NetFlowLeakDiagram height={700} />
           </div>
 
           <p className="text-sm text-slate-700 leading-relaxed mb-4">
@@ -91,7 +55,7 @@ const CrisisSection44 = () => {
                 indicator="4.4.2.1"
                 height={500}
               />
-              <div className="bg-orange-50 border-l-4 border-orange-500 p-4 rounded-r-lg mb-6">
+              <div className="bg-slate-50 border-l-4 border-slate-300 p-4 rounded-r-lg mb-6 border-opacity-50">
                 <p className="text-sm text-gray-800">
                   <strong>Key Insight:</strong> Trade mispricing represents the largest single channel of IFFs, with extractive sectors (particularly gold) showing the most significant losses. The systematic nature of these patterns indicates institutional weaknesses in customs and trade verification.
                 </p>
@@ -119,7 +83,7 @@ const CrisisSection44 = () => {
                 caption="Estimated corruption losses show concentration in fragile and resource-rich states. The gradient reveals that corruption-related IFFs disproportionately affect countries with weak institutions and heavy resource dependence."
                 height={600}
               />
-              <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg mb-6">
+              <div className="bg-slate-50 border-l-4 border-slate-300 p-4 rounded-r-lg mb-6 border-opacity-50">
                 <p className="text-sm text-gray-800">
                   <strong>Key Insight:</strong> Corruption-related IFFs are concentrated in countries with weak governance and high resource dependence. The enabling role of corruption—protecting trade fraud and criminal networks—makes it particularly damaging to institutional integrity.
                 </p>
@@ -146,7 +110,7 @@ const CrisisSection44 = () => {
                 indicator="4.4.2.3"
                 height={500}
               />
-              <div className="bg-purple-50 border-l-4 border-purple-500 p-4 rounded-r-lg mb-6">
+              <div className="bg-slate-50 border-l-4 border-slate-300 p-4 rounded-r-lg mb-6 border-opacity-50">
                 <p className="text-sm text-gray-800">
                   <strong>Key Insight:</strong> Criminal networks generate substantial proceeds that must be laundered and moved offshore. The variation across countries and time reflects shifting routes, enforcement patterns, and network adaptations.
                 </p>
@@ -173,22 +137,22 @@ const CrisisSection44 = () => {
                 indicator="4.4.4.1"
                 height={500}
               />
-              <div className="bg-teal-50 border-l-4 border-teal-500 p-4 rounded-r-lg mb-6">
+              <div className="bg-slate-50 border-l-4 border-slate-300 p-4 rounded-r-lg mb-6 border-opacity-50">
                 <p className="text-sm text-gray-800 mb-3">
                   <strong>Key Insight:</strong> Financial secrecy enables all other IFF channels by providing infrastructure to hide stolen wealth. While most countries show improvement, clustering in moderate secrecy zones indicates significant work remains.
                 </p>
                 <div className="mt-3 grid grid-cols-1 md:grid-cols-3 gap-3">
-                  <div className="bg-red-100 p-3 rounded">
-                    <div className="text-sm font-bold text-red-800 mb-1">High Secrecy</div>
-                    <p className="text-xs text-gray-700">70-100: High IFF Risk</p>
+                  <div className="bg-gray-100 p-3 rounded border border-gray-200">
+                    <div className="text-sm font-semibold text-gray-800 mb-1">High Secrecy</div>
+                    <p className="text-xs text-gray-600">70-100: High IFF Risk</p>
                   </div>
-                  <div className="bg-yellow-100 p-3 rounded">
-                    <div className="text-sm font-bold text-yellow-800 mb-1">Moderate Secrecy</div>
-                    <p className="text-xs text-gray-700">40-70: Moderate Risk</p>
+                  <div className="bg-gray-100 p-3 rounded border border-gray-200">
+                    <div className="text-sm font-semibold text-gray-800 mb-1">Moderate Secrecy</div>
+                    <p className="text-xs text-gray-600">40-70: Moderate Risk</p>
                   </div>
-                  <div className="bg-green-100 p-3 rounded">
-                    <div className="text-sm font-bold text-green-800 mb-1">Low Secrecy</div>
-                    <p className="text-xs text-gray-700">0-40: Transparent</p>
+                  <div className="bg-gray-100 p-3 rounded border border-gray-200">
+                    <div className="text-sm font-semibold text-gray-800 mb-1">Low Secrecy</div>
+                    <p className="text-xs text-gray-600">0-40: Transparent</p>
                   </div>
                 </div>
               </div>
@@ -206,27 +170,27 @@ const CrisisSection44 = () => {
           {/* Graph 1F: Regional IFF Intensity */}
           <div className="mb-8">
             <h4 className="text-base font-bold text-[#003366] mb-3">Graph 1F: Regional IFF Intensity</h4>
-            <div className="bg-blue-50 border-l-4 border-blue-500 p-6 rounded-r-lg mb-6">
-              <h5 className="font-bold text-[#003366] mb-4">IFFs as Percentage of GDP by Region</h5>
+            <div className="bg-slate-50 border-l-4 border-slate-300 p-6 rounded-r-lg mb-6 border-opacity-50">
+              <h5 className="font-semibold text-gray-900 mb-4">IFFs as Percentage of GDP by Region</h5>
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="bg-red-100 p-4 rounded">
+                <div className="bg-white p-4 rounded border border-gray-200 shadow-sm">
                   <div className="text-sm font-semibold text-gray-700 mb-2">West Africa</div>
-                  <div className="text-2xl font-bold text-red-700">10.3%</div>
+                  <div className="text-2xl font-bold text-gray-900">10.3%</div>
                   <div className="text-xs text-gray-600 mt-1">of GDP</div>
                 </div>
-                <div className="bg-orange-100 p-4 rounded">
+                <div className="bg-white p-4 rounded border border-gray-200 shadow-sm">
                   <div className="text-sm font-semibold text-gray-700 mb-2">Africa Average</div>
-                  <div className="text-2xl font-bold text-orange-700">3.7%</div>
+                  <div className="text-2xl font-bold text-gray-900">3.7%</div>
                   <div className="text-xs text-gray-600 mt-1">of GDP</div>
                 </div>
-                <div className="bg-yellow-100 p-4 rounded">
+                <div className="bg-white p-4 rounded border border-gray-200 shadow-sm">
                   <div className="text-sm font-semibold text-gray-700 mb-2">North Africa</div>
-                  <div className="text-2xl font-bold text-yellow-700">2.7%</div>
+                  <div className="text-2xl font-bold text-gray-900">2.7%</div>
                   <div className="text-xs text-gray-600 mt-1">of GDP</div>
                 </div>
-                <div className="bg-green-100 p-4 rounded">
+                <div className="bg-white p-4 rounded border border-gray-200 shadow-sm">
                   <div className="text-sm font-semibold text-gray-700 mb-2">Global Average</div>
-                  <div className="text-2xl font-bold text-green-700">~2.0%</div>
+                  <div className="text-2xl font-bold text-gray-900">~2.0%</div>
                   <div className="text-xs text-gray-600 mt-1">of GDP</div>
                 </div>
               </div>

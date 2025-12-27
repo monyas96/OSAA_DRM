@@ -36,11 +36,11 @@ const CollapsibleSection = ({
             className="w-full px-6 py-5 flex items-center justify-between hover:bg-gray-50 transition-colors text-left"
           >
             <div className="flex-1">
-              <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+              <h2 className="text-base font-normal text-gray-900 mb-2">
                 {title}
               </h2>
               {subtitle && (
-                <p className="text-lg text-gray-600">
+                <p className="text-sm font-normal text-gray-600">
                   {subtitle}
                 </p>
               )}

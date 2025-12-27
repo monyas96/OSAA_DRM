@@ -1,15 +1,12 @@
 import React from 'react'
+import { getUnifiedColor } from '../shared/colorScheme'
 
-const SectionHeader = ({ title, subtitle, color = 'blue' }) => {
-  const colorClasses = {
-    blue: 'border-blue-500',
-    orange: 'border-orange-500',
-    teal: 'border-teal-500',
-    red: 'border-red-500',
-  }
+const SectionHeader = ({ title, subtitle, color = 'default' }) => {
+  // All section headers use unified muted border
+  const colors = getUnifiedColor(color)
 
   return (
-    <div className={`border-l-4 ${colorClasses[color]} pl-4 mb-4`}>
+    <div className={`border-l-4 ${colors.border} border-opacity-60 pl-4 mb-4`}>
       <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-1">
         {title}
       </h2>

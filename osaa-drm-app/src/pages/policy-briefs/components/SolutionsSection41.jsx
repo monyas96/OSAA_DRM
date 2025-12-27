@@ -1,13 +1,13 @@
 import React from 'react'
 import SectionHeader from './SectionHeader'
 import StrategicPriority from './StrategicPriority'
-import TimelinePhase from './TimelinePhase'
+import SolutionsBanner from '../shared/SolutionsBanner'
 
 const SolutionsSection41 = () => {
   return (
     <section className="py-8 px-4 sm:px-6 lg:px-8 bg-white">
       <div className="max-w-7xl mx-auto">
-        <SectionHeader
+        <SolutionsBanner
           title="What Needs to Happen: A Three-Pillar Strategy"
           subtitle="Improving budget credibility requires coordinated action across transparency, priority protection, and institutional strengthening. These reforms are not optional add-ons—they are the foundation of fiscal credibility and development effectiveness."
           color="teal"
@@ -97,39 +97,6 @@ const SolutionsSection41 = () => {
           </div>
         </div>
 
-        {/* Timeline Phases */}
-        <h3 className="text-2xl font-bold text-gray-900 mb-6 mt-12">Implementation Timeline: Phased Approach</h3>
-
-        <TimelinePhase
-          title="IMMEDIATE (0-12 months): Stop the Bleeding"
-          color="red"
-          items={[
-            'Improve transparency: Publish execution summaries, disclose reallocations',
-            'Protect priorities: Define priority sectors, formal approval for major shifts',
-            'Strengthen ex-ante controls: No spending without budget cover'
-          ]}
-        />
-
-        <TimelinePhase
-          title="MEDIUM-TERM (1-3 years): Build Institutional Capacity"
-          color="orange"
-          items={[
-            'PFM System Strengthening: Expand IFMIS, introduce commitment controls, strengthen TSA',
-            'Sectoral Budget Safeguards: Formal approval for major shifts, ministry-level accountability',
-            'Measurable improvement in execution consistency and composition stability'
-          ]}
-        />
-
-        <TimelinePhase
-          title="LONG-TERM (3-5 years): Achieve Regional Maturity"
-          color="teal"
-          items={[
-            'More predictable budgets with fewer extreme execution deviations',
-            'Stable fiscal space enabling credible multi-year planning',
-            'Stronger citizen confidence and trust in government',
-            'Sustained improvements in execution and composition stability'
-          ]}
-        />
       </div>
       </div>
     </section>

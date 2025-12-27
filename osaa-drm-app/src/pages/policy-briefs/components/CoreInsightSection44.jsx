@@ -1,6 +1,6 @@
 import React from 'react'
 import SectionHeader from './SectionHeader'
-import StreamlitGraphDirectEmbed from '../../../components/StreamlitGraphDirectEmbed''
+import StreamlitGraphDirectEmbed from '../../../components/StreamlitGraphDirectEmbed'
 
 const CoreInsightSection44 = () => {
   return (

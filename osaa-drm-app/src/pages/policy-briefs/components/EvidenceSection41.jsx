@@ -1,8 +1,8 @@
 import React from 'react'
 import SectionHeader from './SectionHeader'
-import GraphIntegratedLayout from './GraphIntegratedLayout'
+import StreamlitGraphDirectEmbed from '../../../components/StreamlitGraphDirectEmbed'
 
-const EvidenceSection41 = ({ pi1, pi2, findings, loading, error }) => {
+const EvidenceSection41 = () => {
   return (
     <section className="py-8 px-4 sm:px-6 lg:px-8 bg-white">
       <div className="max-w-7xl mx-auto">
@@ -23,14 +23,14 @@ const EvidenceSection41 = ({ pi1, pi2, findings, loading, error }) => {
             </p>
 
             <div className="space-y-4">
-              <div className="bg-blue-50 p-4 rounded-lg">
-                <strong className="text-[#003366]">Score A (95-105% execution):</strong> Less than 20% of countries
+              <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                <strong className="text-gray-900">Score A (95-105% execution):</strong> Less than 20% of countries
                 <br />
                 <small className="text-gray-600">Examples: Botswana, Cameroon, Malawi show consistent performance</small>
               </div>
 
-              <div className="bg-orange-50 p-4 rounded-lg">
-                <strong className="text-[#F26C2B]">Score D (Below 85% or Above 115%):</strong> 45% of countries
+              <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                <strong className="text-gray-900">Score D (Below 85% or Above 115%):</strong> 45% of countries
                 <br />
                 <small className="text-gray-600">Chronic under-execution or fiscal discipline failures</small>
               </div>
@@ -59,14 +59,14 @@ const EvidenceSection41 = ({ pi1, pi2, findings, loading, error }) => {
             </p>
 
             <div className="space-y-4">
-              <div className="bg-blue-50 p-4 rounded-lg">
-                <strong className="text-[#003366]">Score 3-4 (Below 10% variance):</strong> Less than 30% of countries
+              <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                <strong className="text-gray-900">Score 3-4 (Below 10% variance):</strong> Less than 30% of countries
                 <br />
                 <small className="text-gray-600">Examples: Kenya, Seychelles protect sectoral priorities</small>
               </div>
 
-              <div className="bg-red-50 p-4 rounded-lg">
-                <strong className="text-red-700">Score 1/D (Above 15% variance):</strong> 77% of countries
+              <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                <strong className="text-gray-900">Score 1/D (Above 15% variance):</strong> 77% of countries
                 <br />
                 <small className="text-gray-600">Health budget of $100M → receives $80-85M mid-year</small>
               </div>
@@ -87,46 +87,46 @@ const EvidenceSection41 = ({ pi1, pi2, findings, loading, error }) => {
         </div>
 
         {/* Double Deficit Callout */}
-        <div className="bg-red-50 border-2 border-red-500 p-8 rounded-xl mb-8">
-          <div className="text-xl font-bold text-red-800 mb-4">The Double Deficit</div>
+        <div className="bg-slate-50 border-2 border-slate-300 p-8 rounded-xl mb-8 border-opacity-50">
+          <div className="text-xl font-semibold text-gray-900 mb-4">The Double Deficit</div>
           <p className="text-base text-gray-800 leading-relaxed">
             Among 31 assessed African countries, 45% face execution weakness (Score D) AND 77% experience severe composition distortion (Score 1/D). Budgets are unpredictable in total AND unreliable by sector—a complete fiscal planning breakdown affecting the majority of assessed countries.
           </p>
         </div>
 
-        {/* Graphs Section */}
-        {loading ? (
-          <div className="py-16 text-center">
-            <p className="text-gray-600">Loading data...</p>
-          </div>
-        ) : error ? (
-          <div className="py-16 text-center">
-            <p className="text-red-600">Error loading data: {error}</p>
-            <p className="text-gray-600 mt-2">Graphs will show placeholder data</p>
-          </div>
-        ) : (
-          <>
-            <GraphIntegratedLayout
-              indicator="4.1.1.1"
-              graph={pi1 || {
-                data: [],
-                title: 'PEFA PI-1: Aggregate expenditure outturn',
-                subtitle: 'Budget Execution Credibility'
-              }}
-              findings={findings?.pi1}
-            />
+        {/* Graph 1: Budget Execution Consistency (4.1.1.1) */}
+        <div className="mb-12">
+          <h3 className="text-xl font-bold text-[#003366] mb-4">
+            Indicator 4.1.1.1 – Budget Execution Consistency
+          </h3>
+          <p className="text-base text-gray-700 mb-4">
+            <strong>Proxy Indicator:</strong> PEFA PI-1 Aggregate expenditure out-turn
+          </p>
+          <p className="text-sm text-gray-600 mb-6">
+            This visualization shows budget execution consistency across African countries, revealing how closely actual spending matches planned budgets. Countries with Score A (95-105% execution) demonstrate strong fiscal discipline, while Score D indicates significant deviations.
+          </p>
+          <StreamlitGraphDirectEmbed
+            indicator="4.1.1.1"
+            height={600}
+          />
+        </div>
 
-            <GraphIntegratedLayout
-              indicator="4.1.2.1"
-              graph={pi2 || {
-                data: [],
-                title: 'PEFA PI-2: Expenditure composition outturn',
-                subtitle: 'Spending Alignment with Priorities'
-              }}
-              findings={findings?.pi2}
-            />
-          </>
-        )}
+        {/* Graph 2: Protecting Priorities (4.1.2.1) */}
+        <div className="mb-12">
+          <h3 className="text-xl font-bold text-[#003366] mb-4">
+            Indicator 4.1.2.1 – Protecting Priorities
+          </h3>
+          <p className="text-base text-gray-700 mb-4">
+            <strong>Proxy Indicator:</strong> PEFA PI-2 Expenditure composition out-turn
+          </p>
+          <p className="text-sm text-gray-600 mb-6">
+            This visualization shows whether health and education budgets are protected during execution. Countries with Score 3-4 (below 10% variance) protect sectoral priorities, while Score 1/D indicates severe composition distortion where strategic priorities are cut mid-year.
+          </p>
+          <StreamlitGraphDirectEmbed
+            indicator="4.1.2.1"
+            height={600}
+          />
+        </div>
       </div>
       </div>
     </section>

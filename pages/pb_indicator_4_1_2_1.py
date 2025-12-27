@@ -16,6 +16,11 @@ import plotly.express as px
 import altair as alt
 import composite_indicator_methods as cim
 import universal_viz as uv
+import importlib
+import pages.pb_graph_helpers as pb_helpers
+# Force reload to pick up new functions
+importlib.reload(pb_helpers)
+from pages.pb_graph_helpers import render_pefa_pi2
 
 # Hide Streamlit UI elements for clean embedding
 st.set_page_config(
@@ -76,10 +81,50 @@ africa_ref_data = ref_data[ref_data['Region Name'] == 'Africa'].copy()
 africa_countries = africa_ref_data['Country or Area'].unique()
 df_filtered = df_main[df_main['country_or_area'].isin(africa_countries)].copy()
 
-# Title (matching policy brief)
-st.markdown("### Spending Alignment with Priorities")
-st.markdown("**Indicator 4.1.2.1 - PEFA: PI-2 Expenditure composition out-turn**")
+# No title - chart-only view for clean embedding
 
-# INDICATOR-SPECIFIC RENDERING LOGIC
-# TODO: Add specific rendering logic for 4.1.2.1 based on exploratory view
-st.info("Graph rendering logic for 4.1.2.1 needs to be implemented based on exploratory view")
+# Render graph using shared helper (exact same as exploratory view)
+fig = render_pefa_pi2(df_filtered, ref_data)
+
+if fig:
+    st.plotly_chart(fig, use_container_width=True, config={
+        'displayModeBar': True,
+        'responsive': True,
+        'autosizable': True,
+        'modeBarButtonsToRemove': [],
+        'toImageButtonOptions': {
+            'format': 'png',
+            'filename': 'pefa_pi2_chart',
+            'height': 800,
+            'width': 1200,
+            'scale': 1
+        }
+    })
+    
+    # Send chart height to parent iframe for dynamic sizing
+    st.markdown("""
+    <script>
+    (function() {
+        function sendHeightToParent() {
+            setTimeout(function() {
+                const plotlyDiv = document.querySelector('.js-plotly-plot');
+                if (plotlyDiv) {
+                    const chartHeight = plotlyDiv.offsetHeight || plotlyDiv.scrollHeight;
+                    if (chartHeight > 0) {
+                        if (window.parent !== window) {
+                            window.parent.postMessage({
+                                type: 'STREAMLIT_CHART_HEIGHT',
+                                height: chartHeight
+                            }, '*');
+                        }
+                    }
+                }
+            }, 500);
+        }
+        sendHeightToParent();
+        window.addEventListener('resize', sendHeightToParent);
+    })();
+    </script>
+    """, unsafe_allow_html=True)
+else:
+    st.info("No data available for PEFA PI-2 indicator")

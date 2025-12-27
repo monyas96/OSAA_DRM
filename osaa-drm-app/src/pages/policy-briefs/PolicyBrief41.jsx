@@ -11,12 +11,9 @@ import ImpactSection41 from './components/ImpactSection41'
 import SolutionsSection41 from './components/SolutionsSection41'
 import ConclusionSection41 from './components/ConclusionSection41'
 import { usePDFExport } from './hooks/usePDFExport'
-import { usePolicyBriefData } from './hooks/usePolicyBriefData'
-
 const PolicyBrief41 = () => {
   const navigate = useNavigate()
   const { exportToPDF, isExporting } = usePDFExport()
-  const { pi1, pi2, loading, error } = usePolicyBriefData()
 
   const briefData = {
     topic: '4.1',
@@ -98,13 +95,7 @@ const PolicyBrief41 = () => {
         <CrisisSection41 />
 
         {/* Evidence Section (includes graphs) */}
-        <EvidenceSection41
-          pi1={pi1}
-          pi2={pi2}
-          findings={briefData.findings}
-          loading={loading}
-          error={error}
-        />
+          <EvidenceSection41 />
 
         {/* Core Insight Section */}
         <CoreInsightSection41 />

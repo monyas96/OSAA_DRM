@@ -28,7 +28,7 @@ const CrisisSection43 = () => {
               indicator="4.3.1.1"
               height={500}
             />
-            <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg mb-6">
+            <div className="bg-slate-50 border-l-4 border-slate-300 p-4 rounded-r-lg mb-6 border-opacity-50">
               <p className="text-sm text-gray-800 mb-3">
                 <strong>Key Insight:</strong> The graph reveals that Africa's capital market problem is not universal—some countries achieve depth comparable to global peers. But the majority remain trapped in shallow markets that can't absorb domestic capital.
               </p>
@@ -58,7 +58,7 @@ const CrisisSection43 = () => {
                 indicator="4.3.3.1"
                 height={500}
               />
-              <div className="bg-purple-50 border-l-4 border-purple-500 p-4 rounded-r-lg mb-6">
+              <div className="bg-slate-50 border-l-4 border-slate-300 p-4 rounded-r-lg mb-6 border-opacity-50">
                 <p className="text-sm text-gray-800 mb-3">
                   <strong>Key Insight:</strong> The graph shows capital exists but is either trapped in low-yield bonds or leaking to foreign markets. Neither allocation finances the infrastructure and development Africa needs.
                 </p>
@@ -66,11 +66,11 @@ const CrisisSection43 = () => {
                   <strong>Composite Insight:</strong> The pattern is clear: African capital exists in massive quantities—pension funds hold trillions, governments hold billions in reserves, private savers hold more billions abroad. The problem isn't lack of capital—it's lack of domestic investment vehicles deep enough to absorb it.
                 </p>
                 <div className="mt-3 grid grid-cols-2 md:grid-cols-5 gap-2 text-xs">
-                  <div className="bg-orange-100 p-2 rounded">Domestic Equities</div>
-                  <div className="bg-blue-100 p-2 rounded">Domestic Bonds (50-70%)</div>
-                  <div className="bg-teal-100 p-2 rounded">Private Equity / Real Estate</div>
-                  <div className="bg-green-100 p-2 rounded">Cash & Deposits</div>
-                  <div className="bg-yellow-100 p-2 rounded">Foreign Assets</div>
+                  <div className="bg-gray-100 p-2 rounded border border-gray-200">Domestic Equities</div>
+                  <div className="bg-gray-100 p-2 rounded border border-gray-200">Domestic Bonds (50-70%)</div>
+                  <div className="bg-gray-100 p-2 rounded border border-gray-200">Private Equity / Real Estate</div>
+                  <div className="bg-gray-100 p-2 rounded border border-gray-200">Cash & Deposits</div>
+                  <div className="bg-gray-100 p-2 rounded border border-gray-200">Foreign Assets</div>
                 </div>
               </div>
             </div>
@@ -81,24 +81,24 @@ const CrisisSection43 = () => {
               
               <div className="space-y-6">
                 {/* 1. Pension Fund Drain */}
-                <div className="bg-purple-50 border-l-4 border-purple-500 p-6 rounded-r-lg">
-                  <h5 className="font-bold text-gray-900 mb-3">1. Pension Fund Drain</h5>
+                <div className="bg-slate-50 border-l-4 border-slate-300 p-6 rounded-r-lg border-opacity-50">
+                  <h5 className="font-semibold text-gray-900 mb-3">1. Pension Fund Drain</h5>
                   <p className="text-sm text-gray-800 leading-relaxed">
                     African pension funds manage trillions in assets, yet invest substantial portions abroad because domestic equity markets are narrow (few listed companies), bond markets are shallow (limited corporate bonds, no infrastructure bonds), and alternative investment vehicles don't exist (no REITs, project bonds, or infrastructure funds). Pension members need infrastructure—roads, power, water—but their savings finance projects in London, New York, and Hong Kong instead.
                   </p>
                 </div>
 
                 {/* 2. Reserve Holding Drain */}
-                <div className="bg-blue-50 border-l-4 border-blue-500 p-6 rounded-r-lg">
-                  <h5 className="font-bold text-gray-900 mb-3">2. Reserve Holding Drain</h5>
+                <div className="bg-slate-50 border-l-4 border-slate-300 p-6 rounded-r-lg border-opacity-50">
+                  <h5 className="font-semibold text-gray-900 mb-3">2. Reserve Holding Drain</h5>
                   <p className="text-sm text-gray-800 leading-relaxed">
                     Governments hold billions in foreign reserves—defensive capital sitting in low-yield U.S. Treasuries or European bonds rather than financing domestic development. This isn't poor policy—it's rational response to shallow markets. Without deep domestic capital markets, governments can't mobilize domestic savings for public investment, so they maintain large external buffers against shocks.
                   </p>
                 </div>
 
                 {/* 3. Private Capital Flight */}
-                <div className="bg-teal-50 border-l-4 border-teal-500 p-6 rounded-r-lg">
-                  <h5 className="font-bold text-gray-900 mb-3">3. Private Capital Flight</h5>
+                <div className="bg-slate-50 border-l-4 border-slate-300 p-6 rounded-r-lg border-opacity-50">
+                  <h5 className="font-semibold text-gray-900 mb-3">3. Private Capital Flight</h5>
                   <p className="text-sm text-gray-800 leading-relaxed">
                     Wealthy individuals, corporations, and diaspora keep capital offshore. Without viable domestic investment opportunities—deep equity markets, corporate bonds, real estate vehicles, or project finance—capital flows to foreign banks and markets. The diaspora alone sends $95 billion annually to Africa, but much of it stays in foreign bank accounts rather than being intermediated into productive domestic investment.
                   </p>
@@ -107,7 +107,7 @@ const CrisisSection43 = () => {
             </div>
 
             {/* The Paradox - Combined Box */}
-            <div className="bg-orange-50 border-l-4 border-orange-500 p-6 rounded-r-lg mb-6">
+            <div className="bg-slate-50 border-l-4 border-slate-300 p-6 rounded-r-lg mb-6 border-opacity-50">
               <p className="text-base text-gray-800 leading-relaxed mb-4">
                 <strong>The paradox:</strong>
               </p>
@@ -140,7 +140,7 @@ const CrisisSection43 = () => {
                 indicator="4.3.2.1"
                 height={500}
               />
-              <div className="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-r-lg mb-6">
+              <div className="bg-slate-50 border-l-4 border-slate-300 p-4 rounded-r-lg mb-6 border-opacity-50">
                 <p className="text-sm text-gray-800">
                   <strong>Key Insight:</strong> Banking development isn't progressing. Most countries remain in the moderate zone indefinitely, unable to break through to deep intermediation. This perpetuates the capital drain—banks can't absorb and deploy savings, so capital seeks foreign alternatives.
                 </p>
@@ -154,7 +154,7 @@ const CrisisSection43 = () => {
                 indicator="4.3.2.2"
                 height={500}
               />
-              <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg mb-6">
+              <div className="bg-slate-50 border-l-4 border-slate-300 p-4 rounded-r-lg mb-6 border-opacity-50">
                 <p className="text-sm text-gray-800">
                   <strong>Key Insight:</strong> The credit gap is enormous. If African banking systems reached even 60% of GDP (still below global benchmarks), they would mobilize an additional <strong>billions</strong> in financing—all from domestic savings that currently leak abroad or sit idle.
                 </p>
@@ -190,7 +190,7 @@ const CrisisSection43 = () => {
                 indicator="4.3.1.2"
                 height={500}
               />
-              <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg mb-6">
+              <div className="bg-slate-50 border-l-4 border-slate-300 p-4 rounded-r-lg mb-6 border-opacity-50">
                 <p className="text-sm text-gray-800 mb-3">
                   <strong>Key Insight:</strong> The graph reveals that external financing is not stable or reliable—it's a fair-weather friend that disappears precisely when countries need it most. Shallow domestic markets force this dependency.
                 </p>
@@ -215,7 +215,7 @@ const CrisisSection43 = () => {
               </div>
             </div>
 
-            <div className="bg-orange-50 border-l-4 border-orange-500 p-6 rounded-r-lg mb-6">
+            <div className="bg-slate-50 border-l-4 border-slate-300 p-6 rounded-r-lg mb-6 border-opacity-50">
               <p className="text-base text-gray-800 leading-relaxed">
                 <strong>The cost:</strong> Premium pricing (paying higher rates than necessary), currency risk (debt service costs spike during currency depreciation), volatility (portfolio flows collapse during crises), lost sovereignty (external bondholders and rating agencies influence policy). Countries effectively <strong>borrow back their own capital at premium rates</strong>—paying for the privilege of accessing savings that should have stayed domestic.
               </p>

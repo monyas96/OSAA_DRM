@@ -40,27 +40,6 @@ const StreamlitGraphDirectEmbed = ({
   // Get Streamlit URL from environment variable
   const STREAMLIT_BASE_URL = import.meta.env.VITE_STREAMLIT_URL || 'http://localhost:8501'
 
-  // Map indicator codes to Streamlit page paths
-  const indicatorToPageMap = {
-    '4.1.1.1': '3_topic_4_1',
-    '4.1.2.1': '3_topic_4_1',
-    '4.2.2.1': '4_topic_4_2',
-    '4.2.2.2.a': '4_topic_4_2',
-    '4.2.2.2.b': '4_topic_4_2',
-    '4.3.1.1': '5_topic_4_3',
-    '4.3.1.2': '5_topic_4_3',
-    '4.3.1.3': '5_topic_4_3',
-    '4.3.2.1': '5_topic_4_3',
-    '4.3.2.2': '5_topic_4_3',
-    '4.3.3.1': '5_topic_4_3',
-    '4.4.2.1': '6_topic_4_4',
-    '4.4.2.2': '6_topic_4_4',
-    '4.4.2.3': '6_topic_4_4',
-    '4.4.2.4': '6_topic_4_4',
-    '4.4.3.1': '6_topic_4_4',
-    '4.4.4.1': '6_topic_4_4'
-  }
-
   // Build Streamlit URL with query parameters
   const buildStreamlitUrl = () => {
     // Map indicator codes to policy brief graph pages (pb_indicator_X_X_X_X.py)
@@ -74,17 +53,6 @@ const StreamlitGraphDirectEmbed = ({
       '4.3.1.1': 'pb_indicator_4_3_1_1',
       '4.3.1.2': 'pb_indicator_4_3_1_2',
       '4.3.1.3': 'pb_indicator_4_3_1_3',
-      '4.3.2.1': 'pb_indicator_4_3_2_1',
-      '4.3.2.2': 'pb_indicator_4_3_2_2',
-      '4.3.3.1': 'pb_indicator_4_3_3_1',
-      '4.4.2.1': 'pb_indicator_4_4_2_1',
-      '4.4.2.2': 'pb_indicator_4_4_2_2',
-      '4.4.2.3': 'pb_indicator_4_4_2_3',
-      '4.4.2.4': 'pb_indicator_4_4_2_4',
-      '4.4.3.1': 'pb_indicator_4_4_3_1',
-      '4.4.4.1': 'pb_indicator_4_4_4_1'
-      '4.3.1.1': 'pb_indicator_4_3_1_1',
-      '4.3.1.2': 'pb_indicator_4_3_1_2',
       '4.3.2.1': 'pb_indicator_4_3_2_1',
       '4.3.2.2': 'pb_indicator_4_3_2_2',
       '4.3.3.1': 'pb_indicator_4_3_3_1',

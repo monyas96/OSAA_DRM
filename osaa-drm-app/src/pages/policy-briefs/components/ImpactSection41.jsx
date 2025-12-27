@@ -10,10 +10,10 @@ const ImpactSection41 = () => {
       stat: 'Significant fiscal waste',
       statLabel: 'Lost development value from weak execution',
       tooltip: 'Public Expenditure Reviews and PEFA assessments consistently show that weak budget credibility reduces value-for-money and increases inefficiency.',
-      borderColor: 'border-[#0072BC]',
-      bgColor: 'bg-blue-50',
-      iconColor: 'text-[#0072BC]',
-      statBg: 'bg-[#0072BC]'
+      borderColor: 'border-slate-300',
+      bgColor: 'bg-slate-50',
+      iconColor: 'text-slate-600',
+      statBg: 'bg-slate-600'
     },
     {
       icon: '↓',
@@ -22,10 +22,10 @@ const ImpactSection41 = () => {
       stat: 'Lower tax morale and compliance',
       statLabel: 'Trust declines when budgets don\'t deliver',
       tooltip: 'Governance and fiscal literature links credible service delivery to tax morale, especially where citizens repeatedly experience unmet budget commitments.',
-      borderColor: 'border-[#F26C2B]',
-      bgColor: 'bg-orange-50',
-      iconColor: 'text-[#F26C2B]',
-      statBg: 'bg-[#F26C2B]'
+      borderColor: 'border-slate-300',
+      bgColor: 'bg-slate-50',
+      iconColor: 'text-slate-600',
+      statBg: 'bg-slate-600'
     },
     {
       icon: '+',
@@ -34,10 +34,10 @@ const ImpactSection41 = () => {
       stat: 'Higher risk premiums',
       statLabel: 'More expensive sovereign borrowing',
       tooltip: 'Investors and lenders price fiscal credibility and transparency. Unpredictable execution patterns contribute to higher perceived sovereign risk.',
-      borderColor: 'border-[#009D8C]',
-      bgColor: 'bg-teal-50',
-      iconColor: 'text-[#009D8C]',
-      statBg: 'bg-[#009D8C]'
+      borderColor: 'border-slate-300',
+      bgColor: 'bg-slate-50',
+      iconColor: 'text-slate-600',
+      statBg: 'bg-slate-600'
     },
     {
       icon: '⊗',
@@ -46,10 +46,10 @@ const ImpactSection41 = () => {
       stat: 'Reduced long-term domestic finance',
       statLabel: 'Shallow local capital markets',
       tooltip: 'Where budget execution is volatile, domestic markets tend to remain short-term and fragmented, limiting mobilisation of local savings.',
-      borderColor: 'border-[#7E57C2]',
-      bgColor: 'bg-purple-50',
-      iconColor: 'text-[#7E57C2]',
-      statBg: 'bg-[#7E57C2]'
+      borderColor: 'border-slate-300',
+      bgColor: 'bg-slate-50',
+      iconColor: 'text-slate-600',
+      statBg: 'bg-slate-600'
     },
     {
       icon: '!',
@@ -58,10 +58,10 @@ const ImpactSection41 = () => {
       stat: 'Higher leakage risk',
       statLabel: 'Procurement and control weaknesses amplify losses',
       tooltip: 'Illicit financial flows have multiple drivers, but weak procurement, auditing, and expenditure controls materially increase vulnerability to leakage.',
-      borderColor: 'border-[#FF6F00]',
-      bgColor: 'bg-orange-50',
-      iconColor: 'text-[#FF6F00]',
-      statBg: 'bg-[#FF6F00]'
+      borderColor: 'border-slate-300',
+      bgColor: 'bg-slate-50',
+      iconColor: 'text-slate-600',
+      statBg: 'bg-slate-600'
     },
     {
       icon: '×',
@@ -70,10 +70,10 @@ const ImpactSection41 = () => {
       stat: 'Lower development returns',
       statLabel: 'Spending delivers less impact',
       tooltip: 'The same fiscal envelope produces very different outcomes depending on execution quality, targeting, and accountability.',
-      borderColor: 'border-[#43A047]',
-      bgColor: 'bg-green-50',
-      iconColor: 'text-[#43A047]',
-      statBg: 'bg-[#43A047]'
+      borderColor: 'border-slate-300',
+      bgColor: 'bg-slate-50',
+      iconColor: 'text-slate-600',
+      statBg: 'bg-slate-600'
     }
   ]
 
@@ -86,7 +86,7 @@ const ImpactSection41 = () => {
           color="teal"
         />
       <div className="prose max-w-none">
-        <div className="mb-8 p-4 bg-blue-50 border-l-4 border-[#0072BC] rounded-r-lg">
+        <div className="mb-8 p-4 bg-slate-50 border-l-4 border-slate-300 rounded-r-lg border-opacity-50">
           <p className="text-sm text-gray-700 italic">
             <strong>How to read these impacts:</strong> These impacts describe channels of loss, not additive totals. Weak expenditure management can simultaneously reduce value-for-money, weaken trust, increase financing costs, and amplify governance risks.
           </p>
@@ -96,7 +96,7 @@ const ImpactSection41 = () => {
           {impactCards.map((card, index) => (
             <div
               key={index}
-              className={`border-2 ${card.borderColor} rounded-xl p-6 bg-white hover:shadow-lg transition-shadow`}
+              className={`border-2 ${card.borderColor} border-opacity-50 rounded-xl p-6 bg-white hover:shadow-lg transition-shadow`}
             >
               <div className={`${card.bgColor} w-12 h-12 rounded-lg flex items-center justify-center mb-4 text-2xl font-bold ${card.iconColor}`}>
                 {card.icon}

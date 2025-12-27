@@ -16,8 +16,8 @@ const ImpactSection43 = () => {
             When global crises hit, portfolio flows collapse—forcing countries into sudden fiscal adjustments and expensive external borrowing. Dependence on volatile flows creates vulnerability. Shallow markets mean capital can't be mobilized domestically, perpetuating underdevelopment and forcing reliance on external financing.
           </p>
 
-          <div className="bg-red-50 border-l-4 border-red-500 p-6 rounded-r-lg mb-8">
-            <h4 className="font-bold text-gray-900 mb-3">The cost:</h4>
+          <div className="bg-slate-50 border-l-4 border-slate-300 p-6 rounded-r-lg mb-8 border-opacity-50">
+            <h4 className="font-semibold text-gray-900 mb-3">The cost:</h4>
             <ul className="space-y-2 text-sm text-gray-700 list-disc list-inside">
               <li>Premium pricing (paying higher rates than necessary)</li>
               <li>Currency risk (debt service costs spike during depreciation)</li>
@@ -36,7 +36,7 @@ const ImpactSection43 = () => {
               indicator="4.3.1.2"
               height={500}
             />
-            <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg mb-6">
+            <div className="bg-slate-50 border-l-4 border-slate-300 p-4 rounded-r-lg mb-6 border-opacity-50">
               <p className="text-sm text-gray-800">
                 <strong>Key Message:</strong> When global crises hit, portfolio flows collapse—forcing countries into sudden fiscal adjustments and expensive external borrowing. Dependence on volatile flows creates vulnerability.
               </p>
@@ -63,8 +63,8 @@ const ImpactSection43 = () => {
           </div>
 
           {/* Impact Summary */}
-          <div className="bg-gradient-to-br from-red-50 to-orange-50 border-2 border-red-300 p-6 rounded-xl mt-8">
-            <h3 className="text-lg font-bold text-red-900 mb-3">The Cost of Shallow Markets</h3>
+          <div className="bg-slate-50 border-2 border-slate-200 p-6 rounded-xl mt-8">
+            <h3 className="text-lg font-semibold text-gray-900 mb-3">The Cost of Shallow Markets</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <h4 className="font-bold text-gray-900 mb-2">Vulnerability</h4>

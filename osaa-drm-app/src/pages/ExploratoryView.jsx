@@ -6,7 +6,6 @@ import SidebarNavigation from '../components/SidebarNavigation'
 import ScrollProgress from '../components/ScrollProgress'
 import BackToTop from '../components/BackToTop'
 import StreamlitEmbed from '../components/StreamlitEmbed'
-import Topic41Page from './Topic41Page'
 
 const ExploratoryView = () => {
   const navigate = useNavigate()
@@ -166,8 +165,6 @@ const ExploratoryView = () => {
                 // Navigate to the appropriate route
                 if (tab.id === 'theme-4') {
                   navigate('/exploratory')
-                } else if (tab.id === 'topic-4-1') {
-                  navigate('/topic/4.1')
                 } else {
                   navigate(`/streamlit/${tab.page}`)
                 }
@@ -191,17 +188,11 @@ const ExploratoryView = () => {
           transition={{ delay: 0.6, duration: 0.6 }}
           className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden"
         >
-          {activeTab === 'topic-4-1' ? (
-            <div className="p-0">
-              <Topic41Page />
-            </div>
-          ) : (
-            <StreamlitEmbed 
-              key={activeTab} // Force re-render when tab changes
-              page={tabs.find(t => t.id === activeTab)?.page || 'theme-4'} 
-              hideHeader={true} 
-            />
-          )}
+          <StreamlitEmbed 
+            key={activeTab} // Force re-render when tab changes
+            page={tabs.find(t => t.id === activeTab)?.page || 'theme-4'} 
+            hideHeader={true} 
+          />
         </motion.div>
       </main>
 

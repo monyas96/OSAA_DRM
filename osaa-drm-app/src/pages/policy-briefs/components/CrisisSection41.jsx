@@ -85,8 +85,8 @@ const CrisisSection41 = () => {
           </div>
         </div>
 
-        <div className="bg-blue-50 border-l-4 border-[#0072BC] p-6 rounded-r-lg mt-8">
-          <strong className="text-[#003366]">The Core Problem:</strong>
+        <div className="bg-slate-50 border-l-4 border-slate-300 p-6 rounded-r-lg mt-8 border-opacity-50">
+          <strong className="text-gray-900">The Core Problem:</strong>
           <p className="text-base text-gray-800 mt-2 leading-relaxed">
             This isn't technical—it's institutional. Weak budget execution reveals fragmented systems, poor commitment controls, political interference, and absent accountability mechanisms.
           </p>
