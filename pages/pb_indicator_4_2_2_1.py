@@ -36,8 +36,8 @@ st.markdown("""
     .stApp {
         margin-top: 0;
         padding-top: 0;
-        padding-left: 0.5rem;
-        padding-right: 0.5rem;
+        padding-left: 0;
+        padding-right: 0;
         padding-bottom: 0;
     }
     .main .block-container {
@@ -46,6 +46,11 @@ st.markdown("""
         padding-left: 0.5rem;
         padding-right: 0.5rem;
         max-width: 100%;
+        width: 100%;
+    }
+    /* Make charts full width */
+    .stPlotlyChart, .vega-embed {
+        width: 100% !important;
     }
     /* Match policy brief styling */
     h1, h2, h3 {

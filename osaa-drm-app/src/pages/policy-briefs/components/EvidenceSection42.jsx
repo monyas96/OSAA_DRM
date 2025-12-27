@@ -25,7 +25,7 @@ const EvidenceSection42 = () => {
           </p>
           <StreamlitGraphDirectEmbed
             indicator="4.2.2.1"
-            height={550}
+            height={600}
           />
         </div>
 

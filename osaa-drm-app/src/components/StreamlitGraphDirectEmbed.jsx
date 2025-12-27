@@ -172,7 +172,8 @@ const StreamlitGraphDirectEmbed = ({
         className="w-full border border-gray-200 rounded-lg bg-white"
         style={{ 
           height: height,
-          minHeight: '400px',
+          minHeight: '500px',
+          width: '100%',
           display: loading || error ? 'none' : 'block'
         }}
         onLoad={handleLoad}

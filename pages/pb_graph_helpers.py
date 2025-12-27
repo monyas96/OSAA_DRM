@@ -26,7 +26,7 @@ def render_corruption_losses(df_filtered, ref_data):
     # Sort by corruption loss (descending)
     latest_corruption_sorted = latest_corruption.sort_values('corruption_loss_billion_usd', ascending=False)
     
-    # Use Altair bar chart - exact same as exploratory view
+    # Use Altair bar chart - exact same as exploratory view, full width
     bar_chart = alt.Chart(latest_corruption_sorted).mark_bar().encode(
         x=alt.X('country_or_area', sort='-y', title='Country'),
         y=alt.Y('corruption_loss_billion_usd', title='Estimated Corruption Loss (Billion USD, out of 148)'),
@@ -34,8 +34,8 @@ def render_corruption_losses(df_filtered, ref_data):
         color=alt.Color('corruption_loss_billion_usd', scale=alt.Scale(scheme='redyellowgreen', reverse=True))
     ).properties(
         title='',
-        width=700,
-        height=450
+        width='container',  # Use full container width
+        height=500  # Increased height for better visibility
     )
     
     return bar_chart
