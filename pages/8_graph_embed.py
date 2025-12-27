@@ -11,6 +11,7 @@ if parent_dir not in sys.path:
 
 import streamlit as st
 import pandas as pd
+import altair as alt
 import composite_indicator_methods as cim
 import universal_viz as uv
 
@@ -160,6 +161,40 @@ elif indicator == "4.3.3.1":
     # Pension Funds and Sovereign Wealth Funds
     # This would need specific data structure - placeholder
     st.info("Pension fund data visualization requires specific data structure")
+
+elif indicator == "4.4.2.4":
+    # Corruption and Bribery - Estimated Annual Corruption Loss
+    # Use exact same logic as exploratory view (pages/6_topic_4_4.py)
+    corruption_indicator = "Control of Corruption"
+    corruption_data = df_filtered[df_filtered['indicator_label'] == corruption_indicator].copy()
+    
+    if not corruption_data.empty:
+        # Calculate corruption losses using the function (same as exploratory view)
+        latest_corruption = cim.calculate_corruption_losses(corruption_data)
+        
+        # Apply country filter if specified
+        if countries:
+            country_list = [c.strip() for c in countries.split(",")]
+            latest_corruption = latest_corruption[latest_corruption['country_or_area'].isin(country_list)]
+        
+        # Sort by corruption loss (descending) - same as exploratory view
+        latest_corruption_sorted = latest_corruption.sort_values('corruption_loss_billion_usd', ascending=False)
+        
+        # Use Altair bar chart - exact same as exploratory view
+        bar_chart = alt.Chart(latest_corruption_sorted).mark_bar().encode(
+            x=alt.X('country_or_area', sort='-y', title='Country'),
+            y=alt.Y('corruption_loss_billion_usd', title='Estimated Corruption Loss (Billion USD, out of 148)'),
+            tooltip=['country_or_area', 'corruption_loss_billion_usd', 'value', 'normalized_score', 'inverted_score'],
+            color=alt.Color('corruption_loss_billion_usd', scale=alt.Scale(scheme='redyellowgreen', reverse=True))
+        ).properties(
+            title='',  # No title - React will provide it
+            width=700,
+            height=500
+        )
+        
+        st.altair_chart(bar_chart, use_container_width=True)
+    else:
+        st.info("No data available for Control of Corruption indicator")
 
 else:
     st.info(f"Indicator {indicator} not yet implemented for embedding")
