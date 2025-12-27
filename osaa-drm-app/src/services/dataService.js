@@ -152,6 +152,43 @@ export const listYears = async () => {
   }
 }
 
+export const getCorruptionLosses = async (filters = {}) => {
+  try {
+    const params = new URLSearchParams()
+    
+    if (filters.countries && filters.countries.length > 0) {
+      params.append('countries', filters.countries.join(','))
+    }
+    
+    if (filters.regions && filters.regions.length > 0) {
+      params.append('regions', filters.regions.join(','))
+    }
+    
+    const url = `${API_BASE_URL}/data/corruption-losses${params.toString() ? '?' + params.toString() : ''}`
+    console.log('🔄 Fetching corruption losses:', url)
+    
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    })
+    
+    if (!response.ok) {
+      const errorText = await response.text()
+      console.error('API response error:', response.status, errorText)
+      throw new Error(`Failed to load corruption losses: ${response.status} ${response.statusText}`)
+    }
+    
+    const result = await response.json()
+    console.log('✅ Loaded corruption losses:', result.row_count || result.data?.length || 0, 'rows')
+    return result.data || []
+  } catch (error) {
+    console.error('❌ Error loading corruption losses:', error)
+    throw error
+  }
+}
+
 export const getPensionFundData = async (filters = {}) => {
   try {
     const params = new URLSearchParams()

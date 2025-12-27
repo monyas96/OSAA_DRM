@@ -26,6 +26,14 @@ except ImportError:
     DATA_AVAILABLE = False
     print("Warning: universal_viz not available")
 
+# Import composite indicator methods for corruption loss calculation
+try:
+    import composite_indicator_methods as cim
+    COMPOSITE_INDICATORS_AVAILABLE = True
+except ImportError:
+    COMPOSITE_INDICATORS_AVAILABLE = False
+    print("Warning: composite_indicator_methods not available")
+
 app = FastAPI(title="DRM Dashboard API")
 
 # Enable CORS for React app
@@ -498,6 +506,117 @@ def get_pension_fund_data(
         return JSONResponse(
             status_code=500,
             content={"error": f"Error loading pension fund data: {str(e)}"}
+        )
+
+@app.get("/api/data/corruption-losses")
+def get_corruption_losses(
+    countries: str = Query(None, description="Comma-separated country names"),
+    regions: str = Query(None, description="Comma-separated region names")
+):
+    """Get calculated corruption losses for indicator 4.4.2.4
+    
+    This endpoint calculates corruption losses using the same method as the exploratory view:
+    - Uses Control of Corruption indicator
+    - Calculates normalized and inverted scores
+    - Allocates $148B based on weights
+    """
+    if not COMPOSITE_INDICATORS_AVAILABLE:
+        return JSONResponse(
+            status_code=503,
+            content={"error": "Composite indicator methods not available"}
+        )
+    
+    df_main = get_main_data()
+    df_ref = get_ref_data()
+    
+    if df_main is None or df_main.empty:
+        return JSONResponse(
+            status_code=503,
+            content={"error": "Main data not available"}
+        )
+    
+    # Get Control of Corruption indicator
+    corruption_indicator = "Control of Corruption"
+    corruption_data = df_main[df_main['indicator_label'] == corruption_indicator].copy()
+    
+    if corruption_data.empty:
+        return {
+            "data": [],
+            "message": "No data found for Control of Corruption indicator",
+            "row_count": 0
+        }
+    
+    # Default to Africa filtering if no countries or regions specified
+    if not countries and not regions and df_ref is not None and not df_ref.empty:
+        africa_countries = df_ref[df_ref['Region Name'] == 'Africa']['Country or Area'].dropna().unique()
+        corruption_data = corruption_data[corruption_data['country_or_area'].isin(africa_countries)]
+    
+    # Apply explicit filters if provided
+    if countries:
+        country_list = [c.strip() for c in countries.split(',')]
+        corruption_data = corruption_data[corruption_data['country_or_area'].isin(country_list)]
+    
+    if regions and df_ref is not None and not df_ref.empty:
+        region_list = [r.strip() for r in regions.split(',')]
+        if 'Intermediate Region Name' in df_ref.columns:
+            region_countries = df_ref[
+                (df_ref['Intermediate Region Name'].isin(region_list)) |
+                (df_ref['Region Name'].isin(region_list))
+            ]['Country or Area'].unique()
+        else:
+            region_countries = df_ref[df_ref['Region Name'].isin(region_list)]['Country or Area'].unique()
+        corruption_data = corruption_data[corruption_data['country_or_area'].isin(region_countries)]
+    
+    if corruption_data.empty:
+        return {
+            "data": [],
+            "message": "No data available after filtering",
+            "row_count": 0
+        }
+    
+    # Calculate corruption losses
+    try:
+        latest_corruption = cim.calculate_corruption_losses(corruption_data)
+        
+        # Sort by corruption loss (descending)
+        latest_corruption_sorted = latest_corruption.sort_values('corruption_loss_billion_usd', ascending=False)
+        
+        # Convert to JSON-serializable format
+        cleaned_data = []
+        for idx, row in latest_corruption_sorted.iterrows():
+            cleaned_row = {}
+            for col in latest_corruption_sorted.columns:
+                value = row[col]
+                if pd.isna(value) or value is None:
+                    cleaned_row[col] = None
+                elif isinstance(value, (np.integer, np.int64, np.int32)):
+                    cleaned_row[col] = int(value)
+                elif isinstance(value, (np.floating, np.float64, np.float32)):
+                    if np.isinf(value) or np.isnan(value):
+                        cleaned_row[col] = None
+                    else:
+                        cleaned_row[col] = float(value)
+                elif isinstance(value, float):
+                    if abs(value) > 1e308 or value != value:
+                        cleaned_row[col] = None
+                    else:
+                        cleaned_row[col] = value
+                else:
+                    cleaned_row[col] = value
+            cleaned_data.append(cleaned_row)
+        
+        return {
+            "data": cleaned_data,
+            "row_count": len(latest_corruption_sorted),
+            "indicator": "4.4.2.4",
+            "indicator_label": "Corruption and Bribery"
+        }
+    except Exception as e:
+        print(f"Error calculating corruption losses: {e}")
+        traceback.print_exc()
+        return JSONResponse(
+            status_code=500,
+            content={"error": f"Error calculating corruption losses: {str(e)}"}
         )
 
 @app.get("/api/years/list")

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ComposedChart } from 'recharts'
-import { getIndicatorData, getPensionFundData } from '../../../services/dataService'
+import { getIndicatorData, getPensionFundData, getCorruptionLosses } from '../../../services/dataService'
 
 // Mapping from indicator codes to indicator labels
 const INDICATOR_MAP = {
@@ -491,6 +491,13 @@ const StreamlitGraphEmbed = ({
       return {
         domain: [minVal - padding, maxVal + padding],
         tickFormatter: (val) => `${val.toFixed(1)}%`
+      }
+    } else if (indicator === '4.4.2.4') {
+      // Corruption Losses - billions USD (typically 0-4 range)
+      const padding = Math.max(0.1, range * 0.1)
+      return {
+        domain: [Math.max(0, minVal - padding), maxVal + padding],
+        tickFormatter: (val) => `${val.toFixed(1)}B`
       }
     } else if (indicator === '4.3.1.1') {
       // Market Capitalization - could be % of GDP or absolute values
