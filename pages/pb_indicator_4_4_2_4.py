@@ -92,7 +92,8 @@ st.markdown("<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True
 bar_chart = render_corruption_losses(df_filtered, ref_data)
 
 if bar_chart:
-    st.altair_chart(bar_chart, use_container_width=True)
+    # Use full container width and enable responsive sizing
+    st.altair_chart(bar_chart, use_container_width=True, theme=None)
 else:
     st.info("No data available for Control of Corruption indicator")
 
