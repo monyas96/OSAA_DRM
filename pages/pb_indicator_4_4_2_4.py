@@ -105,6 +105,7 @@ bar_chart = render_corruption_losses(df_filtered, ref_data)
 
 if bar_chart:
     # Use full container width and enable responsive sizing
+    # Note: Altair charts in Streamlit automatically include action buttons (fullscreen, export, etc.)
     st.altair_chart(bar_chart, use_container_width=True, theme=None)
     
     # Auto-trigger fullscreen using JavaScript (for Altair/Vega charts)
@@ -125,38 +126,60 @@ if bar_chart:
         
         function triggerFullscreen() {
             logToParent('🔍 Searching for fullscreen button...');
-            // Try multiple selectors for the fullscreen button in Vega-Altair charts
-            const selectors = [
-                '.vega-embed .vega-actions a[title*="fullscreen" i]',
-                '.vega-embed .vega-actions a[title*="Fullscreen"]',
-                '.vega-embed .vega-actions a:has-text("Fullscreen")',
-                'button:contains("Fullscreen")',
-                '.vega-actions a[href*="fullscreen"]'
-            ];
             
-            let fullscreenBtn = null;
-            for (const selector of selectors) {
-                try {
-                    fullscreenBtn = document.querySelector(selector);
-                    if (fullscreenBtn) break;
-                } catch (e) {
-                    // Invalid selector, try next
-                }
+            // Check if vega-embed exists
+            const vegaEmbeds = document.querySelectorAll('.vega-embed');
+            logToParent('Found ' + vegaEmbeds.length + ' vega-embed elements');
+            
+            if (vegaEmbeds.length === 0) {
+                logToParent('⚠️ No vega-embed found, retrying...');
+                setTimeout(triggerFullscreen, 2000);
+                return;
             }
             
-            // Alternative: find by text content
+            // Try to find the fullscreen button in vega-actions
+            let fullscreenBtn = null;
+            
+            // Method 1: Look for button with "Fullscreen" text
+            const allButtons = document.querySelectorAll('.vega-embed button, .vega-embed a');
+            logToParent('Found ' + allButtons.length + ' buttons/links in vega-embed');
+            
+            allButtons.forEach(function(btn) {
+                const text = btn.textContent || btn.innerText || '';
+                const title = btn.getAttribute('title') || btn.getAttribute('aria-label') || '';
+                const className = btn.className || '';
+                
+                logToParent('Button text: "' + text + '", title: "' + title + '", class: "' + className + '"');
+                
+                if (text.toLowerCase().includes('fullscreen') || 
+                    title.toLowerCase().includes('fullscreen') ||
+                    className.toLowerCase().includes('fullscreen')) {
+                    fullscreenBtn = btn;
+                    logToParent('✅ Found fullscreen button by text/title: ' + text);
+                }
+            });
+            
+            // Method 2: Look for the specific fullscreen icon/button in vega-actions
             if (!fullscreenBtn) {
-                const allLinks = document.querySelectorAll('.vega-embed .vega-actions a');
-                allLinks.forEach(function(link) {
-                    const title = link.getAttribute('title') || link.textContent || '';
-                    if (title.toLowerCase().includes('fullscreen')) {
-                        fullscreenBtn = link;
+                const vegaActions = document.querySelectorAll('.vega-actions a, .vega-actions button');
+                logToParent('Found ' + vegaActions.length + ' vega-actions elements');
+                
+                vegaActions.forEach(function(action) {
+                    const href = action.getAttribute('href') || '';
+                    const title = action.getAttribute('title') || '';
+                    const text = action.textContent || '';
+                    
+                    if (href.includes('fullscreen') || 
+                        title.toLowerCase().includes('fullscreen') ||
+                        text.toLowerCase().includes('fullscreen')) {
+                        fullscreenBtn = action;
+                        logToParent('✅ Found fullscreen button in vega-actions');
                     }
                 });
             }
             
             if (fullscreenBtn) {
-                logToParent('✅ Found fullscreen button, clicking...');
+                logToParent('✅ Found fullscreen button, clicking in 100ms...');
                 // Use a small delay to ensure button is ready
                 setTimeout(function() {
                     try {
@@ -167,7 +190,7 @@ if bar_chart:
                     }
                 }, 100);
             } else {
-                logToParent('⚠️ Fullscreen button not found, retrying...');
+                logToParent('⚠️ Fullscreen button not found after checking all methods, retrying...');
                 // Retry after a longer delay
                 setTimeout(triggerFullscreen, 2000);
             }

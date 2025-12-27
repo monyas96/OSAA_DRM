@@ -37,6 +37,7 @@ def render_corruption_losses(df_filtered, ref_data):
     latest_corruption_sorted = latest_corruption.sort_values('corruption_loss_billion_usd', ascending=False)
     
     # Use Altair bar chart - exact same as exploratory view, full width
+    # Enable actions (including fullscreen) in the chart
     bar_chart = alt.Chart(latest_corruption_sorted).mark_bar().encode(
         x=alt.X('country_or_area', sort='-y', title='Country'),
         y=alt.Y('corruption_loss_billion_usd', title='Estimated Corruption Loss (Billion USD, out of 148)'),
@@ -48,6 +49,7 @@ def render_corruption_losses(df_filtered, ref_data):
         height=500  # Increased height for better visibility
     )
     
+    # Return chart with actions enabled (fullscreen, export, etc.)
     return bar_chart
 
 def render_tax_effort(df_filtered, ref_data):

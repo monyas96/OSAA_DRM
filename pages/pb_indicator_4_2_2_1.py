@@ -115,43 +115,92 @@ if fig:
     st.markdown("""
     <script>
     (function() {
+        function logToParent(message) {
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'STREAMLIT_FULLSCREEN_DEBUG',
+                    message: message
+                }, '*');
+            }
+            console.log(message);
+        }
+        
+        logToParent('🚀 Starting Plotly fullscreen trigger attempts...');
+        
         function triggerFullscreen() {
+            // Send debug messages to parent
+            function logToParent(message) {
+                if (window.parent !== window) {
+                    window.parent.postMessage({
+                        type: 'STREAMLIT_FULLSCREEN_DEBUG',
+                        message: message
+                    }, '*');
+                }
+                console.log(message);
+            }
+            
+            logToParent('🔍 Searching for Plotly fullscreen button...');
+            
             // Find Plotly chart container
             const plotlyDiv = document.querySelector('.js-plotly-plot');
-            if (plotlyDiv) {
-                const modebar = plotlyDiv.querySelector('.modebar');
-                if (modebar) {
-                    // Look for fullscreen button by data-title attribute
-                    const fullscreenBtn = modebar.querySelector('[data-title*="fullscreen" i], [data-title*="Fullscreen" i]');
-                    if (fullscreenBtn) {
-                        console.log('Found Plotly fullscreen button, clicking...');
-                        fullscreenBtn.click();
-                        return;
-                    }
-                    
-                    // Alternative: find by checking all buttons
-                    const allButtons = modebar.querySelectorAll('.modebar-btn');
-                    allButtons.forEach(function(btn) {
-                        const title = btn.getAttribute('data-title') || btn.getAttribute('title') || '';
-                        if (title.toLowerCase().includes('fullscreen')) {
-                            console.log('Found Plotly fullscreen button by title, clicking...');
-                            btn.click();
-                        }
-                    });
-                } else {
-                    console.log('Plotly modebar not found, retrying...');
-                    setTimeout(triggerFullscreen, 1000);
+            if (!plotlyDiv) {
+                logToParent('⚠️ Plotly chart not found, retrying...');
+                setTimeout(triggerFullscreen, 1000);
+                return;
+            }
+            
+            logToParent('✅ Found Plotly chart container');
+            const modebar = plotlyDiv.querySelector('.modebar');
+            if (!modebar) {
+                logToParent('⚠️ Plotly modebar not found, retrying...');
+                setTimeout(triggerFullscreen, 1000);
+                return;
+            }
+            
+            logToParent('✅ Found Plotly modebar');
+            const allButtons = modebar.querySelectorAll('.modebar-btn');
+            logToParent('Found ' + allButtons.length + ' modebar buttons');
+            
+            let fullscreenBtn = null;
+            
+            // Check all buttons for fullscreen
+            allButtons.forEach(function(btn) {
+                const title = btn.getAttribute('data-title') || btn.getAttribute('title') || '';
+                const className = btn.className || '';
+                const dataAttr = btn.getAttribute('data-attr') || '';
+                
+                logToParent('Button - title: "' + title + '", class: "' + className + '", data-attr: "' + dataAttr + '"');
+                
+                if (title.toLowerCase().includes('fullscreen') || 
+                    className.toLowerCase().includes('fullscreen') ||
+                    dataAttr.toLowerCase().includes('fullscreen')) {
+                    fullscreenBtn = btn;
+                    logToParent('✅ Found Plotly fullscreen button by title/attr');
                 }
+            });
+            
+            if (fullscreenBtn) {
+                logToParent('✅ Found fullscreen button, clicking in 100ms...');
+                setTimeout(function() {
+                    try {
+                        fullscreenBtn.click();
+                        logToParent('✅ Fullscreen button clicked successfully');
+                    } catch (e) {
+                        logToParent('❌ Error clicking fullscreen button: ' + e.message);
+                    }
+                }, 100);
             } else {
-                console.log('Plotly chart not found, retrying...');
+                logToParent('⚠️ Fullscreen button not found in modebar, retrying...');
                 setTimeout(triggerFullscreen, 1000);
             }
         }
         
         // Wait for Plotly chart to render
-        setTimeout(triggerFullscreen, 1500);
+        setTimeout(triggerFullscreen, 2000);
         // Also try after longer delay in case chart loads slowly
-        setTimeout(triggerFullscreen, 3000);
+        setTimeout(triggerFullscreen, 4000);
+        setTimeout(triggerFullscreen, 6000);
+        setTimeout(triggerFullscreen, 8000);
     })();
     </script>
     """, unsafe_allow_html=True)
