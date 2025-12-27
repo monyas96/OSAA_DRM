@@ -63,36 +63,6 @@ st.markdown("""
     [data-testid="stVerticalBlock"] > [style*="flex-direction: column"] {
         height: 100%;
     }
-    /* Auto-trigger fullscreen for charts */
-    .vega-embed {
-        position: relative;
-    }
-    /* Ensure vega-actions menu is visible and enabled */
-    .vega-embed .vega-actions {
-        opacity: 1 !important;
-        display: block !important;
-        visibility: visible !important;
-    }
-    /* Make sure fullscreen button is visible */
-    .vega-embed .vega-actions a[title*="fullscreen"], 
-    .vega-embed .vega-actions a[title*="Fullscreen"],
-    .vega-embed .vega-actions a[href*="fullscreen"] {
-        display: inline-block !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-    }
-    /* Match policy brief styling */
-    h1, h2, h3 {
-        color: #003366;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        font-weight: 700;
-    }
-    h3 {
-        font-size: 1.125rem;
-        margin-bottom: 0.75rem;
-    }
-</style>
-""", unsafe_allow_html=True)
 
 # Load data
 @st.cache_data
@@ -125,11 +95,7 @@ if bar_chart:
     # Note: Altair charts in Streamlit automatically include action buttons (fullscreen, export, etc.)
     st.altair_chart(bar_chart, use_container_width=True, theme=None)
     
-    # Auto-trigger fullscreen using JavaScript (for Altair/Vega charts)
-    # Note: Console logs from iframe won't show in parent window, so we use postMessage
-    st.markdown("""
-    <script>
-    (function() {
+    # Chart is already rendered in fullscreen-like view via CSS
         // Send messages to parent window for debugging
         function logToParent(message) {
             if (window.parent !== window) {
