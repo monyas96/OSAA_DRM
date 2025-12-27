@@ -126,7 +126,11 @@ const StreamlitGraphDirectEmbed = ({
   useEffect(() => {
     setLoading(true)
     setError(null)
-  }, [indicator, JSON.stringify(filters)])
+    // Auto-open fullscreen modal if enabled
+    if (autoFullscreen) {
+      setIsFullscreen(true)
+    }
+  }, [indicator, JSON.stringify(filters), autoFullscreen])
 
   const handleLoad = () => {
     setLoading(false)
