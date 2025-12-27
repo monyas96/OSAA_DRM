@@ -43,23 +43,31 @@ st.markdown("""
         overflow: hidden;
     }
     .main .block-container {
-        padding-top: 0.5rem;
-        padding-bottom: 0.5rem;
-        padding-left: 0.5rem;
-        padding-right: 0.5rem;
+        padding-top: 0;
+        padding-bottom: 0;
+        padding-left: 0;
+        padding-right: 0;
         max-width: 100%;
         width: 100%;
-        height: calc(100vh - 1rem);
+        height: 100vh;
         display: flex;
         flex-direction: column;
     }
-    /* Make charts full width and height - fullscreen-like view */
+    /* Make charts full width and height - chart-only view */
     .stPlotlyChart, .vega-embed {
         width: 100% !important;
-        height: calc(100vh - 2rem) !important;
+        height: 100vh !important;
         min-height: 600px !important;
     }
-    /* Make chart containers fill available space */
+    /* Hide any markdown elements (titles, etc.) */
+    .stMarkdown {
+        display: none !important;
+    }
+    /* Show only chart containers */
+    [data-testid="stVerticalBlock"] {
+        padding: 0 !important;
+        margin: 0 !important;
+    }
     [data-testid="stVerticalBlock"] > [style*="flex-direction: column"] {
         height: 100%;
     }
@@ -98,10 +106,7 @@ africa_ref_data = ref_data[ref_data['Region Name'] == 'Africa'].copy()
 africa_countries = africa_ref_data['Country or Area'].unique()
 df_filtered = df_main[df_main['country_or_area'].isin(africa_countries)].copy()
 
-# Title (matching policy brief) - compact styling
-st.markdown("### Tax Effort Over Time")
-st.markdown("**Indicator 4.2.2.1 - Tax Collection Efficiency Score**")
-st.markdown("<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True)
+# No title - chart-only view for clean embedding
 
 # Render graph using shared helper (exact same as exploratory view)
 fig = render_tax_effort(df_filtered, ref_data)
