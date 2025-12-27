@@ -1,6 +1,6 @@
 import React from 'react'
 import SectionHeader from './SectionHeader'
-import StreamlitGraphEmbed from './StreamlitGraphEmbed'
+import StreamlitGraphDirectEmbed from '../../../components/StreamlitGraphDirectEmbed'
 import PullQuote from '../shared/PullQuote'
 
 const CrisisSection44 = () => {
@@ -123,17 +123,9 @@ const CrisisSection44 = () => {
             {/* Graph 1C: Corruption Loss Distribution */}
             <div className="mb-6">
               <h4 className="text-base font-bold text-[#003366] mb-3">Graph 1C: Corruption Loss Distribution</h4>
-              <StreamlitGraphEmbed
+              <StreamlitGraphDirectEmbed
                 indicator="4.4.2.4"
-                title="Estimated Annual Corruption Loss"
-                subtitle="Indicator 4.4.2.4 - Corruption and Bribery"
                 caption="Estimated corruption losses show concentration in fragile and resource-rich states. The gradient reveals that corruption-related IFFs disproportionately affect countries with weak institutions and heavy resource dependence."
-                filters={{
-                  countries: 'all',
-                  years: 'latest',
-                  view: 'bar'
-                }}
-                viewType="bar"
                 height={600}
               />
               <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg mb-6">

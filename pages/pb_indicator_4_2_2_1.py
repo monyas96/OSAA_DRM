@@ -1,6 +1,6 @@
 """
-Policy Brief Graph: Indicator 4.4.2.4 - Corruption and Bribery
-Pre-configured Streamlit page showing Estimated Annual Corruption Loss
+Policy Brief Graph: Indicator 4.2.2.1 - Tax Collection Efficiency Score
+Pre-configured Streamlit page showing Tax Effort Over Time
 Exact same graph as exploratory view, with title and policy brief styling
 """
 import sys
@@ -11,14 +11,14 @@ if parent_dir not in sys.path:
 
 import streamlit as st
 import pandas as pd
-import altair as alt
+import plotly.graph_objects as go
 import composite_indicator_methods as cim
 import universal_viz as uv
-from pages.pb_graph_helpers import render_corruption_losses
+from pages.pb_graph_helpers import render_tax_effort
 
 # Hide Streamlit UI elements for clean embedding
 st.set_page_config(
-    page_title="Estimated Annual Corruption Loss",
+    page_title="Tax Effort Over Time",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
@@ -76,14 +76,13 @@ africa_countries = africa_ref_data['Country or Area'].unique()
 df_filtered = df_main[df_main['country_or_area'].isin(africa_countries)].copy()
 
 # Title (matching policy brief)
-st.markdown("### Estimated Annual Corruption Loss")
-st.markdown("**Indicator 4.4.2.4 - Corruption and Bribery**")
+st.markdown("### Tax Effort Over Time")
+st.markdown("**Indicator 4.2.2.1 - Tax Collection Efficiency Score**")
 
 # Render graph using shared helper (exact same as exploratory view)
-bar_chart = render_corruption_losses(df_filtered, ref_data)
+fig = render_tax_effort(df_filtered, ref_data)
 
-if bar_chart:
-    st.altair_chart(bar_chart, use_container_width=True)
+if fig:
+    st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': True})
 else:
-    st.info("No data available for Control of Corruption indicator")
-
+    st.info("No data available for Tax Effort indicator")
