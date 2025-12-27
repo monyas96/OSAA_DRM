@@ -35,7 +35,7 @@ def render_corruption_losses(df_filtered, ref_data):
     ).properties(
         title='',
         width=700,
-        height=500
+        height=450
     )
     
     return bar_chart

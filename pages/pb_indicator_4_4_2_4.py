@@ -36,12 +36,15 @@ st.markdown("""
     .stApp {
         margin-top: 0;
         padding-top: 0;
-        padding-left: 1rem;
-        padding-right: 1rem;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+        padding-bottom: 0;
     }
     .main .block-container {
-        padding-top: 1rem;
-        padding-bottom: 1rem;
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
         max-width: 100%;
     }
     /* Match policy brief styling */

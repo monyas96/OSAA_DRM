@@ -127,7 +127,7 @@ const CrisisSection44 = () => {
               <StreamlitGraphDirectEmbed
                 indicator="4.4.2.4"
                 caption="Estimated corruption losses show concentration in fragile and resource-rich states. The gradient reveals that corruption-related IFFs disproportionately affect countries with weak institutions and heavy resource dependence."
-                height={600}
+                height={550}
               />
               <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg mb-6">
                 <p className="text-sm text-gray-800">
