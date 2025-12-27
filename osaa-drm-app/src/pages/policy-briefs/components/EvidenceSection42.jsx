@@ -1,6 +1,6 @@
 import React from 'react'
 import SectionHeader from './SectionHeader'
-import StreamlitGraphEmbed from './StreamlitGraphEmbed'
+import StreamlitGraphDirectEmbed from '../../../components/StreamlitGraphDirectEmbed'
 
 const EvidenceSection42 = () => {
   return (
@@ -23,12 +23,8 @@ const EvidenceSection42 = () => {
           <p className="text-sm text-gray-600 mb-6">
             This line graph shows tax effort over time for African countries, revealing how efficiently countries collect revenue relative to their estimated capacity. Countries with tax effort below 0.80 indicate significant collection gaps.
           </p>
-          <StreamlitGraphEmbed
+          <StreamlitGraphDirectEmbed
             indicator="4.2.2.1"
-            title="Tax Effort Over Time"
-            subtitle="Tax Collection Efficiency (Actual/Capacity)"
-            viewType="line"
-            filters={{}}
             height={600}
           />
         </div>
