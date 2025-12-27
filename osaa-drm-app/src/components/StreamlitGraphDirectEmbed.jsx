@@ -29,10 +29,12 @@ const StreamlitGraphDirectEmbed = ({
   caption,
   filters = {},
   height = 500,
-  className = ''
+  className = '',
+  autoFullscreen = true
 }) => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [isFullscreen, setIsFullscreen] = useState(autoFullscreen)
 
   // Get Streamlit URL from environment variable
   const STREAMLIT_BASE_URL = import.meta.env.VITE_STREAMLIT_URL || 'http://localhost:8501'
@@ -136,58 +138,122 @@ const StreamlitGraphDirectEmbed = ({
     setError(`Failed to load Streamlit graph for indicator ${indicator}`)
   }
 
-  return (
-    <div className={`relative ${className}`} style={{ minHeight: `${height}px` }}>
-      {/* Note: Title and subtitle are shown in the Streamlit page itself, so we don't render them here */}
+  // Fullscreen modal component
+  const FullscreenModal = () => {
+    if (!isFullscreen) return null
 
-      {/* Loading State */}
-      {loading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-gray-50 border border-gray-200 rounded-lg">
-          <div className="text-center">
-            <Loader2 className="w-8 h-8 text-[#003366] animate-spin mx-auto mb-2" />
-            <p className="text-sm text-gray-600">Loading graph from Streamlit...</p>
-          </div>
-        </div>
-      )}
-
-      {/* Error State */}
-      {error && (
-        <div className="absolute inset-0 flex items-center justify-center bg-yellow-50 border border-yellow-200 rounded-lg">
-          <div className="text-center p-4">
-            <AlertCircle className="w-8 h-8 text-yellow-600 mx-auto mb-2" />
-            <p className="text-sm text-yellow-800 font-semibold mb-2">{error}</p>
-            <p className="text-xs text-yellow-700">
-              Make sure Streamlit is running: <code className="bg-yellow-100 px-2 py-1 rounded">streamlit run app_streamlit.py</code>
-            </p>
-            <p className="text-xs text-yellow-700 mt-2">
-              Or visit: <a href={streamlitUrl} target="_blank" rel="noopener noreferrer" className="underline">{streamlitUrl}</a>
-            </p>
-          </div>
-        </div>
-      )}
-
-      {/* Streamlit iframe */}
-      <iframe
-        src={streamlitUrl}
-        className="w-full border border-gray-200 rounded-lg bg-white"
-        style={{ 
-          height: height,
-          minHeight: '500px',
-          width: '100%',
-          display: loading || error ? 'none' : 'block'
+    return (
+      <div 
+        className="fixed inset-0 z-[9999] bg-white"
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          width: '100vw',
+          height: '100vh',
+          zIndex: 9999
         }}
-        onLoad={handleLoad}
-        onError={handleError}
-        title={`Streamlit Graph: ${title || indicator}`}
-        allow="clipboard-read; clipboard-write; fullscreen"
-        sandbox="allow-same-origin allow-scripts allow-forms allow-popups"
-      />
+      >
+        {/* Close button */}
+        <button
+          onClick={() => setIsFullscreen(false)}
+          className="absolute top-4 right-4 z-[10000] bg-white hover:bg-gray-100 rounded-full p-2 shadow-lg transition-colors"
+          aria-label="Close fullscreen"
+        >
+          <X className="w-6 h-6 text-gray-700" />
+        </button>
 
-      {/* Caption */}
-      {caption && (
-        <p className="text-xs text-gray-500 mt-3 italic">{caption}</p>
+        {/* Fullscreen iframe */}
+        <iframe
+          src={streamlitUrl}
+          className="w-full h-full border-0"
+          style={{ 
+            width: '100vw',
+            height: '100vh',
+            border: 'none'
+          }}
+          onLoad={handleLoad}
+          onError={handleError}
+          title={`Streamlit Graph: ${title || indicator}`}
+          allow="clipboard-read; clipboard-write; fullscreen"
+          sandbox="allow-same-origin allow-scripts allow-forms allow-popups"
+        />
+      </div>
+    )
+  }
+
+  return (
+    <>
+      {/* Fullscreen Modal */}
+      <FullscreenModal />
+
+      {/* Regular embed (hidden when fullscreen) */}
+      {!isFullscreen && (
+        <div className={`relative ${className}`} style={{ minHeight: `${height}px` }}>
+          {/* Note: Title and subtitle are shown in the Streamlit page itself, so we don't render them here */}
+
+          {/* Loading State */}
+          {loading && (
+            <div className="absolute inset-0 flex items-center justify-center bg-gray-50 border border-gray-200 rounded-lg">
+              <div className="text-center">
+                <Loader2 className="w-8 h-8 text-[#003366] animate-spin mx-auto mb-2" />
+                <p className="text-sm text-gray-600">Loading graph from Streamlit...</p>
+              </div>
+            </div>
+          )}
+
+          {/* Error State */}
+          {error && (
+            <div className="absolute inset-0 flex items-center justify-center bg-yellow-50 border border-yellow-200 rounded-lg">
+              <div className="text-center p-4">
+                <AlertCircle className="w-8 h-8 text-yellow-600 mx-auto mb-2" />
+                <p className="text-sm text-yellow-800 font-semibold mb-2">{error}</p>
+                <p className="text-xs text-yellow-700">
+                  Make sure Streamlit is running: <code className="bg-yellow-100 px-2 py-1 rounded">streamlit run app_streamlit.py</code>
+                </p>
+                <p className="text-xs text-yellow-700 mt-2">
+                  Or visit: <a href={streamlitUrl} target="_blank" rel="noopener noreferrer" className="underline">{streamlitUrl}</a>
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Streamlit iframe */}
+          <iframe
+            src={streamlitUrl}
+            className="w-full border border-gray-200 rounded-lg bg-white"
+            style={{ 
+              height: height,
+              minHeight: '500px',
+              width: '100%',
+              display: loading || error ? 'none' : 'block'
+            }}
+            onLoad={handleLoad}
+            onError={handleError}
+            title={`Streamlit Graph: ${title || indicator}`}
+            allow="clipboard-read; clipboard-write; fullscreen"
+            sandbox="allow-same-origin allow-scripts allow-forms allow-popups"
+          />
+
+          {/* Fullscreen button */}
+          <button
+            onClick={() => setIsFullscreen(true)}
+            className="absolute top-2 right-2 bg-white hover:bg-gray-100 rounded p-2 shadow-md transition-colors z-10"
+            aria-label="Open in fullscreen"
+            title="Open in fullscreen"
+          >
+            <Maximize2 className="w-4 h-4 text-gray-700" />
+          </button>
+
+          {/* Caption */}
+          {caption && (
+            <p className="text-xs text-gray-500 mt-3 italic">{caption}</p>
+          )}
+        </div>
       )}
-    </div>
+    </>
   )
 }
 
