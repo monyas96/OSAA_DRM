@@ -661,7 +661,6 @@ const StreamlitGraphEmbed = ({
                     return value
                   }}
                 />
-                <Legend />
                 {countries.slice(0, 8).map((country, idx) => (
                   <Line 
                     key={country}
@@ -714,7 +713,6 @@ const StreamlitGraphEmbed = ({
                       return value
                     }}
                   />
-                  <Legend />
                   {countries.slice(0, 5).map((country, idx) => (
                     <Bar 
                       key={country}
@@ -742,7 +740,6 @@ const StreamlitGraphEmbed = ({
                     return value
                   }}
                 />
-                <Legend />
                 <Bar dataKey="value" fill="#0072BC" />
               </BarChart>
             )}

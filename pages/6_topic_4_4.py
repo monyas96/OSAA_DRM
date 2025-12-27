@@ -2293,7 +2293,8 @@ This composite indicator measures how capable a country is in implementing coher
                             x=chart_data_sorted['country_or_area'],
                             y=chart_data_sorted['value'],
                             marker_color='#0072BC',
-                            hovertemplate="<b>%{x}</b><br>Year: " + str(selected_year_443_2a) + "<br>Value: %{y:,.0f}<br><extra></extra>"
+                            hovertemplate="<b>%{x}</b><br>Year: " + str(selected_year_443_2a) + "<br>Value: %{y:,.0f}<br><extra></extra>",
+                            showlegend=False
                         ))
                         
                         fig.update_layout(
@@ -2301,7 +2302,8 @@ This composite indicator measures how capable a country is in implementing coher
                             xaxis_title="Country",
                             yaxis_title="Value",
                             height=500,
-                            xaxis={'categoryorder': 'total descending'}
+                            xaxis={'categoryorder': 'total descending'},
+                            showlegend=False
                         )
                         
                         st.plotly_chart(fig, use_container_width=True, key=f"plot_443_2a_bar_{selected_ops_display}")
@@ -2523,7 +2525,8 @@ Under Theme 4: DRM Systems and Institutions, this indicator captures a country's
                             x=chart_data_sorted['country_or_area'],
                             y=chart_data_sorted['value'],
                             marker_color='#009D8C',
-                            hovertemplate="<b>%{x}</b><br>Year: " + str(selected_year_443_2b) + "<br>Value: %{y:,.0f}<br><extra></extra>"
+                            hovertemplate="<b>%{x}</b><br>Year: " + str(selected_year_443_2b) + "<br>Value: %{y:,.0f}<br><extra></extra>",
+                            showlegend=False
                         ))
                         
                         fig.update_layout(
@@ -2531,7 +2534,8 @@ Under Theme 4: DRM Systems and Institutions, this indicator captures a country's
                             xaxis_title="Country",
                             yaxis_title="Value",
                             height=500,
-                            xaxis={'categoryorder': 'total descending'}
+                            xaxis={'categoryorder': 'total descending'},
+                            showlegend=False
                         )
                         
                         st.plotly_chart(fig, use_container_width=True, key=f"plot_443_2b_bar_{selected_ict_display}")
