@@ -20,7 +20,7 @@
  */
 
 import React, { useState, useEffect } from 'react'
-import { Loader2, AlertCircle } from 'lucide-react'
+import { Loader2, AlertCircle, X, Maximize2 } from 'lucide-react'
 
 const StreamlitGraphDirectEmbed = ({ 
   indicator,
@@ -126,9 +126,13 @@ const StreamlitGraphDirectEmbed = ({
   useEffect(() => {
     setLoading(true)
     setError(null)
-    // Auto-open fullscreen modal if enabled
+    // Auto-open fullscreen modal if enabled (with small delay to let page render)
     if (autoFullscreen) {
-      setIsFullscreen(true)
+      // Small delay to ensure page renders first
+      const timer = setTimeout(() => {
+        setIsFullscreen(true)
+      }, 100)
+      return () => clearTimeout(timer)
     }
   }, [indicator, JSON.stringify(filters), autoFullscreen])
 
@@ -169,6 +173,32 @@ const StreamlitGraphDirectEmbed = ({
           <X className="w-6 h-6 text-gray-700" />
         </button>
 
+        {/* Loading State in Modal */}
+        {loading && (
+          <div className="absolute inset-0 flex items-center justify-center bg-white">
+            <div className="text-center">
+              <Loader2 className="w-8 h-8 text-[#003366] animate-spin mx-auto mb-2" />
+              <p className="text-sm text-gray-600">Loading graph from Streamlit...</p>
+            </div>
+          </div>
+        )}
+
+        {/* Error State in Modal */}
+        {error && (
+          <div className="absolute inset-0 flex items-center justify-center bg-yellow-50">
+            <div className="text-center p-4">
+              <AlertCircle className="w-8 h-8 text-yellow-600 mx-auto mb-2" />
+              <p className="text-sm text-yellow-800 font-semibold mb-2">{error}</p>
+              <p className="text-xs text-yellow-700">
+                Make sure Streamlit is running: <code className="bg-yellow-100 px-2 py-1 rounded">streamlit run app_streamlit.py</code>
+              </p>
+              <p className="text-xs text-yellow-700 mt-2">
+                Or visit: <a href={streamlitUrl} target="_blank" rel="noopener noreferrer" className="underline">{streamlitUrl}</a>
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Fullscreen iframe */}
         <iframe
           src={streamlitUrl}
@@ -176,7 +206,8 @@ const StreamlitGraphDirectEmbed = ({
           style={{ 
             width: '100vw',
             height: '100vh',
-            border: 'none'
+            border: 'none',
+            display: loading || error ? 'none' : 'block'
           }}
           onLoad={handleLoad}
           onError={handleError}
