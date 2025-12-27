@@ -145,3 +145,299 @@ def render_tax_effort(df_filtered, ref_data):
     
     return fig
 
+def render_pension_fund_allocation(df_filtered, ref_data):
+    """
+    Render Pension Fund Asset Allocation stacked bar chart - exact same as exploratory view (5_topic_4_3.py)
+    Returns Plotly figure
+    """
+    import numpy as np
+    try:
+        # Load pension fund data from CSV
+        df_pension = pd.read_csv('data/Pension_Fund_Asset_Allocation_by_Country.csv')
+        country_col = 'Country or Area' if 'Country or Area' in df_pension.columns else 'Country'
+        
+        # Filter for Africa countries only
+        africa_ref_data = ref_data[ref_data['Region Name'] == 'Africa'].copy()
+        africa_countries = africa_ref_data['Country or Area'].unique()
+        df_pension = df_pension[df_pension[country_col].isin(africa_countries)].copy()
+        
+        if df_pension.empty:
+            return None
+        
+        asset_cols = [
+            'Domestic_Equities (%)',
+            'Domestic_Bonds (%)',
+            'Real_Estate (%)',
+            'Private_Equity (%)',
+            'Cash & Deposits (%)',
+            'Foreign_Assets (%)'
+        ]
+        
+        # Check which columns exist
+        available_cols = [col for col in asset_cols if col in df_pension.columns]
+        if not available_cols:
+            return None
+        
+        # Prepare data for stacked bar chart
+        chart_data = df_pension.set_index(country_col)[available_cols].fillna(0)
+        countries = chart_data.index.tolist()
+        
+        # Color mapping for asset classes using OSAA theme colors
+        color_map = {
+            'Cash & Deposits (%)': '#003366',  # Deep Blue (OSAA)
+            'Domestic_Bonds (%)': '#0072BC',  # Mid Blue (OSAA)
+            'Domestic_Equities (%)': '#F26C2B',  # Orange (OSAA)
+            'Foreign_Assets (%)': '#FFD34E',  # Yellow (OSAA)
+            'Private_Equity (%)': '#007B33',  # Green (OSAA)
+            'Real_Estate (%)': '#009D8C'  # Teal (OSAA)
+        }
+        
+        # Create stacked bar chart
+        fig = go.Figure()
+        
+        for col in available_cols:
+            fig.add_trace(go.Bar(
+                x=countries,
+                y=chart_data[col].values,
+                name=col.replace(' (%)', ''),
+                marker_color=color_map.get(col, '#999999'),
+                hovertemplate=f"<b>%{{x}}</b><br>{col.replace(' (%)', '')}: %{{y:.1f}}%<extra></extra>"
+            ))
+        
+        fig.update_layout(
+            barmode='stack',
+            height=700,  # Larger height for fullscreen-like view
+            autosize=True,
+            xaxis_title="Country",
+            yaxis_title="Percentage (%)",
+            legend=dict(
+                orientation="v",
+                yanchor="top",
+                y=1,
+                xanchor="left",
+                x=1.02,
+                font=dict(size=10),
+                bgcolor="rgba(255,255,255,0.8)",
+                bordercolor="rgba(0,0,0,0.2)",
+                borderwidth=1
+            ),
+            margin=dict(l=50, r=180, t=20, b=50),
+            hovermode='x unified'
+        )
+        
+        return fig
+    except Exception as e:
+        return None
+
+def render_banking_sector_development(df_filtered, ref_data):
+    """
+    Render Banking Sector Development Index graph - exact same as exploratory view (2_theme_4.py)
+    Returns Plotly figure
+    """
+    import numpy as np
+    try:
+        # Calculate Banking Sector Development Index
+        df_bsdi = cim.calculate_banking_sector_development_index(df_filtered)
+        if df_bsdi.empty:
+            return None
+        
+        df_bsdi = df_bsdi.rename(columns={'Banking Sector Development Index': 'value'})
+        df_bsdi['indicator_label'] = 'Banking Sector Development Index'
+        
+        # Filter for Africa
+        africa_ref_data = ref_data[ref_data['Region Name'] == 'Africa'].copy()
+        if not africa_ref_data.empty:
+            africa_countries = africa_ref_data['Country or Area'].unique()
+            df_bsdi = df_bsdi[df_bsdi['country_or_area'].isin(africa_countries)]
+        
+        if df_bsdi.empty:
+            return None
+        
+        # Use all data (no filters for policy brief)
+        filtered_bsdi = df_bsdi.copy()
+        
+        # Create line chart with reference bands
+        fig = go.Figure()
+        
+        # Add reference bands (shaded areas) for development tiers
+        fig.add_shape(
+            type="rect",
+            xref="paper", yref="y",
+            x0=0, y0=0, x1=1, y1=0.4,
+            fillcolor="#F26C2B",
+            opacity=0.2,
+            layer="below",
+            line_width=0,
+        )
+        fig.add_shape(
+            type="rect",
+            xref="paper", yref="y",
+            x0=0, y0=0.4, x1=1, y1=0.7,
+            fillcolor="#FFD34E",
+            opacity=0.2,
+            layer="below",
+            line_width=0,
+        )
+        fig.add_shape(
+            type="rect",
+            xref="paper", yref="y",
+            x0=0, y0=0.7, x1=1, y1=1.0,
+            fillcolor="#0072BC",
+            opacity=0.2,
+            layer="below",
+            line_width=0,
+        )
+        
+        # Add reference lines at boundaries
+        fig.add_hline(y=0.4, line_dash="dash", line_color="#F26C2B", line_width=1, opacity=0.5)
+        fig.add_hline(y=0.7, line_dash="dash", line_color="#0072BC", line_width=1, opacity=0.5)
+        
+        # Get component data for tooltips
+        capital_data = df_filtered[df_filtered['indicator_label'] == 'Bank capital to assets ratio (%)'].copy()
+        liquidity_data = df_filtered[df_filtered['indicator_label'] == 'Bank liquid reserves to bank assets ratio (%)'].copy()
+        credit_data = df_filtered[df_filtered['indicator_label'] == 'Domestic credit provided by financial sector (% of GDP)'].copy()
+        
+        # Add country lines (limit to top 15 for readability)
+        countries_list = sorted(filtered_bsdi['country_or_area'].dropna().unique())
+        if len(countries_list) > 15:
+            latest_values = filtered_bsdi.groupby('country_or_area')['value'].last().sort_values(ascending=False)
+            countries_list = latest_values.head(15).index.tolist()
+        
+        for country in countries_list:
+            country_data = filtered_bsdi[filtered_bsdi['country_or_area'] == country].sort_values('year')
+            country_data = country_data.dropna(subset=['value'])
+            
+            if not country_data.empty:
+                # Color encoding based on latest value tier
+                latest_value = country_data['value'].iloc[-1]
+                if latest_value >= 0.7:
+                    line_color = '#0072BC'  # High development
+                elif latest_value >= 0.4:
+                    line_color = '#FFD34E'  # Moderate development
+                else:
+                    line_color = '#F26C2B'  # Weak development
+                
+                # Merge with component data for tooltips
+                capital_data_renamed = capital_data[['country_or_area', 'year', 'value']].rename(columns={'value': 'value_capital'})
+                liquidity_data_renamed = liquidity_data[['country_or_area', 'year', 'value']].rename(columns={'value': 'value_liquidity'})
+                credit_data_renamed = credit_data[['country_or_area', 'year', 'value']].rename(columns={'value': 'value_credit'})
+                
+                country_data_merged = country_data.merge(capital_data_renamed, on=['country_or_area', 'year'], how='left')
+                country_data_merged = country_data_merged.merge(liquidity_data_renamed, on=['country_or_area', 'year'], how='left')
+                country_data_merged = country_data_merged.merge(credit_data_renamed, on=['country_or_area', 'year'], how='left')
+                
+                hovertemplate = (
+                    f"<b>{country}</b><br>" +
+                    "Year: %{x}<br>" +
+                    "BSDI Value: %{y:.3f}<br>" +
+                    "Capital Ratio: %{customdata[0]:.2f}%<br>" +
+                    "Liquidity Ratio: %{customdata[1]:.2f}%<br>" +
+                    "Credit Ratio: %{customdata[2]:.2f}%<br>" +
+                    "<extra></extra>"
+                )
+                
+                fig.add_trace(go.Scatter(
+                    x=country_data_merged['year'],
+                    y=country_data_merged['value'],
+                    mode='lines+markers',
+                    name=country,
+                    line=dict(color=line_color, width=2),
+                    marker=dict(color=line_color, size=4),
+                    hovertemplate=hovertemplate,
+                    customdata=np.column_stack([
+                        country_data_merged['value_capital'].fillna(0),
+                        country_data_merged['value_liquidity'].fillna(0),
+                        country_data_merged['value_credit'].fillna(0)
+                    ]),
+                    showlegend=True
+                ))
+        
+        fig.update_layout(
+            height=700,  # Larger height for fullscreen-like view
+            autosize=True,
+            xaxis_title="Year",
+            yaxis_title="Banking Sector Development Index (0-1)",
+            hovermode='closest',
+            yaxis=dict(range=[0, 1]),
+            legend=dict(
+                orientation="v",
+                yanchor="top",
+                y=1,
+                xanchor="left",
+                x=1.02,
+                font=dict(size=10),
+                bgcolor="rgba(255,255,255,0.8)",
+                bordercolor="rgba(0,0,0,0.2)",
+                borderwidth=1
+            ),
+            margin=dict(l=50, r=180, t=20, b=50)
+        )
+        
+        return fig
+    except Exception as e:
+        return None
+
+def render_tax_buoyancy(df_filtered, ref_data):
+    """
+    Render Tax Buoyancy bar chart - exact same as exploratory view (4_topic_4_2.py)
+    Returns Plotly figure
+    """
+    indicator_label = "Tax Buoyancy (Elasticity)"
+    indicator_data = df_filtered[df_filtered['indicator_label'] == indicator_label].copy()
+    
+    if indicator_data.empty:
+        return None
+    
+    # Use latest year per country (matching policy brief requirement)
+    year_data = indicator_data.loc[indicator_data.groupby('country_or_area')['year'].idxmax()].copy()
+    
+    if year_data.empty:
+        return None
+    
+    # Color function for buoyancy levels
+    def get_buoyancy_color(buoyancy):
+        if buoyancy >= 1.5:
+            return '#009D8C'  # Teal - Over-responsive
+        elif buoyancy >= 1.0:
+            return '#0072BC'  # Blue - Responsive
+        elif buoyancy >= 0.5:
+            return '#F26C2B'  # Orange - Weakly responsive
+        else:
+            return '#D32F2F'  # Red - Unresponsive
+    
+    # Sort by buoyancy value (descending)
+    year_data_sorted = year_data.sort_values('value', ascending=False)
+    colors = [get_buoyancy_color(x) for x in year_data_sorted['value'].values]
+    
+    fig = go.Figure()
+    
+    fig.add_trace(go.Bar(
+        x=year_data_sorted['country_or_area'],
+        y=year_data_sorted['value'],
+        marker=dict(color=colors),
+        hovertemplate="<b>%{x}</b><br>Tax Buoyancy: %{y:.2f}<br>Year: %{customdata}<extra></extra>",
+        customdata=year_data_sorted['year'].values,
+        name='Tax Buoyancy',
+        showlegend=False
+    ))
+    
+    # Add reference lines
+    fig.add_hline(y=1.0, line_dash="dash", line_color="#1B75BB", 
+                  annotation_text="Buoyancy = 1.0 (Balanced)", annotation_position="right")
+    fig.add_hline(y=0.5, line_dash="dash", line_color="#E87722", 
+                  annotation_text="Buoyancy = 0.5 (Weak)", annotation_position="right")
+    
+    chart_year = int(year_data_sorted['year'].max()) if not year_data_sorted.empty else None
+    
+    fig.update_layout(
+        height=700,  # Larger height for fullscreen-like view
+        autosize=True,
+        xaxis_title="Country",
+        yaxis_title="Tax Buoyancy (Elasticity)",
+        hovermode='closest',
+        xaxis=dict(tickangle=-45),
+        margin=dict(l=50, r=50, t=20, b=100)
+    )
+    
+    return fig
+
