@@ -16,6 +16,10 @@ import plotly.express as px
 import altair as alt
 import composite_indicator_methods as cim
 import universal_viz as uv
+import importlib
+import pages.pb_graph_helpers as pb_helpers
+# Force reload to pick up new functions
+importlib.reload(pb_helpers)
 from pages.pb_graph_helpers import render_pension_fund_allocation
 
 # Hide Streamlit UI elements for clean embedding
