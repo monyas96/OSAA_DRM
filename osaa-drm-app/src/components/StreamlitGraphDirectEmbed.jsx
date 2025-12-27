@@ -138,13 +138,7 @@ const StreamlitGraphDirectEmbed = ({
 
   return (
     <div className={`relative ${className}`} style={{ minHeight: `${height}px` }}>
-      {/* Title and Subtitle */}
-      {(title || subtitle) && (
-        <div className="mb-4">
-          {title && <h3 className="text-lg font-bold text-gray-900 mb-1">{title}</h3>}
-          {subtitle && <p className="text-sm text-gray-600">{subtitle}</p>}
-        </div>
-      )}
+      {/* Note: Title and subtitle are shown in the Streamlit page itself, so we don't render them here */}
 
       {/* Loading State */}
       {loading && (
