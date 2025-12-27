@@ -52,6 +52,18 @@ st.markdown("""
     .stPlotlyChart, .vega-embed {
         width: 100% !important;
     }
+    /* Auto-trigger fullscreen for charts */
+    .vega-embed {
+        position: relative;
+    }
+    .vega-embed .vega-actions {
+        opacity: 1 !important;
+    }
+    /* Auto-click fullscreen button on load */
+    .vega-embed .vega-actions a[title*="fullscreen"], 
+    .vega-embed .vega-actions a[title*="Fullscreen"] {
+        display: inline-block !important;
+    }
     /* Match policy brief styling */
     h1, h2, h3 {
         color: #003366;
@@ -94,6 +106,22 @@ bar_chart = render_corruption_losses(df_filtered, ref_data)
 if bar_chart:
     # Use full container width and enable responsive sizing
     st.altair_chart(bar_chart, use_container_width=True, theme=None)
+    
+    # Auto-trigger fullscreen using JavaScript
+    st.markdown("""
+    <script>
+    (function() {
+        // Wait for chart to render
+        setTimeout(function() {
+            // Find fullscreen button in Vega-Altair chart
+            const fullscreenBtn = document.querySelector('.vega-embed .vega-actions a[title*="fullscreen"], .vega-embed .vega-actions a[title*="Fullscreen"]');
+            if (fullscreenBtn) {
+                fullscreenBtn.click();
+            }
+        }, 1000);
+    })();
+    </script>
+    """, unsafe_allow_html=True)
 else:
     st.info("No data available for Control of Corruption indicator")
 

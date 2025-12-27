@@ -52,6 +52,10 @@ st.markdown("""
     .stPlotlyChart, .vega-embed {
         width: 100% !important;
     }
+    /* Ensure Plotly fullscreen button is visible */
+    .js-plotly-plot .plotly .modebar {
+        opacity: 1 !important;
+    }
     /* Match policy brief styling */
     h1, h2, h3 {
         color: #003366;
@@ -92,11 +96,51 @@ st.markdown("<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True
 fig = render_tax_effort(df_filtered, ref_data)
 
 if fig:
-    # Use full container width with responsive sizing
+    # Use full container width with responsive sizing and enable fullscreen
     st.plotly_chart(fig, use_container_width=True, config={
         'displayModeBar': True,
         'responsive': True,
-        'autosizable': True
+        'autosizable': True,
+        'modeBarButtonsToAdd': ['toggleSpikelines'],
+        'toImageButtonOptions': {
+            'format': 'png',
+            'filename': 'tax_effort_chart',
+            'height': 800,
+            'width': 1200,
+            'scale': 1
+        }
     })
+    
+    # Auto-trigger fullscreen using JavaScript
+    st.markdown("""
+    <script>
+    (function() {
+        // Wait for Plotly chart to render
+        setTimeout(function() {
+            // Find fullscreen button in Plotly modebar
+            const plotlyDiv = document.querySelector('.js-plotly-plot');
+            if (plotlyDiv) {
+                const modebar = plotlyDiv.querySelector('.modebar');
+                if (modebar) {
+                    // Look for fullscreen button (usually has title "Zoom" or icon)
+                    const fullscreenBtn = modebar.querySelector('[data-title*="fullscreen" i], [data-title*="Fullscreen" i], .modebar-btn[data-attr="fullscreen"]');
+                    if (fullscreenBtn) {
+                        fullscreenBtn.click();
+                    } else {
+                        // Try finding by icon pattern (fullscreen icon)
+                        const allButtons = modebar.querySelectorAll('.modebar-btn');
+                        allButtons.forEach(function(btn) {
+                            const title = btn.getAttribute('data-title') || btn.title || '';
+                            if (title.toLowerCase().includes('fullscreen') || title.toLowerCase().includes('zoom')) {
+                                btn.click();
+                            }
+                        });
+                    }
+                }
+            }
+        }, 1500);
+    })();
+    </script>
+    """, unsafe_allow_html=True)
 else:
     st.info("No data available for Tax Effort indicator")
