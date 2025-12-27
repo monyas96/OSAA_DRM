@@ -92,6 +92,11 @@ st.markdown("<div style='margin-bottom: 0.5rem;'></div>", unsafe_allow_html=True
 fig = render_tax_effort(df_filtered, ref_data)
 
 if fig:
-    st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': True})
+    # Use full container width with responsive sizing
+    st.plotly_chart(fig, use_container_width=True, config={
+        'displayModeBar': True,
+        'responsive': True,
+        'autosizable': True
+    })
 else:
     st.info("No data available for Tax Effort indicator")

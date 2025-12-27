@@ -109,9 +109,10 @@ def render_tax_effort(df_filtered, ref_data):
                 showlegend=True
             ))
     
-    # Update layout
+    # Update layout - full width responsive
     fig.update_layout(
-        height=500,
+        height=500,  # Increased height
+        autosize=True,  # Make responsive
         xaxis_title="Year",
         yaxis_title="Tax Effort (Actual / Capacity)",
         hovermode='closest',
@@ -127,7 +128,7 @@ def render_tax_effort(df_filtered, ref_data):
             bordercolor="rgba(0,0,0,0.2)",
             borderwidth=1
         ),
-        margin=dict(l=50, r=180, t=20, b=50)
+        margin=dict(l=50, r=180, t=10, b=40)
     )
     
     return fig
