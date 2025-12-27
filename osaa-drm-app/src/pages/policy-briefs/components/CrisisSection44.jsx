@@ -1,7 +1,6 @@
 import React from 'react'
 import SectionHeader from './SectionHeader'
 import StreamlitGraphDirectEmbed from '../../../components/StreamlitGraphDirectEmbed'
-import StreamlitGraphEmbed from './StreamlitGraphEmbed'
 import PullQuote from '../shared/PullQuote'
 
 const CrisisSection44 = () => {
@@ -88,17 +87,8 @@ const CrisisSection44 = () => {
             {/* Graph 1B: Trade Mispricing */}
             <div className="mb-6">
               <h4 className="text-base font-bold text-[#003366] mb-3">Graph 1B: Trade Mispricing by Country</h4>
-              <StreamlitGraphEmbed
+              <StreamlitGraphDirectEmbed
                 indicator="4.4.2.1"
-                title="Trade Mispricing (Absolute Value USD Millions)"
-                subtitle="Indicator 4.4.2.1 - Trade Mispricing"
-                caption="Trade mispricing analysis shows Morocco, Algeria, and Nigeria with the largest absolute losses. The pattern reveals systematic invoice manipulation across multiple trading relationships, particularly in extractive sectors."
-                filters={{
-                  countries: 'all',
-                  years: 'latest',
-                  view: 'bar'
-                }}
-                viewType="bar"
                 height={500}
               />
               <div className="bg-orange-50 border-l-4 border-orange-500 p-4 rounded-r-lg mb-6">
@@ -152,17 +142,8 @@ const CrisisSection44 = () => {
             {/* Graph 1D: Criminal Activities Trends */}
             <div className="mb-6">
               <h4 className="text-base font-bold text-[#003366] mb-3">Graph 1D: Criminal Activities Trends</h4>
-              <StreamlitGraphEmbed
+              <StreamlitGraphDirectEmbed
                 indicator="4.4.2.3"
-                title="Criminal Activities Drug Trafficking - Trend Over Time 2018-2022"
-                subtitle="Indicator 4.4.2.3 - Criminal Activities"
-                caption="Criminal activity tracking reveals significant variation across countries and time periods. Some countries show dramatic increases in criminally-generated proceeds, reflecting shifting trafficking routes and enforcement patterns."
-                filters={{
-                  countries: 'all',
-                  years: '2018-2022',
-                  view: 'line'
-                }}
-                viewType="line"
                 height={500}
               />
               <div className="bg-purple-50 border-l-4 border-purple-500 p-4 rounded-r-lg mb-6">
@@ -188,17 +169,8 @@ const CrisisSection44 = () => {
             {/* Graph 1E: Financial Secrecy Trends */}
             <div className="mb-6">
               <h4 className="text-base font-bold text-[#003366] mb-3">Graph 1E: Financial Secrecy Trends</h4>
-              <StreamlitGraphEmbed
+              <StreamlitGraphDirectEmbed
                 indicator="4.4.4.1"
-                title="Financial Secrecy Index - Multi-Year Trend, Normalized 0-100"
-                subtitle="Indicator 4.4.4.1 - Financial Secrecy Index"
-                caption="Financial secrecy trends show mixed progress. Most countries demonstrate improving transparency, but clustering in the moderate secrecy zone (40-70) indicates significant work remains. Some countries show volatility, suggesting political commitment to transparency is fragile."
-                filters={{
-                  countries: 'all',
-                  years: 'all',
-                  view: 'line'
-                }}
-                viewType="line"
                 height={500}
               />
               <div className="bg-teal-50 border-l-4 border-teal-500 p-4 rounded-r-lg mb-6">

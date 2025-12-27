@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import SectionHeader from './SectionHeader'
-import StreamlitGraphEmbed from './StreamlitGraphEmbed'
+import StreamlitGraphDirectEmbed from '../../../components/StreamlitGraphDirectEmbed'
 import CollapsibleSection from './CollapsibleSection'
 
 const MethodologyAnnex43 = () => {
@@ -21,17 +21,8 @@ const MethodologyAnnex43 = () => {
 
         {/* Graph 6: Market Cap Distribution */}
         <div className="mb-12">
-          <StreamlitGraphEmbed
+          <StreamlitGraphDirectEmbed
             indicator="4.3.1.1"
-            title="Graph 6: Market Cap Distribution - Histogram View"
-            subtitle="Indicator 4.3.1.1 - Market Capitalization (% of GDP)"
-            caption="Distribution is heavily skewed. 75% of countries have market cap below 30% of GDP, confirming the 'shallow market' diagnosis."
-            filters={{
-              countries: 'all',
-              years: 'latest',
-              view: 'scatter'
-            }}
-            viewType="scatter"
             height={500}
           />
           <div className="bg-gray-50 border-l-4 border-gray-500 p-4 rounded-r-lg mb-6">

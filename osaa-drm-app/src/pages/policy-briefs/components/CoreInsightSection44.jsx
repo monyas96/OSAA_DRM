@@ -1,6 +1,6 @@
 import React from 'react'
 import SectionHeader from './SectionHeader'
-import StreamlitGraphEmbed from './StreamlitGraphEmbed'
+import StreamlitGraphDirectEmbed from '../../../components/StreamlitGraphDirectEmbed''
 
 const CoreInsightSection44 = () => {
   return (
@@ -40,49 +40,22 @@ const CoreInsightSection44 = () => {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                 <div>
                   <h5 className="font-bold text-[#003366] mb-2">Rule of Law (WJP Factor 6)</h5>
-                  <StreamlitGraphEmbed
+                  <StreamlitGraphDirectEmbed
                     indicator="4.4.4.1"
-                    title="Rule of Law"
-                    subtitle="World Justice Project Rule of Law Index"
-                    caption="Most African countries score below 0.4 on rule of law indices, creating permissive environments where corrupt officials operate with impunity."
-                    filters={{
-                      countries: 'all',
-                      years: 'latest',
-                      view: 'bar'
-                    }}
-                    viewType="bar"
                     height={400}
                   />
                 </div>
                 <div>
                   <h5 className="font-bold text-[#003366] mb-2">Control of Corruption (World Bank WGI)</h5>
-                  <StreamlitGraphEmbed
+                  <StreamlitGraphDirectEmbed
                     indicator="4.4.3.1"
-                    title="Control of Corruption"
-                    subtitle="World Bank Worldwide Governance Indicators"
-                    caption="Corruption control remains weak across most African countries, enabling systematic diversion of public resources."
-                    filters={{
-                      countries: 'all',
-                      years: 'latest',
-                      view: 'bar'
-                    }}
-                    viewType="bar"
                     height={400}
                   />
                 </div>
                 <div>
                   <h5 className="font-bold text-[#003366] mb-2">CPIA Transparency & Accountability</h5>
-                  <StreamlitGraphEmbed
+                  <StreamlitGraphDirectEmbed
                     indicator="4.4.4.1"
-                    title="CPIA Transparency & Accountability"
-                    subtitle="World Bank CPIA"
-                    caption="Transparency and accountability scores reveal persistent gaps that enable IFF flows."
-                    filters={{
-                      countries: 'all',
-                      years: 'latest',
-                      view: 'bar'
-                    }}
-                    viewType="bar"
                     height={400}
                   />
                 </div>
@@ -108,17 +81,8 @@ const CoreInsightSection44 = () => {
             {/* Graph 2B: Tax System Coverage Gaps */}
             <div className="mb-6">
               <h4 className="text-base font-bold text-[#003366] mb-3">Graph 2B: Tax System Coverage Gaps</h4>
-              <StreamlitGraphEmbed
+              <StreamlitGraphDirectEmbed
                 indicator="4.4.2.2"
-                title="Taxpayer Registration Trends 2018-2020"
-                subtitle="Indicator 4.4.2.2 - Tax Evasion ISORA Data"
-                caption="Taxpayer registration trends reveal stagnation or decline across most tax types, with coverage rates at 12-35%. Declining or flat registration creates expanding evasion opportunities as tax systems fail to keep pace with economic growth."
-                filters={{
-                  countries: 'all',
-                  years: '2018-2020',
-                  view: 'line'
-                }}
-                viewType="line"
                 height={500}
               />
               <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg mb-6">

@@ -1,6 +1,6 @@
 import React from 'react'
 import SectionHeader from './SectionHeader'
-import StreamlitGraphEmbed from './StreamlitGraphEmbed'
+import StreamlitGraphDirectEmbed from '../../../components/StreamlitGraphDirectEmbed''
 
 const EvidenceSection43 = () => {
   return (
@@ -18,17 +18,8 @@ const EvidenceSection43 = () => {
 
           {/* Graph 4: Pension Fund Asset Allocation */}
           <div className="mb-12">
-            <StreamlitGraphEmbed
+            <StreamlitGraphDirectEmbed
               indicator="4.3.3.1"
-              title="Graph 4: Pension Fund Asset Allocation - Country Comparison"
-              subtitle="Indicator 4.3.3.1 - Pension Funds and Sovereign Wealth Funds"
-              caption="Pension funds allocate 70-80% to bonds and listed equities, &lt;5% to infrastructure. Yet Africa faces a $100B annual infrastructure gap. Capital exists but allocation is mismatched."
-              filters={{
-                countries: ['South Africa', 'Nigeria', 'Kenya', 'Rwanda', 'Ghana'],
-                years: 'latest',
-                view: 'stacked_bar'
-              }}
-              viewType="stacked_bar"
               height={500}
             />
             <div className="bg-purple-50 border-l-4 border-purple-500 p-4 rounded-r-lg mb-6">

@@ -1,6 +1,6 @@
 import React from 'react'
 import SectionHeader from './SectionHeader'
-import StreamlitGraphEmbed from './StreamlitGraphEmbed'
+import StreamlitGraphDirectEmbed from '../../../components/StreamlitGraphDirectEmbed'
 import PullQuote from '../shared/PullQuote'
 
 const CrisisSection43 = () => {
@@ -24,17 +24,8 @@ const CrisisSection43 = () => {
           {/* Graph 1A: Market Capitalization */}
             <div className="mb-6">
             <h3 className="text-base font-bold text-[#003366] mb-3">Graph 1A: Market Capitalization to GDP - Line Chart</h3>
-            <StreamlitGraphEmbed
+            <StreamlitGraphDirectEmbed
               indicator="4.3.1.1"
-              title="Market Capitalization to GDP - Line Chart"
-              subtitle="Indicator 4.3.1.1 - Market Capitalization (% of GDP)"
-              caption="Market depth varies dramatically across Africa, but 75% of countries maintain market capitalization below 30% of GDP—less than half the emerging market benchmark. Shallow markets cannot absorb domestic savings, forcing capital to seek foreign opportunities. Success stories like Mauritius (100%+) and Botswana (40-60%) demonstrate what's possible with proper market development."
-              filters={{
-                countries: ['Mauritius', 'Botswana', 'South Africa', 'Nigeria', 'Ethiopia', 'Tanzania', 'Kenya', 'Uganda', 'Africa (Region Average)'],
-                years: 'all',
-                view: 'line'
-              }}
-              viewType="line"
               height={500}
             />
             <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg mb-6">
@@ -63,17 +54,8 @@ const CrisisSection43 = () => {
             {/* Graph 1B: Pension Fund Asset Allocation (Detail View) */}
             <div className="mb-6">
               <h4 className="text-base font-bold text-[#003366] mb-3">Graph 1B: Pension Fund Asset Allocation - Stacked Bar Chart</h4>
-              <StreamlitGraphEmbed
+              <StreamlitGraphDirectEmbed
                 indicator="4.3.3.1"
-                title="Pension Fund Asset Allocation - Stacked Bar Chart"
-                subtitle="Indicator 4.3.3.1 - Pension Funds and Sovereign Wealth Funds"
-                caption="Pension fund asset allocation reveals the capital drain: most funds allocate 70-80% to government bonds and listed equities (domestic), but foreign asset allocation represents billions flowing abroad. Meanwhile, infrastructure receives &lt;5% of pension capital despite a $130-170B annual gap. The conservative allocation reflects limited viable domestic investment opportunities—a market depth problem, not a capital scarcity problem."
-                filters={{
-                  countries: ['South Africa', 'Nigeria', 'Kenya', 'Rwanda', 'Ghana'],
-                  years: 'latest',
-                  view: 'stacked_bar'
-                }}
-                viewType="stacked_bar"
                 height={500}
               />
               <div className="bg-purple-50 border-l-4 border-purple-500 p-4 rounded-r-lg mb-6">

@@ -41,14 +41,8 @@ const EvidenceSection42 = () => {
           <p className="text-sm text-gray-600 mb-6">
             Countries with buoyancy below 1.0 (orange/red bars) have tax systems that fail to capture economic growth, indicating structural inelasticity. Green/teal bars show countries with buoyancy above 1.0, where taxes grow faster than GDP.
           </p>
-          <StreamlitGraphEmbed
+          <StreamlitGraphDirectEmbed
             indicator="4.2.2.2.a"
-            title="Tax Buoyancy by Country"
-            subtitle="Tax Revenue Elasticity (2021)"
-            viewType="bar"
-            filters={{
-              years: 'latest'
-            }}
             height={600}
           />
         </div>
@@ -64,14 +58,8 @@ const EvidenceSection42 = () => {
           <p className="text-sm text-gray-600 mb-6">
             The average tax gap across African countries is approximately 6.13% of GDP, representing significant untapped revenue potential. Countries on the right side of the chart have the largest leakage and greatest potential for improvement.
           </p>
-          <StreamlitGraphEmbed
+          <StreamlitGraphDirectEmbed
             indicator="4.2.2.2.b"
-            title="Tax Capacity & Gap by Country"
-            subtitle="Estimated Tax Capacity vs. Actual Collection"
-            viewType="bar"
-            filters={{
-              years: 'latest'
-            }}
             height={600}
           />
         </div>

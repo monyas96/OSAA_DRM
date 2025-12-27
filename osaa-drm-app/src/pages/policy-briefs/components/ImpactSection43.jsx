@@ -1,6 +1,6 @@
 import React from 'react'
 import SectionHeader from './SectionHeader'
-import StreamlitGraphEmbed from './StreamlitGraphEmbed'
+import StreamlitGraphDirectEmbed from '../../../components/StreamlitGraphDirectEmbed'
 
 const ImpactSection43 = () => {
   return (
@@ -32,17 +32,8 @@ const ImpactSection43 = () => {
 
           {/* Graph 5: Portfolio Flow Volatility */}
           <div className="mb-12">
-            <StreamlitGraphEmbed
+            <StreamlitGraphDirectEmbed
               indicator="4.3.1.2"
-              title="Graph 5: Portfolio Flow Volatility - Crisis Impact"
-              subtitle="Indicator 4.3.1.2 - Portfolio Investment Bonds"
-              caption="When global crises hit, portfolio flows collapse—forcing countries into sudden fiscal adjustments and expensive external borrowing. Dependence on volatile flows creates vulnerability."
-              filters={{
-                countries: ['Gabon', 'Egypt', 'South Africa', 'Ethiopia', 'Africa (Region Average)'],
-                years: '2000-2023',
-                view: 'line'
-              }}
-              viewType="line"
               height={500}
             />
             <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg mb-6">
