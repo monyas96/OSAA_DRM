@@ -179,7 +179,7 @@ const StreamlitGraphDirectEmbed = ({
         onLoad={handleLoad}
         onError={handleError}
         title={`Streamlit Graph: ${title || indicator}`}
-        allow="clipboard-read; clipboard-write"
+        allow="clipboard-read; clipboard-write; fullscreen"
         sandbox="allow-same-origin allow-scripts allow-forms allow-popups"
       />
 
