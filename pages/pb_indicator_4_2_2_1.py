@@ -39,7 +39,7 @@ st.markdown("""
         padding-left: 0;
         padding-right: 0;
         padding-bottom: 0;
-        height: 100vh;
+        height: auto; /* Auto height to match chart */
         overflow: hidden;
     }
     .main .block-container {
@@ -49,15 +49,14 @@ st.markdown("""
         padding-right: 0;
         max-width: 100%;
         width: 100%;
-        height: 100vh;
+        height: auto; /* Auto height to match chart */
         display: flex;
         flex-direction: column;
     }
-    /* Make charts full width and height - chart-only view */
+    /* Make charts full width - height will be auto based on chart size */
     .stPlotlyChart, .vega-embed {
         width: 100% !important;
-        height: 100vh !important;
-        min-height: 600px !important;
+        height: auto !important;
     }
     /* Hide any markdown elements (titles, etc.) */
     .stMarkdown {
@@ -130,6 +129,34 @@ if fig:
         }
     })
     
-    # Chart is already rendered in fullscreen-like view via CSS
+    # Send chart height to parent iframe for dynamic sizing
+    st.markdown("""
+    <script>
+    (function() {
+        function sendHeightToParent() {
+            // Wait for chart to render
+            setTimeout(function() {
+                const plotlyDiv = document.querySelector('.js-plotly-plot');
+                if (plotlyDiv) {
+                    const chartHeight = plotlyDiv.offsetHeight || plotlyDiv.scrollHeight;
+                    if (chartHeight > 0) {
+                        if (window.parent !== window) {
+                            window.parent.postMessage({
+                                type: 'STREAMLIT_CHART_HEIGHT',
+                                height: chartHeight
+                            }, '*');
+                        }
+                    }
+                }
+            }, 500); // Wait for chart to render
+        }
+        
+        // Try multiple times in case chart loads slowly
+        sendHeightToParent();
+        setTimeout(sendHeightToParent, 1000);
+        setTimeout(sendHeightToParent, 2000);
+    })();
+    </script>
+    """, unsafe_allow_html=True)
 else:
     st.info("No data available for Tax Effort indicator")

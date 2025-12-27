@@ -147,6 +147,22 @@ const StreamlitGraphDirectEmbed = ({
     return () => window.removeEventListener('message', handleMessage)
   }, [])
 
+  // Listen for height messages from the iframe
+  useEffect(() => {
+    const handleMessage = (event) => {
+      // Accept messages from Streamlit origin
+      if (event.data && event.data.type === 'STREAMLIT_CHART_HEIGHT') {
+        const chartHeight = event.data.height
+        if (chartHeight && chartHeight > 0) {
+          setIframeHeight(chartHeight + 20) // Add small padding
+        }
+      }
+    }
+
+    window.addEventListener('message', handleMessage)
+    return () => window.removeEventListener('message', handleMessage)
+  }, [])
+
   const handleLoad = () => {
     setLoading(false)
     setError(null)
@@ -266,15 +282,20 @@ const StreamlitGraphDirectEmbed = ({
             </div>
           )}
 
-          {/* Streamlit iframe - fullscreen-like view */}
+          {/* Streamlit iframe - sized to match chart exactly */}
           <iframe
+            ref={(iframe) => {
+              if (iframe) {
+                // Store iframe reference for potential future use
+              }
+            }}
             src={streamlitUrl}
             className="w-full border border-gray-200 rounded-lg bg-white"
             style={{ 
-              height: '80vh',  // Use viewport height for fullscreen-like view
-              minHeight: '600px',
+              height: `${iframeHeight}px`,  // Dynamic height matching chart size
               width: '100%',
-              display: loading || error ? 'none' : 'block'
+              display: loading || error ? 'none' : 'block',
+              border: 'none' // Remove border for cleaner look
             }}
             onLoad={handleLoad}
             onError={handleError}
