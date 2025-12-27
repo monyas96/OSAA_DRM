@@ -56,13 +56,19 @@ st.markdown("""
     .vega-embed {
         position: relative;
     }
+    /* Ensure vega-actions menu is visible and enabled */
     .vega-embed .vega-actions {
         opacity: 1 !important;
+        display: block !important;
+        visibility: visible !important;
     }
-    /* Auto-click fullscreen button on load */
+    /* Make sure fullscreen button is visible */
     .vega-embed .vega-actions a[title*="fullscreen"], 
-    .vega-embed .vega-actions a[title*="Fullscreen"] {
+    .vega-embed .vega-actions a[title*="Fullscreen"],
+    .vega-embed .vega-actions a[href*="fullscreen"] {
         display: inline-block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
     }
     /* Match policy brief styling */
     h1, h2, h3 {
