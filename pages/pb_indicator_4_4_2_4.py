@@ -143,23 +143,30 @@ if bar_chart:
             }
             
             if (fullscreenBtn) {
-                console.log('Found fullscreen button, clicking...');
+                console.log('✅ Found fullscreen button, clicking...', fullscreenBtn);
                 // Use a small delay to ensure button is ready
                 setTimeout(function() {
-                    fullscreenBtn.click();
+                    try {
+                        fullscreenBtn.click();
+                        console.log('✅ Fullscreen button clicked successfully');
+                    } catch (e) {
+                        console.error('❌ Error clicking fullscreen button:', e);
+                    }
                 }, 100);
             } else {
-                console.log('Fullscreen button not found, retrying...');
+                console.log('⚠️ Fullscreen button not found, retrying...');
                 // Retry after a longer delay
                 setTimeout(triggerFullscreen, 2000);
             }
         }
         
+        console.log('🚀 Starting fullscreen trigger attempts...');
         // Wait for chart to render (Vega-Altair charts take time to initialize)
         setTimeout(triggerFullscreen, 2000);
         // Also try after longer delay in case chart loads slowly
         setTimeout(triggerFullscreen, 4000);
         setTimeout(triggerFullscreen, 6000);
+        setTimeout(triggerFullscreen, 8000);
     })();
     </script>
     """, unsafe_allow_html=True)
