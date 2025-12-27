@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react'
-import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ComposedChart } from 'recharts'
+import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ComposedChart } from 'recharts'
 import { getIndicatorData, getPensionFundData } from '../../../services/dataService'
 
 // Mapping from indicator codes to indicator labels
