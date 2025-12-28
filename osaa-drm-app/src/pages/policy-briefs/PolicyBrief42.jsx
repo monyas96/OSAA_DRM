@@ -29,41 +29,43 @@ const PolicyBrief42 = () => {
     <div className="policy-brief bg-white">
       <SidebarNavigation alwaysVisible={true} />
       
-      {/* Header with back buttons */}
+      {/* Header with back buttons and export icon */}
       <div className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex flex-col gap-2">
-            <button
-              onClick={() => navigate('/')}
-              className="flex items-center gap-2 text-osaa-blue hover:text-osaa-orange transition-colors font-medium"
+          <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-2">
+              <button
+                onClick={() => navigate('/')}
+                className="flex items-center gap-2 text-osaa-blue hover:text-osaa-orange transition-colors font-medium"
+              >
+                <ArrowLeft className="w-5 h-5" />
+                <span>Back to Landing Page</span>
+              </button>
+              <button
+                onClick={() => navigate('/explanatory')}
+                className="flex items-center gap-2 text-osaa-blue hover:text-osaa-orange transition-colors font-medium"
+              >
+                <ArrowLeft className="w-5 h-5" />
+                <span>Back to Explanatory View</span>
+              </button>
+            </div>
+            {/* Small Export Icon Button */}
+            <motion.button
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={handleExport}
+              disabled={isExporting}
+              className="flex items-center gap-2 text-gray-600 hover:text-osaa-blue transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              title={isExporting ? 'Exporting...' : 'Export as PDF'}
             >
-              <ArrowLeft className="w-5 h-5" />
-              <span>Back to Landing Page</span>
-            </button>
-            <button
-              onClick={() => navigate('/explanatory')}
-              className="flex items-center gap-2 text-osaa-blue hover:text-osaa-orange transition-colors font-medium"
-            >
-              <ArrowLeft className="w-5 h-5" />
-              <span>Back to Explanatory View</span>
-            </button>
+              <Download size={18} />
+              {isExporting && <span className="text-sm">Exporting...</span>}
+            </motion.button>
           </div>
         </div>
       </div>
-
-      {/* Fixed Export Button */}
-      <motion.button
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        onClick={handleExport}
-        disabled={isExporting}
-        className="fixed bottom-8 right-8 bg-[#0072BC] text-white px-6 py-3 rounded-full shadow-lg hover:shadow-xl transition-all flex items-center gap-2 z-50 disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        <Download size={20} />
-        {isExporting ? 'Exporting...' : 'Export as PDF'}
-      </motion.button>
 
       {/* Content */}
       <div id="policy-brief-content">

@@ -6,6 +6,70 @@ A comprehensive interactive dashboard for analyzing Domestic Resource Mobilizati
 
 ---
 
+## What is This Dashboard? (Non-Technical Overview)
+
+This dashboard combines two powerful tools to help policymakers understand Africa's domestic resource mobilization challenges:
+
+### The React Interface (The Visual Design)
+The **React** interface is what creates the beautiful, professional look and feel of the dashboard. Think of React as the designer and architect—it provides:
+
+**Visual Design Capabilities**:
+- **Modern, polished design** with smooth animations and professional layouts
+- **Rich visual elements** like colored cards, banners, info boxes, and interactive sections that make information easy to understand
+- **Custom layouts** for policy briefs—we can arrange text, graphs, and callout boxes exactly how we want
+- **Visual hierarchy** through colors, fonts, and spacing to guide the reader's attention
+- **Interactive elements** like expandable sections, tabs, and smooth scrolling
+- **Responsive design** that works perfectly on computers, tablets, and phones
+- **Professional typography and spacing** that makes content easy to read and navigate
+
+**Why React Provides More Visual Options**: Unlike simpler tools, React gives us complete creative control. We can:
+- Design custom card layouts for key findings
+- Create visually distinct sections (crisis, evidence, solutions) with different styling
+- Add visual emphasis through colors, borders, and backgrounds
+- Create animated transitions that make the experience more engaging
+- Design custom components like "The Prize" boxes, strategy cards, and outcome boxes
+- Control every aspect of the layout—spacing, alignment, and visual flow
+
+This flexibility means we can present policy briefs in a way that's both informative and visually compelling, making complex information easier to understand and more engaging for readers.
+
+### The Streamlit Backend (The Data Visualization Engine)
+**Streamlit** is the tool that creates all the charts, graphs, and data visualizations. It's excellent at:
+- **Processing large amounts of data** quickly and accurately
+- **Creating interactive charts** that respond when you change filters or selections
+- **Handling complex calculations** needed for indicators like tax effort, tax buoyancy, and corruption losses
+- **Generating consistent, accurate visualizations** every time
+
+**Why Streamlit is important**: Streamlit is specifically designed for data visualization. It ensures all our graphs are accurate, interactive, and consistent across the dashboard.
+
+### Why We Use Both Together
+
+By integrating React with Streamlit, we get the **best of both worlds**:
+- **React** provides the visual design flexibility and professional presentation
+- **Streamlit** handles all the data processing and ensures graph accuracy
+- **Together**, they create a seamless experience where beautiful design meets reliable data visualization
+
+**The key benefit**: When you see a graph in a policy brief, it's the exact same graph from the exploratory data view. This integration ensures consistency—what you see in the narrative matches what you see in the data exploration.
+
+---
+
+## What Changed Recently?
+
+We've simplified how the dashboard works to make it more reliable and easier to maintain:
+
+### The Change
+Previously, the dashboard used three separate systems working together. Now it uses just two: React (for design) and Streamlit (for data visualization). We removed the middle layer (API server) and connected React directly to Streamlit.
+
+### Why This Matters
+- **More Reliable**: Fewer systems means fewer things that can break or cause errors
+- **Consistent Graphs**: All graphs come from the same source (Streamlit), so they're always identical whether you see them in a policy brief or the exploratory view
+- **Easier Updates**: When we update a graph, it automatically appears correctly in both places
+- **Simpler Setup**: Less technical complexity makes the dashboard easier to deploy and maintain
+
+### The Result
+You now have a dashboard that's more reliable, easier to maintain, and ensures that all visualizations are consistent across the entire application.
+
+---
+
 ## 🎯 Overview
 
 This dashboard translates the DRM framework into measurable indicators and actionable evidence, enabling policymakers to:

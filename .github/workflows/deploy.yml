@@ -36,7 +36,6 @@ jobs:
       - name: Build
         working-directory: ./osaa-drm-app
         env:
-          VITE_API_URL: ${{ secrets.VITE_API_URL }}
           VITE_STREAMLIT_URL: ${{ secrets.VITE_STREAMLIT_URL }}
         run: npm run build
       
