@@ -17,8 +17,11 @@ const ExploratoryStreamlit = () => {
 }
 
 function App() {
+  // Set basename for GitHub Pages deployment
+  const basename = import.meta.env.PROD ? '/OSAA_DRM' : ''
+  
   return (
-    <Router>
+    <Router basename={basename}>
       <DemoMode />
       <Routes>
         <Route path="/" element={<LandingPage />} />
