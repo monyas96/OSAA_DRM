@@ -6,7 +6,7 @@ import streamlit as st
 from pathlib import Path
 
 
-def render_pillar_header(pillar_title: str, pillar_number: int, back_link: str = "pages/00_prototype_switcher.py"):
+def render_pillar_header(pillar_title: str, pillar_number: int, back_link: str = "pages/2_theme_4.py"):
     """
     Render the header section for a pillar page with back navigation.
     

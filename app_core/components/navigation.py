@@ -238,7 +238,8 @@ def render_navigation_buttons():
     with col2:
         # Use st.page_link instead of st.button + st.switch_page for browser history support
         # st.page_link creates proper browser history entries (no key parameter supported)
-        st.page_link("pages/00_prototype_switcher.py", label="Home")
+        # Link to Theme 4 home page (main entry point)
+        st.page_link("pages/2_theme_4.py", label="Home")
 
     # Add home icon styling via JavaScript (st.page_link doesn't support custom icons easily)
     st.markdown("""
