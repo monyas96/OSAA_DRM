@@ -159,26 +159,7 @@ const exportUsingHtml2Canvas = async (element, filename) => {
   // Force reflow
   element.offsetHeight
 
-      // Hide iframes temporarily and replace with placeholder (iframes can't be captured)
-      const iframes = element.querySelectorAll('iframe')
-      const iframePlaceholders = []
-      iframes.forEach((iframe, index) => {
-        const placeholder = document.createElement('div')
-        placeholder.style.width = iframe.offsetWidth + 'px'
-        placeholder.style.height = iframe.offsetHeight + 'px'
-        placeholder.style.backgroundColor = '#f3f4f6'
-        placeholder.style.border = '1px solid #d1d5db'
-        placeholder.style.display = 'flex'
-        placeholder.style.alignItems = 'center'
-        placeholder.style.justifyContent = 'center'
-        placeholder.innerHTML = '<p style="color: #6b7280; font-size: 14px;">Chart loaded from Streamlit</p>'
-        placeholder.className = 'iframe-placeholder'
-        iframe.style.display = 'none'
-        iframe.parentNode.insertBefore(placeholder, iframe)
-        iframePlaceholders.push({ iframe, placeholder })
-      })
-
-      // Capture with html2canvas - let it calculate height automatically
+  // Capture with html2canvas - let it calculate height automatically
   const canvas = await html2canvas(element, {
     scale: 1,
     useCORS: true,
@@ -189,10 +170,6 @@ const exportUsingHtml2Canvas = async (element, filename) => {
     imageTimeout: 30000,
     allowTaint: true,
     foreignObjectRendering: true,
-    ignoreElements: (element) => {
-      // Ignore iframes (they can't be captured)
-      return element.tagName === 'IFRAME'
-    },
     onclone: (clonedDoc) => {
       // Find the cloned element by its ID
       const clonedElement = clonedDoc.getElementById('policy-brief-content') || 
@@ -209,21 +186,7 @@ const exportUsingHtml2Canvas = async (element, filename) => {
         // Hide UI elements
         const noPrintElements = clonedElement.querySelectorAll('button, .fixed, [data-tour="export-button"]')
         noPrintElements.forEach(el => el.style.display = 'none')
-        
-        // Hide iframes in cloned document
-        const clonedIframes = clonedElement.querySelectorAll('iframe')
-        clonedIframes.forEach(iframe => {
-          iframe.style.display = 'none'
-        })
       }
-    }
-  })
-
-  // Restore iframes
-  iframePlaceholders.forEach(({ iframe, placeholder }) => {
-    iframe.style.display = ''
-    if (placeholder.parentNode) {
-      placeholder.parentNode.removeChild(placeholder)
     }
   })
 
@@ -270,29 +233,15 @@ export const usePDFExport = () => {
       console.log('Starting PDF export with method:', method)
 
       // Try methods in order of preference
-      // Skip print API for auto method - go straight to PDF generation
-      if (method === 'print') {
+      if (method === 'auto' || method === 'print') {
         try {
           console.log('Attempting Browser Print API...')
           exportUsingPrintAPI(filename)
           setIsExporting(false)
           return true
         } catch (error) {
-          console.warn('Print API failed:', error)
-          throw error
-        }
-      }
-
-      // For auto method, try PDF generation methods first
-      if (method === 'auto' || method === 'html2canvas') {
-        try {
-          console.log('Attempting html2canvas method (best for iframes)...')
-          await exportUsingHtml2Canvas(element, filename)
-          setIsExporting(false)
-          return true
-        } catch (error) {
-          console.warn('html2canvas method failed, trying jsPDF html():', error)
-          if (method === 'html2canvas') throw error
+          console.warn('Print API failed, trying next method:', error)
+          if (method === 'print') throw error
         }
       }
 
@@ -303,18 +252,41 @@ export const usePDFExport = () => {
           setIsExporting(false)
           return true
         } catch (error) {
-          console.warn('jsPDF html() failed:', error)
+          console.warn('jsPDF html() failed, trying html2canvas:', error)
           if (method === 'jspdf-html') throw error
         }
       }
 
-      // If all PDF methods fail, show error instead of falling back to print
-      throw new Error('All PDF generation methods failed. Please try again or use browser print (Ctrl+P / Cmd+P)')
+      if (method === 'auto' || method === 'html2canvas') {
+        try {
+          console.log('Attempting html2canvas method...')
+          await exportUsingHtml2Canvas(element, filename)
+          setIsExporting(false)
+          return true
+        } catch (error) {
+          console.error('html2canvas method failed:', error)
+          if (method === 'html2canvas') throw error
+        }
+      }
+
+      // If all methods fail, fall back to print
+      console.log('All methods failed, falling back to print dialog')
+      exportUsingPrintAPI(filename)
+      setIsExporting(false)
+      return true
 
     } catch (error) {
       console.error('PDF Export Error:', error)
       setIsExporting(false)
-      alert(`PDF Export Failed: ${error.message}\n\nYou can use your browser's print function (Ctrl+P / Cmd+P) and select "Save as PDF" as an alternative.`)
+      alert(`PDF Export Failed: ${error.message}\n\nTrying browser print dialog as fallback...`)
+      
+      // Final fallback to print
+      try {
+        exportUsingPrintAPI(filename)
+      } catch (printError) {
+        console.error('Print fallback also failed:', printError)
+      }
+      
       throw error
     }
   }
