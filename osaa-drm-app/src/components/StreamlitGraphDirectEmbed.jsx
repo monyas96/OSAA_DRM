@@ -38,7 +38,18 @@ const StreamlitGraphDirectEmbed = ({
   const [iframeHeight, setIframeHeight] = useState(height) // Dynamic height based on chart size
 
   // Get Streamlit URL from environment variable
-  const STREAMLIT_BASE_URL = import.meta.env.VITE_STREAMLIT_URL || 'http://localhost:8501'
+  let rawUrl = import.meta.env.VITE_STREAMLIT_URL || 'http://localhost:8501'
+  
+  // Validate URL - if it looks like a GitHub URL, use the correct Streamlit URL
+  if (rawUrl.includes('github.com') || rawUrl.includes('settings/secrets')) {
+    console.error('❌ Invalid Streamlit URL detected:', rawUrl)
+    console.error('⚠️ VITE_STREAMLIT_URL secret is missing or incorrect!')
+    console.error('📝 Should be: https://osaadrm.streamlit.app')
+    // Fallback to the correct Streamlit Cloud URL
+    rawUrl = 'https://osaadrm.streamlit.app'
+  }
+  
+  const STREAMLIT_BASE_URL = rawUrl.replace(/\/$/, '')
 
   // Build Streamlit URL with query parameters
   const buildStreamlitUrl = () => {
