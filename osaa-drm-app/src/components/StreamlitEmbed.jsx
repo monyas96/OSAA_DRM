@@ -185,10 +185,21 @@ const StreamlitEmbed = ({ page: pageProp, hideHeader = false }) => {
           const iframeDoc = iframe.contentDocument || iframe.contentWindow.document
           if (iframeDoc) {
             const bodyText = iframeDoc.body?.innerText || ''
+            const bodyHTML = iframeDoc.body?.innerHTML || ''
             console.log('Iframe loaded, checking content...')
+            
+            // Check for various error conditions
             if (bodyText.includes('Page not found') || bodyText.includes('does not seem to exist')) {
               console.error('Page not found in iframe content')
               setError(`Streamlit page "${streamlitPage}" not found. URL: ${streamlitUrl}`)
+              setLoading(false)
+              return
+            }
+            
+            // Check for GitHub connection errors
+            if (bodyText.includes('github.com') && (bodyText.includes('refused') || bodyText.includes('failed') || bodyText.includes('error'))) {
+              console.error('GitHub connection error detected in iframe')
+              setError(`Connection error: Streamlit is trying to connect to GitHub but it's being blocked. This is usually a CORS or security issue. Try opening the Streamlit app directly: ${streamlitUrl.replace('?embed=true', '')}`)
               setLoading(false)
               return
             }
@@ -199,7 +210,7 @@ const StreamlitEmbed = ({ page: pageProp, hideHeader = false }) => {
         }
       }
       setLoading(false)
-    }, 2000)
+    }, 3000) // Increased delay to catch GitHub errors
   }
 
   const handleIframeError = () => {
@@ -398,6 +409,23 @@ const StreamlitEmbed = ({ page: pageProp, hideHeader = false }) => {
           <div className="bg-red-50 border border-red-200 rounded-lg p-6">
             <h3 className="text-red-800 font-semibold mb-2">Connection Error</h3>
             <p className="text-red-600">{error}</p>
+            {error.includes('github.com') && (
+              <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded">
+                <p className="text-yellow-800 font-medium mb-2">GitHub Connection Issue Detected</p>
+                <p className="text-yellow-700 text-sm mb-3">
+                  The Streamlit app is trying to connect to GitHub, which is being blocked. This is usually a CORS or security issue.
+                </p>
+                <div className="space-y-2">
+                  <p className="text-yellow-700 text-sm font-medium">Try these solutions:</p>
+                  <ol className="list-decimal list-inside space-y-1 text-yellow-700 text-sm ml-2">
+                    <li><strong>Open Streamlit directly:</strong> <a href={streamlitUrl.replace('?embed=true', '')} target="_blank" rel="noopener noreferrer" className="underline font-semibold">Click here to open in a new tab</a></li>
+                    <li><strong>Check Streamlit Cloud:</strong> Visit <a href={STREAMLIT_BASE_URL} target="_blank" rel="noopener noreferrer" className="underline font-semibold">{STREAMLIT_BASE_URL}</a> to verify it's running</li>
+                    <li><strong>Clear browser cache:</strong> The iframe might be cached. Try hard refresh (Ctrl+Shift+R or Cmd+Shift+R)</li>
+                    <li><strong>Check browser console:</strong> Press F12 and look for CORS or network errors</li>
+                  </ol>
+                </div>
+              </div>
+            )}
             <div className="mt-4 space-y-2 text-sm">
               <p className="text-red-700 font-medium">Debug Information:</p>
               <ul className="list-disc list-inside space-y-1 text-red-600 ml-4 mb-4">
@@ -459,6 +487,7 @@ const StreamlitEmbed = ({ page: pageProp, hideHeader = false }) => {
         onError={handleIframeError}
         style={{ display: error ? 'none' : 'block' }}
         allow="fullscreen"
+        loading="lazy"
       />
       </div>
     </div>
