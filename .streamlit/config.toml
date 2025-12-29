@@ -1,8 +1,15 @@
 [server]
 headless = true
 port = 8501
-enableCORS = false
+# Enable CORS to allow embedding in iframes from different origins
+enableCORS = true
+# Disable XSRF protection for iframe embedding (required for cross-origin embedding)
 enableXsrfProtection = false
+# Allow iframe embedding
+allowRunOnSave = true
+# Set allowed origins for CORS (add your GitHub Pages domain)
+# Note: Streamlit Cloud handles this automatically, but we can specify for local dev
+# For production, Streamlit Cloud will handle CORS based on the embed parameter
 
 [browser]
 gatherUsageStats = false
