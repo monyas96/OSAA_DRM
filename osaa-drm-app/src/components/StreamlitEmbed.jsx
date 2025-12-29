@@ -10,6 +10,8 @@ const StreamlitEmbed = ({ page: pageProp, hideHeader = false }) => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [isTopicPage, setIsTopicPage] = useState(false)
+  const [retryCount, setRetryCount] = useState(0)
+  const [connectionStatus, setConnectionStatus] = useState('checking')
   
   // Use pageProp if provided, otherwise use route parameter
   const page = pageProp || pageParam || 'theme-4'
@@ -23,7 +25,9 @@ const StreamlitEmbed = ({ page: pageProp, hideHeader = false }) => {
   }, [page, location.pathname])
   
   // Get Streamlit URL from environment variable or default to localhost
-  const STREAMLIT_BASE_URL = import.meta.env.VITE_STREAMLIT_URL || 'http://localhost:8501'
+  // Ensure URL doesn't have trailing slash
+  const rawUrl = import.meta.env.VITE_STREAMLIT_URL || 'http://localhost:8501'
+  const STREAMLIT_BASE_URL = rawUrl.replace(/\/$/, '')
   
   // Listen for postMessage from Streamlit iframe to sync navigation
   useEffect(() => {
@@ -199,9 +203,62 @@ const StreamlitEmbed = ({ page: pageProp, hideHeader = false }) => {
   }
 
   const handleIframeError = () => {
+    console.error('Iframe error event fired')
     setLoading(false)
-    setError('Unable to load Streamlit page. Make sure Streamlit is running on port 8501.')
+    
+    // Retry logic: try up to 3 times
+    if (retryCount < 3) {
+      console.log(`Retrying connection (attempt ${retryCount + 1}/3)...`)
+      setTimeout(() => {
+        setRetryCount(prev => prev + 1)
+        setLoading(true)
+        setError(null)
+        // Force iframe reload by changing key
+        window.location.reload()
+      }, 2000 * (retryCount + 1)) // Exponential backoff
+    } else {
+      setError(`Unable to load Streamlit page after ${retryCount} attempts. Please check:
+        - Streamlit is deployed and accessible at: ${STREAMLIT_BASE_URL}
+        - The URL is correct in GitHub secrets (VITE_STREAMLIT_URL)
+        - Streamlit Cloud is running (check https://share.streamlit.io)
+        - There are no CORS or network issues`)
+      setConnectionStatus('failed')
+    }
   }
+
+  // Check Streamlit connection health
+  useEffect(() => {
+    const checkConnection = async () => {
+      try {
+        setConnectionStatus('checking')
+        const response = await fetch(`${STREAMLIT_BASE_URL}/health`, { 
+          method: 'HEAD',
+          mode: 'no-cors',
+          cache: 'no-cache'
+        })
+        setConnectionStatus('connected')
+      } catch (err) {
+        // Try direct URL check
+        try {
+          const testUrl = `${STREAMLIT_BASE_URL}/?embed=true`
+          const testResponse = await fetch(testUrl, { 
+            method: 'HEAD',
+            mode: 'no-cors',
+            cache: 'no-cache'
+          })
+          setConnectionStatus('connected')
+        } catch (e) {
+          console.warn('Streamlit connection check failed:', e)
+          setConnectionStatus('unknown') // Don't fail immediately, let iframe try
+        }
+      }
+    }
+    
+    checkConnection()
+    // Recheck every 30 seconds
+    const interval = setInterval(checkConnection, 30000)
+    return () => clearInterval(interval)
+  }, [STREAMLIT_BASE_URL])
 
   // Try to detect if Streamlit shows "Page not found" by checking the iframe
   useEffect(() => {
@@ -322,6 +379,15 @@ const StreamlitEmbed = ({ page: pageProp, hideHeader = false }) => {
           <div className="text-center">
             <Loader2 className="w-12 h-12 text-osaa-blue animate-spin mx-auto mb-4" />
             <p className="text-gray-600">Loading Streamlit dashboard...</p>
+            {retryCount > 0 && (
+              <p className="text-sm text-gray-500 mt-2">Retry attempt {retryCount}/3</p>
+            )}
+            {connectionStatus === 'checking' && (
+              <p className="text-sm text-gray-500 mt-2">Checking connection...</p>
+            )}
+            {connectionStatus === 'connected' && (
+              <p className="text-sm text-green-600 mt-2">✓ Connected to Streamlit</p>
+            )}
           </div>
         </div>
       )}
@@ -361,10 +427,12 @@ const StreamlitEmbed = ({ page: pageProp, hideHeader = false }) => {
       {/* Streamlit iframe */}
       <div data-tour="streamlit-content">
         <iframe
-          key={streamlitPage} // Force reload when page changes
+          key={`${streamlitPage}-${retryCount}`} // Force reload when page changes or retry
           src={streamlitUrl}
           className={hideHeader ? "w-full h-[calc(100vh-200px)] border-0 rounded-lg" : "w-full h-[calc(100vh-80px)] border-0"}
           title="Streamlit Dashboard"
+          sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-top-navigation-by-user-activation"
+          referrerPolicy="no-referrer-when-downgrade"
         onLoad={(e) => {
           handleIframeLoad()
           // Check iframe src after load to detect topic pages

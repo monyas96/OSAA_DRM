@@ -17,8 +17,8 @@ const PolicyBrief44 = () => {
 
   const handleExport = async () => {
     try {
-      // Try auto method first (will try print, then jspdf-html, then html2canvas)
-      await exportToPDF('policy-brief-content', 'policy-brief-4.4-illicit-flows', 'auto')
+      // Use html2canvas method directly to ensure PDF export (not print dialog)
+      await exportToPDF('policy-brief-content', 'policy-brief-4.4-illicit-flows', 'html2canvas')
     } catch (error) {
       console.error('PDF export error:', error)
       // Error is already handled in the hook with fallback
