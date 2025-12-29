@@ -155,6 +155,9 @@ const StreamlitEmbed = ({ page: pageProp, hideHeader = false }) => {
   // For data-availability, use query parameter approach since it's routed through app_streamlit.py
   const useQueryParams = (page === 'data-availability' && topicId) ? true : false
   
+  // Build URL with embed parameter for iframe compatibility
+  // Using the same URL with ?embed=true is the correct approach
+  // Streamlit Cloud doesn't have a separate "embed link" - you use the share link with embed=true
   const streamlitUrl = useQueryParams && topicId
     ? `${STREAMLIT_BASE_URL}/?topic=${topicId}&embed=true`
     : streamlitPage

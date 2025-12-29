@@ -67,6 +67,7 @@ const StreamlitGraphDirectEmbed = ({
     const page = indicatorPageMap[indicator] || '8_graph_embed'
     
     // Build query parameters (for backward compatibility, but pages are pre-configured)
+    // Using embed=true is the standard way to embed Streamlit apps
     const params = new URLSearchParams({
       embed: 'true',
       hide_header: 'true'
