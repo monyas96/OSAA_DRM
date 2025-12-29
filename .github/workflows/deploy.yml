@@ -39,6 +39,16 @@ jobs:
           VITE_STREAMLIT_URL: ${{ secrets.VITE_STREAMLIT_URL }}
         run: npm run build
       
+      - name: Create 404.html for SPA routing
+        working-directory: ./osaa-drm-app
+        run: |
+          # Copy index.html to 404.html for GitHub Pages SPA support
+          # This ensures that refreshing any route (like /exploratory) works correctly
+          # GitHub Pages will serve 404.html for any 404, which loads the React app
+          # React Router then handles the routing client-side
+          cp dist/index.html dist/404.html
+          echo "✅ Created 404.html for GitHub Pages SPA routing"
+      
       - name: Setup Pages
         uses: actions/configure-pages@v4
       
