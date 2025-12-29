@@ -29,16 +29,16 @@ const StreamlitEmbed = ({ page: pageProp, hideHeader = false }) => {
   const rawUrl = import.meta.env.VITE_STREAMLIT_URL || 'http://localhost:8501'
   
   // Validate URL - if it looks like a GitHub URL, use the correct Streamlit URL
-  let streamlitUrl = rawUrl.replace(/\/$/, '')
-  if (streamlitUrl.includes('github.com') || streamlitUrl.includes('settings/secrets')) {
-    console.error('❌ Invalid Streamlit URL detected:', streamlitUrl)
+  let validatedUrl = rawUrl.replace(/\/$/, '')
+  if (validatedUrl.includes('github.com') || validatedUrl.includes('settings/secrets')) {
+    console.error('❌ Invalid Streamlit URL detected:', validatedUrl)
     console.error('⚠️ VITE_STREAMLIT_URL secret is missing or incorrect!')
     console.error('📝 Should be: https://osaadrm.streamlit.app')
     // Fallback to the correct Streamlit Cloud URL
-    streamlitUrl = 'https://osaadrm.streamlit.app'
+    validatedUrl = 'https://osaadrm.streamlit.app'
   }
   
-  const STREAMLIT_BASE_URL = streamlitUrl
+  const STREAMLIT_BASE_URL = validatedUrl
   
   // Listen for postMessage from Streamlit iframe to sync navigation
   useEffect(() => {
