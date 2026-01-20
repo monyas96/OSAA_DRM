@@ -27,20 +27,19 @@ jobs:
         with:
           node-version: '18'
           cache: 'npm'
-          cache-dependency-path: osaa-drm-app/package-lock.json
-      
+          cache-dependency-path: assets/osaa-drm-app/package-lock.json
       - name: Install dependencies
-        working-directory: ./osaa-drm-app
+        working-directory: ./assets/osaa-drm-app
         run: npm ci
       
       - name: Build
-        working-directory: ./osaa-drm-app
+        working-directory: ./assets/osaa-drm-app
         env:
           VITE_STREAMLIT_URL: ${{ secrets.VITE_STREAMLIT_URL }}
         run: npm run build
       
       - name: Create 404.html for SPA routing
-        working-directory: ./osaa-drm-app
+        working-directory: ./assets/osaa-drm-app
         run: |
           # Copy index.html to 404.html for GitHub Pages SPA support
           # This ensures that refreshing any route (like /exploratory) works correctly
@@ -55,7 +54,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './osaa-drm-app/dist'
+          path: './assets/osaa-drm-app/dist'
 
   deploy:
     environment:
