@@ -71,6 +71,12 @@ OSAA_DRM/
 │   ├── composite_indicator_methods.py  # Indicator calculation methods
 │   └── indicator_module_template.py    # Template for new indicators
 │
+├── docs/                           # Documentation
+│   ├── APP_STRUCTURE_AND_CONTENT_DESCRIPTION.md
+│   ├── DEPLOY_STREAMLIT_OPTIONS.md
+│   ├── FIX_CORS_ISSUE.md
+│   └── policy_brief_4_2_final_text.md
+│
 ├── requirements.txt                # Python dependencies
 ├── runtime.txt                     # Python runtime version
 ├── start_streamlit.sh              # Script to start Streamlit
