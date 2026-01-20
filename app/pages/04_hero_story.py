@@ -288,4 +288,3 @@ col1, col2, col3 = st.columns([1, 1, 1])
 with col2:
     if st.button("→ Explore the Framework", type="primary", use_container_width=True):
         st.switch_page("pages/2_theme_4.py")
-
