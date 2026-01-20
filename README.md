@@ -79,6 +79,13 @@ OSAA_DRM/
 │   ├── FIX_CORS_ISSUE.md
 │   └── policy_brief_4_2_final_text.md
 │
+├── .github/
+│   └── workflows/
+│       └── deploy.yml              # GitHub Actions workflow for deploying to GitHub Pages
+│
+├── .streamlit/
+│   └── config.toml                 # Streamlit configuration (CORS, theme, server settings)
+│
 ├── requirements.txt                # Python dependencies
 ├── runtime.txt                     # Python runtime version
 ├── start_streamlit.sh              # Script to start Streamlit
