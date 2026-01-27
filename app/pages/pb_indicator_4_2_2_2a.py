@@ -3,148 +3,44 @@ Policy Brief Graph: Indicator 4.2.2.2.a - Tax Buoyancy (Elasticity)
 Pre-configured Streamlit page showing Tax Revenue Responsiveness
 Exact same graph as exploratory view, with title and policy brief styling
 """
-import sys
-from pathlib import Path
-# Path resolution: Add root directory and scripts to path for imports
-root_dir = Path(__file__).resolve().parent.parent.parent
-scripts_dir = root_dir / "scripts"
-if str(root_dir) not in sys.path:
-    sys.path.insert(0, str(root_dir))
-if str(scripts_dir) not in sys.path:
-    sys.path.insert(0, str(scripts_dir))
-
-import streamlit as st
-import pandas as pd
-import plotly.graph_objects as go
-import plotly.express as px
-import altair as alt
-from scripts import composite_indicator_methods as cim
-from app import universal_viz as uv
-import importlib
-from app.pages import pb_graph_helpers as pb_helpers
-# Force reload to pick up new functions
-importlib.reload(pb_helpers)
+from app.pages.pb_shared import (
+    load_policy_brief_data,
+    get_africa_filtered,
+    apply_pb_styles,
+    render_iframe_height_script,
+)
 from app.pages.pb_graph_helpers import render_tax_buoyancy
+import streamlit as st
 
-# Hide Streamlit UI elements for clean embedding
 st.set_page_config(
     page_title="Tax Revenue Responsiveness",
     layout="wide",
-    initial_sidebar_state="collapsed"
+    initial_sidebar_state="collapsed",
 )
+apply_pb_styles()
 
-# Hide Streamlit default UI - match policy brief styling (chart-only view)
-st.markdown("""
-<style>
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    header {visibility: hidden;}
-    .stDeployButton {visibility: hidden;}
-    .stApp > header {
-        background-color: transparent;
-    }
-    .stApp {
-        margin-top: 0;
-        padding-top: 0;
-        padding-left: 0;
-        padding-right: 0;
-        padding-bottom: 0;
-        height: auto;
-        overflow: hidden;
-    }
-    .main .block-container {
-        padding-top: 0;
-        padding-bottom: 0;
-        padding-left: 0;
-        padding-right: 0;
-        max-width: 100%;
-        width: 100%;
-        height: auto;
-        display: flex;
-        flex-direction: column;
-    }
-    /* Make charts full width */
-    .stPlotlyChart, .vega-embed {
-        width: 100% !important;
-        height: auto !important;
-    }
-    /* Hide any markdown elements (titles, etc.) */
-    .stMarkdown {
-        display: none !important;
-    }
-    [data-testid="stVerticalBlock"] {
-        padding: 0 !important;
-        margin: 0 !important;
-    }
-    [data-testid="stVerticalBlock"] > [style*="flex-direction: column"] {
-        height: 100%;
-    }
-</style>
-""", unsafe_allow_html=True)
-
-# Load data
-@st.cache_data
-def load_data():
-    ref_data = uv.load_country_reference_data()
-    df_main = uv.load_main_data()
-    return ref_data, df_main
-
-ref_data, df_main = load_data()
-
+ref_data, df_main = load_policy_brief_data()
 if df_main.empty or ref_data.empty:
     st.error("Failed to load data")
     st.stop()
 
-# Filter for Africa by default (matching policy brief scope)
-africa_ref_data = ref_data[ref_data['Region Name'] == 'Africa'].copy()
-africa_countries = africa_ref_data['Country or Area'].unique()
-df_filtered = df_main[df_main['country_or_area'].isin(africa_countries)].copy()
+_, _, df_filtered = get_africa_filtered(ref_data, df_main)
 
-# No title - chart-only view for clean embedding
-
-# Render graph using shared helper (exact same as exploratory view)
 fig = render_tax_buoyancy(df_filtered, ref_data)
-
 if fig:
     st.plotly_chart(fig, use_container_width=True, config={
-        'displayModeBar': True,
-        'responsive': True,
-        'autosizable': True,
-        'modeBarButtonsToRemove': [],
-        'toImageButtonOptions': {
-            'format': 'png',
-            'filename': 'tax_buoyancy',
-            'height': 800,
-            'width': 1200,
-            'scale': 1
-        }
+        "displayModeBar": True,
+        "responsive": True,
+        "autosizable": True,
+        "modeBarButtonsToRemove": [],
+        "toImageButtonOptions": {
+            "format": "png",
+            "filename": "tax_buoyancy_chart",
+            "height": 800,
+            "width": 1200,
+            "scale": 1,
+        },
     })
-    
-    # Send chart height to parent iframe for dynamic sizing
-    st.markdown("""
-    <script>
-    (function() {
-        function sendHeightToParent() {
-            setTimeout(function() {
-                const plotlyDiv = document.querySelector('.js-plotly-plot');
-                if (plotlyDiv) {
-                    const chartHeight = plotlyDiv.offsetHeight || plotlyDiv.scrollHeight;
-                    if (chartHeight > 0) {
-                        if (window.parent !== window) {
-                            window.parent.postMessage({
-                                type: 'STREAMLIT_CHART_HEIGHT',
-                                height: chartHeight
-                            }, '*');
-                        }
-                    }
-                }
-            }, 500);
-        }
-        sendHeightToParent();
-        setTimeout(sendHeightToParent, 1000);
-        setTimeout(sendHeightToParent, 2000);
-    })();
-    </script>
-    """, unsafe_allow_html=True)
+    render_iframe_height_script()
 else:
     st.info("No data available for Tax Buoyancy")

@@ -7,8 +7,7 @@ import pandas as pd
 import sys
 from pathlib import Path
 
-# Add parent directory to path for module imports
-# Path resolution: Add root directory and scripts to path for imports
+# Add repo root and scripts to path for module imports
 root_dir = Path(__file__).resolve().parent.parent.parent
 scripts_dir = root_dir / "scripts"
 if str(root_dir) not in sys.path:

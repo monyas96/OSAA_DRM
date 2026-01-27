@@ -8,15 +8,6 @@ import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
 import altair as alt
-
-# Path resolution: Add root directory and scripts to path for imports
-root_dir = Path(__file__).resolve().parent.parent.parent
-scripts_dir = root_dir / "scripts"
-if str(root_dir) not in sys.path:
-    sys.path.insert(0, str(root_dir))
-if str(scripts_dir) not in sys.path:
-    sys.path.insert(0, str(scripts_dir))
-
 from scripts import composite_indicator_methods as cim
 from app import universal_viz as uv
 

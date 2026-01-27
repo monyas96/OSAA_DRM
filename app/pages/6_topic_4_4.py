@@ -1,6 +1,5 @@
 import sys
 from pathlib import Path
-# Path resolution: Add root directory and scripts to path for imports
 root_dir = Path(__file__).resolve().parent.parent.parent
 scripts_dir = root_dir / "scripts"
 if str(root_dir) not in sys.path:

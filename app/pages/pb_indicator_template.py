@@ -1,79 +1,38 @@
 """
 Policy Brief Graph Embed Template
-Pre-configured Streamlit page for embedding individual indicator graphs in policy briefs
-Each indicator gets its own page (e.g., pb_indicator_4_4_2_4.py for indicator 4.4.2.4)
+Pre-configured Streamlit page for embedding individual indicator graphs in policy briefs.
+Each indicator gets its own page (e.g. pb_indicator_4_4_2_4.py for indicator 4.4.2.4).
+
+Use pb_shared for path setup, styles, data loading, Africa filtering, and iframe-height script.
+Import the specific render_* function from pb_graph_helpers and call it with df_filtered, ref_data.
 """
-import sys
-from pathlib import Path
-# Path resolution: Add root directory and scripts to path for imports
-root_dir = Path(__file__).resolve().parent.parent.parent
-scripts_dir = root_dir / "scripts"
-if str(root_dir) not in sys.path:
-    sys.path.insert(0, str(root_dir))
-if str(scripts_dir) not in sys.path:
-    sys.path.insert(0, str(scripts_dir))
-
+from app.pages.pb_shared import (
+    load_policy_brief_data,
+    get_africa_filtered,
+    apply_pb_styles,
+    render_iframe_height_script,
+)
+# from app.pages.pb_graph_helpers import render_<your_indicator>
 import streamlit as st
-import pandas as pd
-import plotly.graph_objects as go
-import plotly.express as px
-import altair as alt
-from scripts import composite_indicator_methods as cim
-from app import universal_viz as uv
 
-# Hide Streamlit UI elements for clean embedding
 st.set_page_config(
     page_title="Policy Brief Graph",
     layout="wide",
-    initial_sidebar_state="collapsed"
+    initial_sidebar_state="collapsed",
 )
+apply_pb_styles()
 
-# Hide Streamlit default UI - match policy brief styling
-st.markdown("""
-<style>
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    header {visibility: hidden;}
-    .stDeployButton {visibility: hidden;}
-    .stApp > header {
-        background-color: transparent;
-    }
-    .stApp {
-        margin-top: 0;
-        padding-top: 0;
-        padding-left: 1rem;
-        padding-right: 1rem;
-    }
-    .main .block-container {
-        padding-top: 1rem;
-        padding-bottom: 1rem;
-        max-width: 100%;
-    }
-    /* Match policy brief styling */
-    h1, h2, h3 {
-        color: #003366;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    }
-</style>
-""", unsafe_allow_html=True)
-
-# Load data
-@st.cache_data
-def load_data():
-    ref_data = uv.load_country_reference_data()
-    df_main = uv.load_main_data()
-    return ref_data, df_main
-
-ref_data, df_main = load_data()
-
+ref_data, df_main = load_policy_brief_data()
 if df_main.empty or ref_data.empty:
     st.error("Failed to load data")
     st.stop()
 
-# Filter for Africa by default (matching policy brief scope)
-africa_ref_data = ref_data[ref_data['Region Name'] == 'Africa'].copy()
-africa_countries = africa_ref_data['Country or Area'].unique()
-df_filtered = df_main[df_main['country_or_area'].isin(africa_countries)].copy()
+_, _, df_filtered = get_africa_filtered(ref_data, df_main)
 
-# INDICATOR-SPECIFIC CODE GOES HERE
-# Each page will have its own rendering logic based on the indicator
+# INDICATOR-SPECIFIC: import render_* from pb_graph_helpers and call it
+# fig_or_chart = render_<name>(df_filtered, ref_data)
+# if fig_or_chart:
+#     st.plotly_chart(fig_or_chart, ...) or st.altair_chart(chart, ...)
+#     render_iframe_height_script()
+# else:
+#     st.info("No data available for ...")

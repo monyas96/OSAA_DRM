@@ -15,7 +15,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Path resolution: Add root directory and scripts to path for imports
+# Add repo root and scripts to path
 root_dir = Path(__file__).resolve().parent.parent.parent
 scripts_dir = root_dir / "scripts"
 if str(root_dir) not in sys.path:

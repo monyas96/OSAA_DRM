@@ -14,10 +14,13 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Add parent directory to path
-parent_dir = str(Path(__file__).resolve().parent.parent)
-if parent_dir not in sys.path:
-    sys.path.insert(0, parent_dir)
+# Add repo root and scripts to path
+root_dir = Path(__file__).resolve().parent.parent.parent
+scripts_dir = root_dir / "scripts"
+if str(root_dir) not in sys.path:
+    sys.path.insert(0, str(root_dir))
+if str(scripts_dir) not in sys.path:
+    sys.path.insert(0, str(scripts_dir))
 
 # Import navigation component
 try:
